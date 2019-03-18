@@ -26,6 +26,7 @@ public class PageController {
             pages.add(Integer.toString(document.getFigureTableIndexPageEnd()));
             pages.add(Integer.toString(document.getBiographyPageStart()));
             pages.add(Integer.toString(document.getAnnexedPageStart()));
+            pdfdocument.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -28,6 +28,7 @@ public class FormatErrorController {
             FormatErrorDetector formatErrorDetector = new FormatErrorDetector(pdfdocument);
             formatErrorDetector.analyzeFormatPdf(coverPage,generalIndexPageStart,generalIndexPageEnd,figureTableIndexPageEnd,biographyPage,annexedPage);
             formatErrors = formatErrorDetector.getFormatErrorReports();
+            pdfdocument.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

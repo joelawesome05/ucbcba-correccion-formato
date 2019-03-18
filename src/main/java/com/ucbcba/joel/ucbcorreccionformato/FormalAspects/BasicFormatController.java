@@ -24,6 +24,7 @@ public class BasicFormatController {
             BasicFormatDetector formatErrorDetector = new BasicFormatDetector(pdfdocument);
             formatErrorDetector.analyzeBasicFormat(figureTableIndexPageEnd,annexedPage);
             basicFormatReports = formatErrorDetector.getBasicFormatReports();
+            pdfdocument.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
