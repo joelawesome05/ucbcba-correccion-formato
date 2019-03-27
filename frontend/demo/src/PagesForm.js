@@ -20,9 +20,6 @@ class PagesForm extends Component {
 
     async componentDidMount() {
         var pages = await (await fetch(`/api/getPages/${encodeURI(this.props.match.params.name)}`)).json();
-        console.log(pages);
-        console.log(pages.lenght);
-        console.log(pages[6]);
         this.setState({ coverPage: pages[0], generalIndexPageStart: pages[1], generalIndexPageEnd: pages[2], figureTableIndexPageEnd: pages[3], biographyPage: pages[4], annexedPage: pages[5] });
         this.setState({ isLoading: false });
     }

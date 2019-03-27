@@ -51,4 +51,8 @@ public class PdfImage {
     public float getHeightDisplayed(){
         return matrix.getScalingFactorY();
     }
+
+    public float getYInverse(){ return matrix.getTranslateY();}
+
+    public float getYInverseFirst(){ return matrix.getTranslateY()+ getHeightDisplayed();}
 }

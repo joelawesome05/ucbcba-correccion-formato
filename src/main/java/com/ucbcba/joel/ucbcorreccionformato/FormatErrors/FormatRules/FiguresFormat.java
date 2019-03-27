@@ -88,6 +88,11 @@ public class FiguresFormat implements FormatRule {
             });
             for (PdfImage image : pdfImages) {
                 List<String> commentsFigure = new ArrayList<>();
+                if (image.getEndX() > pageWidth) {
+                    reportFigureMarginErrors(formatErrors, image, pageWidth, pageHeight, pageNum);
+                    figureNumeration.incrementAndGet();
+                    continue;
+                }
                 WordsProperties figureNumerationWord = seeker.findFigureNumeration(image, pageNum);
                 if (figureNumerationWord != null) {
                     comments = new FigureNumerationFormat(figureNumerationWord, 12, "Centrado", true, false, figureNumeration.get()).getFormatErrors(pageWidth);
@@ -103,7 +108,6 @@ public class FiguresFormat implements FormatRule {
                 } else {
                     commentsFigure.add("Tenga la fuente de la figura");
                 }
-
                 if (commentsFigure.size() != 0) {
                     StringBuilder commentStr = new StringBuilder();
                     for (int i = 0; i < commentsFigure.size(); i++) {
@@ -116,6 +120,7 @@ public class FiguresFormat implements FormatRule {
                     commentStr.append(".");
                     String comment = commentStr.toString();
                     reportFigureErrors(formatErrors, image, comment, pageWidth, pageHeight, pageNum);
+
                 }
                 figureNumeration.incrementAndGet();
             }
@@ -132,6 +137,17 @@ public class FiguresFormat implements FormatRule {
         Comment comment = new Comment(coment,"");
         formatErrors.add(new FormatErrorReport(content,position,comment,String.valueOf(counter.incrementAndGet())));
     }
+
+    private void reportFigureMarginErrors(List<FormatErrorReport> formatErrors, PdfImage image, float pageWidth, float pageHeight, int page) {
+        Content content = new Content("Imagen");
+        BoundingRect boundingRect = new BoundingRect(image.getX(), image.getEndY() , image.getYInverseFirst() - pageWidth,image.getEndX(),pageWidth,pageHeight);
+        List<BoundingRect> boundingRects = new ArrayList<>();
+        boundingRects.add(boundingRect);
+        Position position = new Position(boundingRect,boundingRects,page);
+        Comment comment = new Comment("Considerar orientacion de la hoja de forma horizontal","");
+        formatErrors.add(new FormatErrorReport(content,position,comment,String.valueOf(counter.incrementAndGet())));
+    }
+
 
     private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorReport> formatErrors, float pageWidth, float pageHeigh, int page) {
         if (comments.size() != 0) {

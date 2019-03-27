@@ -129,4 +129,27 @@ public class GeneralSeeker {
         }
         return null;
     }
+
+    public List<WordsProperties> findWordsFromPages(int pageStart, int pageEnd, String searchWord) throws IOException {
+        final List<WordsProperties> listWordPositionSequences = new ArrayList<WordsProperties>();
+        PDFTextStripper stripper = new PDFTextStripper() {
+            @Override
+            protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
+                WordsProperties word = new WordsProperties(textPositions);
+                String string = word.toString();
+                int index = 0;
+                int indexWordFound;
+                while ((indexWordFound = string.indexOf(searchWord, index)) > -1) {
+                    listWordPositionSequences.add(word.subSequence(indexWordFound, indexWordFound + searchWord.length()));
+                    index = indexWordFound + 1;
+                }
+                super.writeString(text, textPositions);
+            }
+        };
+        stripper.setSortByPosition(true);
+        stripper.setStartPage(pageStart);
+        stripper.setEndPage(pageEnd);
+        stripper.getText(pdfdocument);
+        return listWordPositionSequences;
+    }
 }

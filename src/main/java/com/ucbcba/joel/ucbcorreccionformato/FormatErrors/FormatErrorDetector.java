@@ -46,7 +46,7 @@ public class FormatErrorDetector {
             }
 
             if (page >= generalIndexPageStartI && page <= generalIndexPageEndI){
-                FormatRule generalIndexPageFormat = new GeneralIndexPageFormat(pdfdocument, idHighlights);
+                FormatRule generalIndexPageFormat = new GeneralIndexPageFormat(pdfdocument, idHighlights,generalIndexPageEndI);
                 formatErrorReports.addAll(generalIndexPageFormat.getFormatErrors(page));
                 continue;
             }

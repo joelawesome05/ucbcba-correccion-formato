@@ -1,6 +1,7 @@
 package com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatRules;
 
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.GeneralIndexFormat;
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.SameLevelTittle;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.HighlightsReport.FormatErrorReport;
 import com.ucbcba.joel.ucbcorreccionformato.General.GeneralSeeker;
 import com.ucbcba.joel.ucbcorreccionformato.General.ReportFormatError;
@@ -19,11 +20,13 @@ public class GeneralIndexPageFormat implements FormatRule {
     private PDDocument pdfdocument;
     private GeneralSeeker seeker;
     private AtomicLong counter;
+    private int generalIndexPageEnd;
 
-    public GeneralIndexPageFormat(PDDocument pdfdocument, AtomicLong counter) {
+    public GeneralIndexPageFormat(PDDocument pdfdocument, AtomicLong counter,int generalIndexPageEnd) {
         this.pdfdocument = pdfdocument;
         this.seeker = new GeneralSeeker(pdfdocument);
         this.counter = counter;
+        this.generalIndexPageEnd = generalIndexPageEnd;
     }
 
     @Override
@@ -77,18 +80,17 @@ public class GeneralIndexPageFormat implements FormatRule {
                     }
                     if (numberOfPoints == 2) {
                         comments = new GeneralIndexFormat(words.get(0),12,"Izquierdo",true,false,false,1).getFormatErrors(pageWidth);
-                        reportFormatErrors(comments, words, formatErrors, pageWidth, pageHeight, page);
-                        continue;
                     }
                     if (numberOfPoints == 3) {
                         comments = new GeneralIndexFormat(words.get(0),12,"Izquierdo",true,true,false,2).getFormatErrors(pageWidth);
-                        reportFormatErrors(comments, words, formatErrors, pageWidth, pageHeight, page);
-                        continue;
                     }
                     if (numberOfPoints == 4) {
                         comments = new GeneralIndexFormat(words.get(0),12,"Izquierdo",false,true,false,3).getFormatErrors(pageWidth);
-                        reportFormatErrors(comments, words, formatErrors, pageWidth, pageHeight, page);
                     }
+                    if (arr[0].endsWith(".1.")){
+                        comments = new SameLevelTittle(words.get(0),page,generalIndexPageEnd,arr[0],seeker).getFormatErrors();
+                    }
+                    reportFormatErrors(comments, words, formatErrors, pageWidth, pageHeight, page);
                 }
 
             }
