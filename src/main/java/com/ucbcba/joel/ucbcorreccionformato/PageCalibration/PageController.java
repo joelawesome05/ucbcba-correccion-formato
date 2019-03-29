@@ -13,19 +13,22 @@ import java.util.List;
 @RestController
 public class PageController {
     @RequestMapping("/api/getPages/{fileName:.+}")
-    public List<String> getPages(@PathVariable String fileName)  {
-        List<String> pages = new ArrayList<>();
+    public List<Integer> getPages(@PathVariable String fileName)  {
+        List<Integer> pages = new ArrayList<>();
         String dirPdfFile = "uploads/" + fileName;
         PDDocument pdfdocument = null;
         try {
             pdfdocument = PDDocument.load(new File(dirPdfFile));
             PdfDocument document = new PdfDocument(pdfdocument);
-            pages.add(Integer.toString(document.getCoverPage()));
-            pages.add(Integer.toString(document.getGeneralIndexPageStart()));
-            pages.add(Integer.toString(document.getGeneralIndexPageEnd()));
-            pages.add(Integer.toString(document.getFigureTableIndexPageEnd()));
-            pages.add(Integer.toString(document.getBiographyPageStart()));
-            pages.add(Integer.toString(document.getAnnexedPageStart()));
+            pages.add(document.getCoverPage());
+            pages.add(document.getGeneralIndexPageStart());
+            pages.add(document.getGeneralIndexPageEnd());
+            pages.add(document.getGeneralIndexPageEnd()+1);
+            pages.add(document.getFigureTableIndexPageEnd());
+            pages.add(document.getBiographyPageStart());
+            pages.add(document.getAnnexedPageStart()-1);
+            pages.add(document.getAnnexedPageStart());
+            pages.add(document.getPdfdocument().getNumberOfPages());
             pdfdocument.close();
         } catch (IOException e) {
             e.printStackTrace();

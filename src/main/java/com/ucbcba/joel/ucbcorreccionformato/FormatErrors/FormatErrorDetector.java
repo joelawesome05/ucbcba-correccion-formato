@@ -27,41 +27,35 @@ public class FormatErrorDetector {
         return formatErrorReports;
     }
 
-    public void analyzeFormatPdf(String coverPage, String generalIndexPageStart, String generalIndexPageEnd, String figureTableIndexPageEnd, String biographyPage, String annexedPage) throws IOException {
-        int coverPageI = Integer.parseInt(coverPage);
-        int generalIndexPageStartI = Integer.parseInt(generalIndexPageStart);
-        int generalIndexPageEndI = Integer.parseInt(generalIndexPageEnd);
-        int figureTableIndexPageEndI = Integer.parseInt(figureTableIndexPageEnd);
-        int biographyPageI = Integer.parseInt(biographyPage);
-        int annexedPageI = Integer.parseInt(annexedPage);
+    public void analyzeFormatPdf(Integer coverPage, Integer generalIndexPageStart, Integer generalIndexPageEnd, Integer figureTableIndexPageEnd, Integer biographyPage, Integer annexedPage) throws IOException {
 
         int pageNumerationAnnexes = 1;
         int page = 0;
         for( PDPage pdfPage : pdfdocument.getPages() ) {
             page++;
-            if (page == coverPageI){
+            if (page == coverPage){
                 FormatRule coverPageFormat = new CoverPageFormat(pdfdocument, idHighlights);
                 formatErrorReports.addAll(coverPageFormat.getFormatErrors(page));
                 continue;
             }
 
-            if (page >= generalIndexPageStartI && page <= generalIndexPageEndI){
-                FormatRule generalIndexPageFormat = new GeneralIndexPageFormat(pdfdocument, idHighlights,generalIndexPageEndI);
+            if (page >= generalIndexPageStart && page <= generalIndexPageEnd){
+                FormatRule generalIndexPageFormat = new GeneralIndexPageFormat(pdfdocument, idHighlights,generalIndexPageEnd);
                 formatErrorReports.addAll(generalIndexPageFormat.getFormatErrors(page));
                 continue;
             }
 
-            if (page <= figureTableIndexPageEndI){
+            if (page <= figureTableIndexPageEnd){
                 continue;
             }
 
-            if (page >= biographyPageI && page <= annexedPageI-1 ){
+            if (page >= biographyPage && page <= annexedPage-1 ){
                 FormatRule generalIndexPageFormat = new BiographyPageFormat(pdfdocument, idHighlights);
                 formatErrorReports.addAll(generalIndexPageFormat.getFormatErrors(page));
                 continue;
             }
 
-            if ( page < annexedPageI){
+            if ( page < annexedPage){
                 FormatRule figuresFormat = new FiguresFormat(pdfdocument, idHighlights,pdfPage,figureNumeration);
                 formatErrorReports.addAll(figuresFormat.getFormatErrors(page));
 

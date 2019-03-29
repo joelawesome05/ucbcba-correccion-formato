@@ -20,10 +20,9 @@ public class BasicFormatDetector {
         this.seeker = new GeneralSeeker(pdfdocument);
     }
 
-    public void analyzeBasicFormat(String figureTableIndexPageEnd, String annexedPage) throws IOException {
-        int indexPageEndI = Integer.parseInt(figureTableIndexPageEnd);
-        int annexedPageI = Integer.parseInt(annexedPage);
-        int midlePage = indexPageEndI+annexedPageI;
+    public void analyzeBasicFormat(Integer figureTableIndexPageEnd, Integer annexedPage) throws IOException {
+
+        int midlePage = figureTableIndexPageEnd+annexedPage;
         midlePage = midlePage/2;
         basicFormatReports.addAll(getBasicFormatReport(midlePage));
     }

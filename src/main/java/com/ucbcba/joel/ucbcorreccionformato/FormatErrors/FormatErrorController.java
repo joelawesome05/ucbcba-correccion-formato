@@ -16,10 +16,10 @@ import java.util.List;
 public class FormatErrorController {
 
     @RequestMapping("/api/formatErrors/{fileName:.+}")
-    public List<FormatErrorReport> greeting(@PathVariable String fileName, @RequestParam(value="coverPage") String coverPage
-            , @RequestParam(value="generalIndexPageStart") String generalIndexPageStart, @RequestParam(value="generalIndexPageEnd") String generalIndexPageEnd
-            , @RequestParam(value="figureTableIndexPageEnd") String figureTableIndexPageEnd, @RequestParam(value="biographyPage") String biographyPage
-            , @RequestParam(value="annexedPage") String annexedPage)  {
+    public List<FormatErrorReport> greeting(@PathVariable String fileName, @RequestParam(value="coverPage") Integer coverPage
+            , @RequestParam(value="generalIndexPageStart") Integer generalIndexPageStart, @RequestParam(value="generalIndexPageEnd") Integer generalIndexPageEnd
+            , @RequestParam(value="figureTableIndexPageEnd") Integer figureTableIndexPageEnd, @RequestParam(value="biographyPageStart") Integer biographyPage
+            , @RequestParam(value="annexedPageStart") Integer annexedPage)  {
         List<FormatErrorReport> formatErrors = new ArrayList<>();
         String dirPdfFile = "uploads/" + fileName;
         PDDocument pdfdocument = null;
