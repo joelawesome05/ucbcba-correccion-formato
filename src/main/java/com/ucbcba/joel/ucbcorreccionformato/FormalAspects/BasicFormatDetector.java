@@ -8,7 +8,9 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BasicFormatDetector {
     private PDDocument pdfdocument;
@@ -49,50 +51,101 @@ public class BasicFormatDetector {
         String formatNumeration = "Numeración parte inferior";
         boolean isCorrectNumeration = false;
 
+        String formatLineSpacing = "Espaciado entre lineas 1,5";
+        boolean isCorrectLineSpacing = false;
+
         // Recorre el PDF linea por linea
         PDFTextStripper pdfStripper = new PDFTextStripper();
         pdfStripper.setStartPage(page);
         pdfStripper.setEndPage(page);
         pdfStripper.setParagraphStart("\n");
         pdfStripper.setSortByPosition(true);
-        for (String line : pdfStripper.getText(pdfdocument).split(pdfStripper.getParagraphStart())) {
-            String arr[] = line.split(" ", 2);
-            if (!arr[0].equals("")) {
-                String wordLine = line.trim();
-                // En caso que encuentre la numeración de la página
-                if (wordLine.length() - wordLine.replaceAll(" ", "").length() >= 1) {
-                    List<WordsProperties> words = seeker.findWordsFromAPage(page,wordLine);
-                    // En caso que no se encuentre la linea del PDF la vuelve a buscar normalizandola
+        String[] allLineWordsPage = pdfStripper.getText(pdfdocument).split(pdfStripper.getParagraphStart());
+        List<String> lineWords = getLineWords(allLineWordsPage);
+
+        for (String line : lineWords) {
+            String wordLine = line.trim();
+            // En caso que encuentre la numeración de la página
+            if (wordLine.length() - wordLine.replaceAll(" ", "").length() >= 1) {
+                List<WordsProperties> words = seeker.findWordsFromAPage(page,wordLine);
+                // En caso que no se encuentre la linea del PDF la vuelve a buscar normalizandola
+                if (words.size() == 0) {
+                    wordLine = Normalizer.normalize(wordLine, Normalizer.Form.NFD);
+                    wordLine = wordLine.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+                    words = seeker.findWordsFromAPage(page, wordLine);
                     if (words.size() == 0) {
-                        wordLine = Normalizer.normalize(wordLine, Normalizer.Form.NFD);
-                        wordLine = wordLine.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-                        words = seeker.findWordsFromAPage(page, wordLine);
-                        if (words.size() == 0) {
-                            continue;
-                        }
-                    }
-                    for(WordsProperties word:words){
-                        if (word.getX() < 95 || word.getYPlusHeight() < 80 || word.getXPlusWidth() > 530 || word.getY() > 705){
-                            isCorrectMargin = false;
-                        }
-                        if(!word.getFontBassic().contains("Times") || !word.getFontBassic().contains("New") || !word.getFontBassic().contains("Roman") || word.getFontSizeBasic()!=12){
-                            isCorrectFont = false;
-                        }
+                        continue;
                     }
                 }
-                else {
-                    List<WordsProperties> words = seeker.findWordsFromAPage( page,wordLine);
-                    if (words.size() != 0){
-                        if (words.get(words.size()-1).getY() > 720) {
-                            isCorrectNumeration = true;
-                        }
+                for(WordsProperties word:words){
+                    if (word.getX() < 95 || word.getYPlusHeight() < 80 || word.getXPlusWidth() > 530 || word.getY() > 705){
+                        isCorrectMargin = false;
+                    }
+                    if(!word.getFontBassic().contains("Times") || !word.getFontBassic().contains("New") || !word.getFontBassic().contains("Roman") || word.getFontSizeBasic()!=12){
+                        isCorrectFont = false;
                     }
                 }
             }
+            else {
+                List<WordsProperties> words = seeker.findWordsFromAPage( page,wordLine);
+                if (words.size() != 0){
+                    if (words.get(words.size()-1).getY() > 720) {
+                        isCorrectNumeration = true;
+                    }
+                }
+            }
+
         }
+
+        double maxLineSpacing = 0;
+        Integer maxCount = -1;
+        Map<Double, Integer> lineSpacingCount = new HashMap<>();
+
+        for (int i=1 ; i < lineWords.size() ; i++){
+            String wordLine1 = lineWords.get(i-1).trim();
+            List<WordsProperties> words1 = seeker.findWordsFromAPage(page,wordLine1);
+            // En caso que no se encuentre la linea del PDF la vuelve a buscar normalizandola
+            if (words1.size() == 0) {
+                wordLine1 = Normalizer.normalize(wordLine1, Normalizer.Form.NFD);
+                wordLine1 = wordLine1.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+                words1 = seeker.findWordsFromAPage(page, wordLine1);
+                if (words1.size() == 0) {
+                    continue;
+                }
+            }
+
+            String wordLine2 = lineWords.get(i).trim();
+            List<WordsProperties> words2 = seeker.findWordsFromAPage(page,wordLine2);
+            // En caso que no se encuentre la linea del PDF la vuelve a buscar normalizandola
+            if (words2.size() == 0) {
+                wordLine2 = Normalizer.normalize(wordLine2, Normalizer.Form.NFD);
+                wordLine2 = wordLine2.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+                words2 = seeker.findWordsFromAPage(page, wordLine2);
+                if (words2.size() == 0) {
+                    continue;
+                }
+            }
+
+
+            double currentLineSpacing = Math.ceil(words2.get(0).getY() - words1.get(0).getY());
+
+            if (!lineSpacingCount.containsKey(currentLineSpacing)) { lineSpacingCount.put(currentLineSpacing, 0); }
+            int count = lineSpacingCount.get(currentLineSpacing) + 1;
+            if (count > maxCount) {
+                maxLineSpacing = currentLineSpacing;
+                maxCount = count;
+            }
+            lineSpacingCount.put(currentLineSpacing, count);
+        }
+        if (maxLineSpacing == 21.0){
+            isCorrectLineSpacing = true;
+        }
+
         resp.add(new BasicFormatReport(formatMargin,isCorrectMargin));
         resp.add(new BasicFormatReport(formatFont,isCorrectFont));
+        resp.add(new BasicFormatReport(formatLineSpacing,isCorrectLineSpacing));
         resp.add(new BasicFormatReport(formatNumeration,isCorrectNumeration));
+
 
         return resp;
     }
@@ -103,5 +156,17 @@ public class BasicFormatDetector {
 
     public void setBasicFormatReports(List<BasicFormatReport> basicFormatReports) {
         this.basicFormatReports = basicFormatReports;
+    }
+
+    public List<String> getLineWords(String[] lineWords){
+        List<String> lineWordsClean = new ArrayList<>();
+        for (String line : lineWords) {
+            String arr[] = line.split(" ", 2);
+            if (!arr[0].equals("")) {
+                lineWordsClean.add(line);
+            }
+        }
+
+        return lineWordsClean;
     }
 }
