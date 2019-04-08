@@ -52,12 +52,17 @@ class App extends Component<Props, State> {
 
   constructor(props) {
     super(props);
-    url = "/downloadFile/" + `${encodeURI(this.props.match.params.name)}`;
+    url = "/api/downloadFile/" + `${encodeURI(this.props.match.params.name)}`;
   }
 
   state = {
     highlights: [],
-    basicFormatReport: []
+    basicFormatReport: [],
+    coverformatErrors: [],
+    indexformatErrors: [],
+    numerationformatErrors: [],
+    biographyformatErrors: [],
+    figureformatErrors: []
   };
 
   state: State;
@@ -81,8 +86,24 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     var basicFormatReportJson = await (await fetch(`/api/basicFormat/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ basicFormatReport: basicFormatReportJson });
-    var formatErrors = await (await fetch(`/api/formatErrors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
-    this.setState({ highlights: formatErrors });
+    //var formatErrors = await (await fetch(`/api/formatErrors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    //this.setState({ highlights: formatErrors });
+    var coverformatErrorJson = await (await fetch(`/api/coverpage/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ coverformatErrors: coverformatErrorJson });
+
+    var indexformatErrorJson = await (await fetch(`/api/indexpage/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ indexformatErrors: indexformatErrorJson });
+
+    var numerationErrorJson = await (await fetch(`/api/numeration/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ numerationformatErrors: numerationErrorJson });
+
+    var biographyErrorsJson = await (await fetch(`/api/biography/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ biographyformatErrors: biographyErrorsJson });
+
+    var figureErrorsJson = await (await fetch(`/api/figure/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ figureformatErrors: figureErrorsJson });
+
+    this.setState({ highlights: [...coverformatErrorJson, ...indexformatErrorJson, ...numerationErrorJson, ...biographyErrorsJson, ...figureErrorsJson] });
     window.addEventListener(
       "hashchange",
       this.scrollToHighlightFromHash,
@@ -123,7 +144,9 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    const { highlights, basicFormatReport } = this.state;
+    const { highlights, basicFormatReport, coverformatErrors,
+      indexformatErrors, numerationformatErrors, biographyformatErrors,
+      figureformatErrors } = this.state;
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
@@ -131,6 +154,11 @@ class App extends Component<Props, State> {
           highlights={highlights}
           resetHighlights={this.resetHighlights}
           basicFormatReport={basicFormatReport}
+          coverformatErrors={coverformatErrors}
+          indexformatErrors={indexformatErrors}
+          numerationformatErrors={numerationformatErrors}
+          biographyformatErrors={biographyformatErrors}
+          figureformatErrors={figureformatErrors}
         />
         <div
           style={{

@@ -21,7 +21,7 @@ class PagesForm extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        url = "/downloadFile/" + `${encodeURI(this.props.match.params.name)}`;
+        url = "/api/downloadFile/" + `${encodeURI(this.props.match.params.name)}`;
     }
 
     async componentDidMount() {

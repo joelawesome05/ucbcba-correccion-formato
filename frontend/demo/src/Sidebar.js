@@ -4,21 +4,28 @@ import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
-
+import Section from "./Section";
 import type { T_Highlight } from "../../src/types";
 type T_ManuscriptHighlight = T_Highlight;
 
 type Props = {
   highlights: Array<T_ManuscriptHighlight>,
   basicFormatReport: Array<>,
-  resetHighlights: () => void
+  resetHighlights: () => void,
+  coverformatErrors: Array<T_ManuscriptHighlight>,
+  indexformatErrors: Array<T_ManuscriptHighlight>,
+  numerationformatErrors: Array<T_ManuscriptHighlight>,
+  biographyformatErrors: Array<T_ManuscriptHighlight>,
+  figureformatErrors: Array<T_ManuscriptHighlight>
 };
 
 const updateHash = highlight => {
   location.hash = `highlight-${highlight.id}`;
 };
 
-function Sidebar({ highlights, resetHighlights, basicFormatReport }: Props) {
+function Sidebar({ highlights, resetHighlights, basicFormatReport,
+  coverformatErrors, indexformatErrors, numerationformatErrors,
+  biographyformatErrors, figureformatErrors }: Props) {
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
       <div className="description" style={{ padding: "1rem" }}>
@@ -56,38 +63,36 @@ function Sidebar({ highlights, resetHighlights, basicFormatReport }: Props) {
       </div>
 
       <hr></hr>
-      <h4 style={{ marginBottom: "1rem", padding: "1rem" }} > Lista de errores de formato</h4>
-      <ul className="sidebar__highlights">
-        {highlights.map((highlight, index) => (
-          <li
-            key={index}
-            className="sidebar__highlight"
-            onClick={() => {
-              updateHash(highlight);
-            }}
-          >
-            <div>
-              <p><strong>Por favor verifique: </strong>{highlight.comment.text}</p>
-              {highlight.content.text ? (
-                <blockquote style={{ marginTop: "0.5rem" }}>
-                  {`${highlight.content.text.slice(0, 90).trim()}…`}
-                </blockquote>
-              ) : null}
-              {highlight.content.image ? (
-                <div
-                  className="highlight__image"
-                  style={{ marginTop: "0.5rem" }}
-                >
-                  <img src={highlight.content.image} alt={"Screenshot"} />
-                </div>
-              ) : null}
-            </div>
-            <div className="highlight__location">
-              Página {highlight.position.pageNumber}
-            </div>
-          </li>
-        ))}
-      </ul>
+      <Section
+        section="Carátula"
+        formatErros={coverformatErrors}
+      />
+
+      <hr></hr>
+      <Section
+        section="Índice General"
+        formatErros={indexformatErrors}
+      />
+
+      <hr></hr>
+      <Section
+        section="Paginación"
+        formatErros={numerationformatErrors}
+      />
+
+      <hr></hr>
+      <Section
+        section="Bibliografía"
+        formatErros={biographyformatErrors}
+      />
+
+      <hr></hr>
+      <Section
+        section="Figuras"
+        formatErros={figureformatErrors}
+      />
+
+
     </div>
   );
 }

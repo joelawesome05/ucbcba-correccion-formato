@@ -11,5 +11,10 @@ module.exports = {
     html: {
       template: 'demo/src/index.html'
     }
+  },
+  devServer: {
+    proxy: {
+      '/api': 'http://localhost:8080'
+    }
   }
 };
