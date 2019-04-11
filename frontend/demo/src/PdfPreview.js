@@ -8,7 +8,8 @@ class PdfPreview extends Component {
             urlPdf: this.props.url,
             pageStart: this.props.pageStart,
             pageEnd: this.props.pageEnd,
-            section: this.props.section
+            section: this.props.section,
+            page: this.props.pageStart
         };
     }
 
@@ -26,7 +27,7 @@ class PdfPreview extends Component {
     }
 
     onDocumentComplete = (pages) => {
-        this.setState({ page: this.state.pageStart, totalPages: pages });
+        this.setState({ totalPages: pages });
     }
 
     renderPagination = (currentPage, pageStart, pages) => {

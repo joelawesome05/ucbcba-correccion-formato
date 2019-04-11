@@ -60,9 +60,11 @@ class App extends Component<Props, State> {
     basicFormatReport: [],
     coverformatErrors: [],
     indexformatErrors: [],
+    figuretableindexformatErrors: [],
     numerationformatErrors: [],
     biographyformatErrors: [],
-    figureformatErrors: []
+    figureformatErrors: [],
+    tableformatErrors: []
   };
 
   state: State;
@@ -94,6 +96,9 @@ class App extends Component<Props, State> {
     var indexformatErrorJson = await (await fetch(`/api/indexpage/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ indexformatErrors: indexformatErrorJson });
 
+    var figuretableindexformatErrorsJson = await (await fetch(`/api/figuretableindex/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ figuretableindexformatErrors: figuretableindexformatErrorsJson });
+
     var numerationErrorJson = await (await fetch(`/api/numeration/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ numerationformatErrors: numerationErrorJson });
 
@@ -103,7 +108,13 @@ class App extends Component<Props, State> {
     var figureErrorsJson = await (await fetch(`/api/figure/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ figureformatErrors: figureErrorsJson });
 
-    this.setState({ highlights: [...coverformatErrorJson, ...indexformatErrorJson, ...numerationErrorJson, ...biographyErrorsJson, ...figureErrorsJson] });
+    var tableformatErrorsJson = await (await fetch(`/api/table/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ tableformatErrors: tableformatErrorsJson });
+
+    this.setState({
+      highlights: [...coverformatErrorJson, ...indexformatErrorJson, ...numerationErrorJson,
+      ...biographyErrorsJson, ...figureErrorsJson, ...figuretableindexformatErrorsJson, ...tableformatErrorsJson]
+    });
     window.addEventListener(
       "hashchange",
       this.scrollToHighlightFromHash,
@@ -145,8 +156,8 @@ class App extends Component<Props, State> {
 
   render() {
     const { highlights, basicFormatReport, coverformatErrors,
-      indexformatErrors, numerationformatErrors, biographyformatErrors,
-      figureformatErrors } = this.state;
+      indexformatErrors, figuretableindexformatErrors, numerationformatErrors, biographyformatErrors,
+      figureformatErrors, tableformatErrors } = this.state;
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
@@ -156,9 +167,11 @@ class App extends Component<Props, State> {
           basicFormatReport={basicFormatReport}
           coverformatErrors={coverformatErrors}
           indexformatErrors={indexformatErrors}
+          figuretableindexformatErrors={figuretableindexformatErrors}
           numerationformatErrors={numerationformatErrors}
           biographyformatErrors={biographyformatErrors}
           figureformatErrors={figureformatErrors}
+          tableformatErrors={tableformatErrors}
         />
         <div
           style={{

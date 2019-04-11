@@ -37,8 +37,8 @@ public class FiguresFormat implements FormatRule {
         this.pdfdocument = pdfdocument;
         this.seeker = new GeneralSeeker(pdfdocument);
         this.page = page;
-        this.counter = counter;
-        this.figureNumeration = figureNumeration;
+        this.counter = counter;this.figureNumeration = figureNumeration;
+
     }
 
     @Override

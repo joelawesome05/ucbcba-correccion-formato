@@ -14,9 +14,11 @@ type Props = {
   resetHighlights: () => void,
   coverformatErrors: Array<T_ManuscriptHighlight>,
   indexformatErrors: Array<T_ManuscriptHighlight>,
+  figuretableindexformatErrors: Array<T_ManuscriptHighlight>,
   numerationformatErrors: Array<T_ManuscriptHighlight>,
   biographyformatErrors: Array<T_ManuscriptHighlight>,
-  figureformatErrors: Array<T_ManuscriptHighlight>
+  figureformatErrors: Array<T_ManuscriptHighlight>,
+  tableformatErrors: Array<T_ManuscriptHighlight>
 };
 
 const updateHash = highlight => {
@@ -24,8 +26,8 @@ const updateHash = highlight => {
 };
 
 function Sidebar({ highlights, resetHighlights, basicFormatReport,
-  coverformatErrors, indexformatErrors, numerationformatErrors,
-  biographyformatErrors, figureformatErrors }: Props) {
+  coverformatErrors, indexformatErrors, figuretableindexformatErrors, numerationformatErrors,
+  biographyformatErrors, figureformatErrors, tableformatErrors }: Props) {
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
       <div className="description" style={{ padding: "1rem" }}>
@@ -76,8 +78,26 @@ function Sidebar({ highlights, resetHighlights, basicFormatReport,
 
       <hr></hr>
       <Section
+        section="Índice Tablas y Figuras"
+        formatErros={figuretableindexformatErrors}
+      />
+
+      <hr></hr>
+      <Section
         section="Paginación"
         formatErros={numerationformatErrors}
+      />
+
+      <hr></hr>
+      <Section
+        section="Figuras"
+        formatErros={figureformatErrors}
+      />
+
+      <hr></hr>
+      <Section
+        section="Tablas"
+        formatErros={tableformatErrors}
       />
 
       <hr></hr>
@@ -86,11 +106,7 @@ function Sidebar({ highlights, resetHighlights, basicFormatReport,
         formatErros={biographyformatErrors}
       />
 
-      <hr></hr>
-      <Section
-        section="Figuras"
-        formatErros={figureformatErrors}
-      />
+
 
 
     </div>

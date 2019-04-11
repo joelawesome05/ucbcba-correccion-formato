@@ -72,6 +72,24 @@ public class FormatErrorController {
         return formatErrors;
     }
 
+    @RequestMapping("/api/figuretableindex/errors/{fileName:.+}")
+    public List<FormatErrorReport> getFigureTableIndexFormatErrors(@PathVariable String fileName
+            , @RequestParam(value="generalIndexPageEnd") Integer generalIndexPageEnd
+            , @RequestParam(value="figureTableIndexPageEnd") Integer figureTableIndexPageEnd)  {
+        List<FormatErrorReport> formatErrors = new ArrayList<>();
+        String dirPdfFile = "uploads/" + fileName;
+        PDDocument pdfdocument = null;
+        try {
+            pdfdocument = PDDocument.load(new File(dirPdfFile));
+            FormatErrorDetector formatErrorDetector = new FormatErrorDetector(pdfdocument,idHighlights);
+            formatErrors = formatErrorDetector.getFigureTableIndexFormatErrors(generalIndexPageEnd,figureTableIndexPageEnd);
+            pdfdocument.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return formatErrors;
+    }
+
     @RequestMapping("/api/numeration/errors/{fileName:.+}")
     public List<FormatErrorReport> getPageNumerationFormatErrors(@PathVariable String fileName
             , @RequestParam(value="figureTableIndexPageEnd") Integer figureTableIndexPageEnd
@@ -119,6 +137,24 @@ public class FormatErrorController {
             pdfdocument = PDDocument.load(new File(dirPdfFile));
             FormatErrorDetector formatErrorDetector = new FormatErrorDetector(pdfdocument,idHighlights);
             formatErrors = formatErrorDetector.getFigureFormatErrors(figureTableIndexPageEnd,annexedPage);
+            pdfdocument.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return formatErrors;
+    }
+
+    @RequestMapping("/api/table/errors/{fileName:.+}")
+    public List<FormatErrorReport> getTableFormatErrors(@PathVariable String fileName
+            , @RequestParam(value="figureTableIndexPageEnd") Integer figureTableIndexPageEnd
+            , @RequestParam(value="annexedPageStart") Integer annexedPage)  {
+        List<FormatErrorReport> formatErrors = new ArrayList<>();
+        String dirPdfFile = "uploads/" + fileName;
+        PDDocument pdfdocument = null;
+        try {
+            pdfdocument = PDDocument.load(new File(dirPdfFile));
+            FormatErrorDetector formatErrorDetector = new FormatErrorDetector(pdfdocument,idHighlights);
+            formatErrors = formatErrorDetector.getTableFormatErrors(figureTableIndexPageEnd,annexedPage);
             pdfdocument.close();
         } catch (IOException e) {
             e.printStackTrace();
