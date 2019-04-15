@@ -1,8 +1,10 @@
 package com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatRules;
 
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.Format;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.PageFormat;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.HighlightsReport.FormatErrorReport;
 import com.ucbcba.joel.ucbcorreccionformato.General.GeneralSeeker;
+import com.ucbcba.joel.ucbcorreccionformato.General.GetterWordLines;
 import com.ucbcba.joel.ucbcorreccionformato.General.ReportFormatError;
 import com.ucbcba.joel.ucbcorreccionformato.General.WordsProperties;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -14,38 +16,35 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class PageNumerationFormat implements FormatRule {
     private PDDocument pdfdocument;
-    private GeneralSeeker seeker;
-    private AtomicLong counter;
-    private int pageNumeration;
+    private AtomicLong idHighlights;
+    private int correctPageNumeration;
 
-    public PageNumerationFormat(PDDocument pdfdocument, AtomicLong counter,int pageNumeration) {
+    public PageNumerationFormat(PDDocument pdfdocument, AtomicLong idHighlights,int correctPageNumeration) {
         this.pdfdocument = pdfdocument;
-        this.seeker = new GeneralSeeker(pdfdocument);
-        this.counter = counter;
-        this.pageNumeration = pageNumeration;
+        this.idHighlights = idHighlights;
+        this.correctPageNumeration = correctPageNumeration;
     }
 
     @Override
     public List<FormatErrorReport> getFormatErrors(int page) throws IOException {
+        List<FormatErrorReport> formatErrors = new ArrayList<>();
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
-        List<FormatErrorReport> formatErrors = new ArrayList<>();
 
-        String lastLineWord = seeker.getLastWordsLine(page);
-        if (!lastLineWord.equals("")) {
-            List<WordsProperties> words = seeker.findWordsFromAPage(page, lastLineWord);
-            WordsProperties numberPage = words.get(words.size()-1);
-            if (numberPage.getY() > 720) {
-                List<String> comments = new PageFormat(numberPage,12,"Derecho",false,false,pageNumeration).getFormatErrors(pageWidth);
-                reportFormatErrors(comments, words, formatErrors, pageWidth, pageHeight, page);
-            }
+        GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
+        WordsProperties pageNumerationPage = getterWordLines.getPageNumeration(page);
+
+        if(pageNumerationPage!=null){
+            Format numerationFormat = new PageFormat(pageNumerationPage,12,"Derecho",false,false,correctPageNumeration);
+            List<String> comments = numerationFormat.getFormatErrorComments(pageWidth);
+            reportFormatErrors(comments, pageNumerationPage, formatErrors, pageWidth, pageHeight, page);
         }
         return formatErrors;
     }
 
-    private void reportFormatErrors(List<String> comments, List<WordsProperties> words, List<FormatErrorReport> formatErrors, float pageWidth, float pageHeight, int page) {
+    private void reportFormatErrors(List<String> comments, WordsProperties pageNumerationPage, List<FormatErrorReport> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(counter).reportFormatError(comments, words.get(words.size()-1), pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, pageNumerationPage, pageWidth, pageHeight, page));
         }
     }
 }

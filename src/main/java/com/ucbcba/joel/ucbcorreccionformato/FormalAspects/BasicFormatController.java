@@ -14,15 +14,30 @@ import java.util.List;
 @RestController
 public class BasicFormatController {
     @RequestMapping("/api/basicFormat/{fileName:.+}")
-    public List<BasicFormatReport> getBasicMisstakes(@PathVariable String fileName, @RequestParam(value="figureTableIndexPageEnd") Integer figureTableIndexPageEnd
+    public List<BasicFormatReport> getBasicMisstakes(@PathVariable String fileName
+            , @RequestParam(value="generalIndexPageEnd") Integer generalIndexPageEnd
+            , @RequestParam(value="figureIndexPageEnd") Integer figureIndexPageEnd
+            , @RequestParam(value="tableIndexPageEnd") Integer tableIndexPageEnd
             , @RequestParam(value="annexedPageStart") Integer annexedPage) {
         List<BasicFormatReport> basicFormatReports = new ArrayList<>();
+        int indexPageEnd = 0;
+        if (generalIndexPageEnd > figureIndexPageEnd) {
+            if (generalIndexPageEnd > tableIndexPageEnd) {
+                indexPageEnd = generalIndexPageEnd;
+            } else {
+                indexPageEnd = tableIndexPageEnd;
+            }
+        } else if (figureIndexPageEnd > tableIndexPageEnd) {
+            indexPageEnd = figureIndexPageEnd;
+        } else {
+            indexPageEnd = tableIndexPageEnd;
+        }
         String dirPdfFile = "uploads/"+fileName;
         PDDocument pdfdocument = null;
         try {
             pdfdocument = PDDocument.load( new File(dirPdfFile) );
             BasicFormatDetector formatErrorDetector = new BasicFormatDetector(pdfdocument);
-            formatErrorDetector.analyzeBasicFormat(figureTableIndexPageEnd,annexedPage);
+            formatErrorDetector.analyzeBasicFormat(indexPageEnd,annexedPage);
             basicFormatReports = formatErrorDetector.getBasicFormatReports();
             pdfdocument.close();
         } catch (IOException e) {

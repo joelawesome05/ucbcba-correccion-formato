@@ -1,6 +1,6 @@
 package com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatRules;
 
-import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.FigureNumerationFormat;
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.FigureFormat;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.Format;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.HighlightsReport.*;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.ImagesOnPdf.ImageLocations;
@@ -95,7 +95,7 @@ public class FiguresFormat implements FormatRule {
                 }
                 WordsProperties figureNumerationWord = seeker.findFigureNumeration(image, pageNum);
                 if (figureNumerationWord != null) {
-                    comments = new FigureNumerationFormat(figureNumerationWord, 12, "Centrado", true, false, figureNumeration.get()).getFormatErrors(pageWidth);
+                    comments = new FigureFormat(figureNumerationWord, 12, "Centrado", true, false, figureNumeration.get()).getFormatErrorComments(pageWidth);
                     reportFormatErrors(comments, figureNumerationWord, formatErrors, pageWidth, pageHeight, pageNum);
                 } else {
                     commentsFigure.add("Tenga el título de la numeración = 'Figura " + figureNumeration + "'");
@@ -103,7 +103,7 @@ public class FiguresFormat implements FormatRule {
 
                 WordsProperties figureSource = seeker.findFigureSource(image, pageNum);
                 if (figureSource != null) {
-                    comments = new Format(figureSource, 12, "Centrado", false, false).getFormatErrors(pageWidth);
+                    comments = new Format(figureSource, 12, "Centrado", false, false).getFormatErrorComments(pageWidth);
                     reportFormatErrors(comments, figureSource, formatErrors, pageWidth, pageHeight, pageNum);
                 } else {
                     commentsFigure.add("Tenga la fuente de la figura");

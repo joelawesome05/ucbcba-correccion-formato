@@ -23,12 +23,14 @@ public class PageController {
             pages.add(document.getCoverPage());
             pages.add(document.getGeneralIndexPageStart());
             pages.add(document.getGeneralIndexPageEnd());
-            pages.add(document.getGeneralIndexPageEnd()+1);
-            pages.add(document.getFigureTableIndexPageEnd());
+            pages.add(document.getFigureIndexPageStart());
+            pages.add(document.getFigureIndexPageEnd());
+            pages.add(document.getTableIndexPageStart());
+            pages.add(document.getTableIndexPageEnd());
             pages.add(document.getBiographyPageStart());
-            pages.add(document.getAnnexedPageStart()-1);
+            pages.add(document.getBiographyPageEnd());
             pages.add(document.getAnnexedPageStart());
-            pages.add(document.getPdfdocument().getNumberOfPages());
+            pages.add(document.getAnnexedPageEnd());
             pdfdocument.close();
         } catch (IOException e) {
             e.printStackTrace();

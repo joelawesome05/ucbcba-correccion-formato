@@ -15,22 +15,24 @@ public class GeneralIndexFormat extends Format {
     }
 
     @Override
-    public List<String> getFormatErrors(float pageWidth) {
-        List<String> comments = super.getFormatErrors(pageWidth);
+    public List<String> getFormatErrorComments(float pageWidth) {
+        List<String> comments = super.getFormatErrorComments(pageWidth);
         int indexFirstCharacter = 0;
 
-        while (!Character.isLetter(word.charAt(indexFirstCharacter)) && word.length() > indexFirstCharacter){
-            indexFirstCharacter++;
+        if (word.length() > 0) {
+            while (!Character.isLetter(word.charAt(indexFirstCharacter)) && word.length() > indexFirstCharacter+1) {
+                indexFirstCharacter++;
+            }
         }
 
-        if(indexFirstCharacter != word.length()) {
+        if(indexFirstCharacter+1 < word.length()) {
             if (isAllUpperCase) {
                 if (!Character.isUpperCase(word.charAt(indexFirstCharacter + 1))) {
-                    comments.add("Todo en mayúscula");
+                    comments.add("Todo esté en mayúsculas");
                 }
             } else {
                 if (Character.isUpperCase(word.charAt(indexFirstCharacter + 1))) {
-                    comments.add("No todo en mayúscula");
+                    comments.add("No todo esté en mayúscula");
                 }
             }
         }

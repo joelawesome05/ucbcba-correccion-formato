@@ -22,7 +22,7 @@ public class SameLevelTittle {
         this.seeker = seeker;
     }
 
-    public List<String> getFormatErrors() throws IOException {
+    public List<String> getFormatErrorComments() throws IOException {
         List<String> comments =  new ArrayList<>();
         String nextNumeration = removeLastTwoChars(numeration)+"2.";
         List<WordsProperties> nextNumerationFound = seeker.findWordsFromPages(currentPage,lastIndexPage,nextNumeration);
@@ -31,7 +31,7 @@ public class SameLevelTittle {
                 return comments;
             }
         }
-        comments.add("Considerar agregar un título más del mismo nivel");
+        comments.add("Agregar el título "+nextNumeration+" o eliminar el presente título");
         return comments;
     }
 

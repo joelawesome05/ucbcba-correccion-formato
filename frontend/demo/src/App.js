@@ -60,11 +60,12 @@ class App extends Component<Props, State> {
     basicFormatReport: [],
     coverformatErrors: [],
     indexformatErrors: [],
-    figuretableindexformatErrors: [],
+    figureindexformatErrors: [],
+    tableindexformatErrors: [],
     numerationformatErrors: [],
     biographyformatErrors: [],
     figureformatErrors: [],
-    tableformatErrors: []
+    figuretableformatErrors: []
   };
 
   state: State;
@@ -88,16 +89,18 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     var basicFormatReportJson = await (await fetch(`/api/basicFormat/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ basicFormatReport: basicFormatReportJson });
-    //var formatErrors = await (await fetch(`/api/formatErrors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
-    //this.setState({ highlights: formatErrors });
+
     var coverformatErrorJson = await (await fetch(`/api/coverpage/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ coverformatErrors: coverformatErrorJson });
 
     var indexformatErrorJson = await (await fetch(`/api/indexpage/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ indexformatErrors: indexformatErrorJson });
 
-    var figuretableindexformatErrorsJson = await (await fetch(`/api/figuretableindex/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
-    this.setState({ figuretableindexformatErrors: figuretableindexformatErrorsJson });
+    var figureindexformatErrorsJson = await (await fetch(`/api/figureindex/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ figureindexformatErrors: figureindexformatErrorsJson });
+
+    var tableindexformatErrorsJson = await (await fetch(`/api/tableindex/errors/${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ tableindexformatErrors: tableindexformatErrorsJson });
 
     var numerationErrorJson = await (await fetch(`/api/numeration/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ numerationformatErrors: numerationErrorJson });
@@ -105,15 +108,17 @@ class App extends Component<Props, State> {
     var biographyErrorsJson = await (await fetch(`/api/biography/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ biographyformatErrors: biographyErrorsJson });
 
-    var figureErrorsJson = await (await fetch(`/api/figure/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
-    this.setState({ figureformatErrors: figureErrorsJson });
+    //var figureErrorsJson = await (await fetch(`/api/figure/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    //this.setState({ figureformatErrors: figureErrorsJson });
 
-    var tableformatErrorsJson = await (await fetch(`/api/table/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
-    this.setState({ tableformatErrors: tableformatErrorsJson });
+    var figuretableformatErrorsJson = await (await fetch(`/api/figuretable/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ figuretableformatErrors: figuretableformatErrorsJson });
 
     this.setState({
-      highlights: [...coverformatErrorJson, ...indexformatErrorJson, ...numerationErrorJson,
-      ...biographyErrorsJson, ...figureErrorsJson, ...figuretableindexformatErrorsJson, ...tableformatErrorsJson]
+      highlights: [...this.state.coverformatErrors, ...this.state.indexformatErrors,
+      ...this.state.figureindexformatErrors, ...this.state.tableindexformatErrors,
+      ...this.state.numerationformatErrors, ...this.state.figuretableformatErrors,
+      ...this.state.biographyformatErrors]
     });
     window.addEventListener(
       "hashchange",
@@ -156,8 +161,9 @@ class App extends Component<Props, State> {
 
   render() {
     const { highlights, basicFormatReport, coverformatErrors,
-      indexformatErrors, figuretableindexformatErrors, numerationformatErrors, biographyformatErrors,
-      figureformatErrors, tableformatErrors } = this.state;
+      indexformatErrors, figureindexformatErrors, tableindexformatErrors,
+      numerationformatErrors, biographyformatErrors,
+      figureformatErrors, figuretableformatErrors } = this.state;
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
@@ -167,11 +173,13 @@ class App extends Component<Props, State> {
           basicFormatReport={basicFormatReport}
           coverformatErrors={coverformatErrors}
           indexformatErrors={indexformatErrors}
-          figuretableindexformatErrors={figuretableindexformatErrors}
+          figureindexformatErrors={figureindexformatErrors}
+          tableindexformatErrors={tableindexformatErrors}
           numerationformatErrors={numerationformatErrors}
+          figuretableformatErrors={figuretableformatErrors}
           biographyformatErrors={biographyformatErrors}
           figureformatErrors={figureformatErrors}
-          tableformatErrors={tableformatErrors}
+
         />
         <div
           style={{

@@ -15,16 +15,16 @@ public class CoverFormat  extends  Format{
     }
 
     @Override
-    public List<String> getFormatErrors(float pageWidth){
-        List<String> comments = super.getFormatErrors(pageWidth);;
+    public List<String> getFormatErrorComments(float pageWidth){
+        List<String> comments = super.getFormatErrorComments(pageWidth);;
         if (isAllUpperCase) {
             if (!isAllUpperCase(word.toString())) {
-                comments.add("Todo en mayúscula");
+                comments.add("Todo esté en mayúsculas");
             }
         }
         if (isFirstLetterUpperCase) {
             if (!isFirstLetterUpperCase(word.toString())) {
-                comments.add("Las mayúsculas de las primeras letras");
+                comments.add("Las letras iniciales tenga mayúscula");
             }
         }
 

@@ -8,12 +8,23 @@ import org.apache.pdfbox.text.TextPosition;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.Normalizer;
 
 public class GeneralSeeker {
     private PDDocument pdfdocument;
 
     public GeneralSeeker(PDDocument pdfdocument){
         this.pdfdocument = pdfdocument;
+    }
+
+    public boolean isTheWordInThePageAdvanced(int page, String searchWord) throws IOException {
+        boolean resp = isTheWordInThePage(page,searchWord);
+        if (!resp){
+            String newSearchWord = Normalizer.normalize(searchWord, Normalizer.Form.NFD);
+            newSearchWord = newSearchWord.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+            resp = isTheWordInThePage(page,newSearchWord);
+        }
+        return resp;
     }
 
     public boolean isTheWordInThePage(int page, String searchWord) throws IOException {

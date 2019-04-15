@@ -14,7 +14,7 @@ public class ReportFormatError {
     }
 
     public FormatErrorReport reportFormatError(List<String> comments, WordsProperties word, float pageWidth, float pageHeight, int page){
-        StringBuilder commentStr = new StringBuilder();
+        StringBuilder commentStr = new StringBuilder("Por favor verifique: ");
         for (int i = 0; i < comments.size(); i++) {
             if (i != 0) {
                 commentStr.append(" - ").append(comments.get(i));

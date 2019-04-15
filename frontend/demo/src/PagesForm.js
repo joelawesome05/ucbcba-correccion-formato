@@ -11,8 +11,10 @@ class PagesForm extends Component {
             coverPage: 0,
             generalIndexPageStart: 0,
             generalIndexPageEnd: 0,
-            figureTableIndexPageStart: 0,
-            figureTableIndexPageEnd: 0,
+            figureIndexPageStart: 0,
+            figureIndexPageEnd: 0,
+            tableIndexPageStart: 0,
+            tableIndexPageEnd: 0,
             biographyPageStart: 0,
             biographyPageEnd: 0,
             annexedPageStart: 0,
@@ -30,12 +32,14 @@ class PagesForm extends Component {
             coverPage: pages[0],
             generalIndexPageStart: pages[1],
             generalIndexPageEnd: pages[2],
-            figureTableIndexPageStart: pages[3],
-            figureTableIndexPageEnd: pages[4],
-            biographyPageStart: pages[5],
-            biographyPageEnd: pages[6],
-            annexedPageStart: pages[7],
-            annexedPageEnd: pages[8]
+            figureIndexPageStart: pages[3],
+            figureIndexPageEnd: pages[4],
+            tableIndexPageStart: pages[5],
+            tableIndexPageEnd: pages[6],
+            biographyPageStart: pages[7],
+            biographyPageEnd: pages[8],
+            annexedPageStart: pages[9],
+            annexedPageEnd: pages[10]
         });
         this.setState({ isLoading: false });
     }
@@ -51,9 +55,14 @@ class PagesForm extends Component {
         searchParams.set("coverPage", this.state.coverPage);
         searchParams.set("generalIndexPageStart", this.state.generalIndexPageStart);
         searchParams.set("generalIndexPageEnd", this.state.generalIndexPageEnd);
-        searchParams.set("figureTableIndexPageEnd", this.state.figureTableIndexPageEnd);
+        searchParams.set("figureIndexPageStart", this.state.figureIndexPageStart);
+        searchParams.set("figureIndexPageEnd", this.state.figureIndexPageEnd);
+        searchParams.set("tableIndexPageStart", this.state.tableIndexPageStart);
+        searchParams.set("tableIndexPageEnd", this.state.tableIndexPageEnd);
         searchParams.set("biographyPageStart", this.state.biographyPageStart);
+        searchParams.set("biographyPageEnd", this.state.biographyPageEnd);
         searchParams.set("annexedPageStart", this.state.annexedPageStart);
+        searchParams.set("annexedPageEnd", this.state.annexedPageEnd);
         const parameters = searchParams.toString();
         setTimeout(function () { this.props.history.push(`/verResultados/${encodeURI(this.props.match.params.name)}` + `?${parameters}`) }.bind(this), 2000);
 
@@ -107,21 +116,42 @@ class PagesForm extends Component {
                     <div className="row">
                         <div className="col-sm-4">
                             <label>
-                                Página inicio del índice de tablas y figuras:
+                                Página inicio del índice de figuras:
                              </label>
-                            <input type="number" name="figureTableIndexPageStart" value={this.state.figureTableIndexPageStart} onChange={this.handleChange} />
+                            <input type="number" name="figureIndexPageStart" value={this.state.figureIndexPageStart} onChange={this.handleChange} />
                             <br></br>
 
                             <label>
-                                Página fin del índice de tablas y figuras:
+                                Página fin del índice de figuras:
                             </label>
-                            <input type="number" name="figureTableIndexPageEnd" value={this.state.figureTableIndexPageEnd} onChange={this.handleChange} />
+                            <input type="number" name="figureIndexPageEnd" value={this.state.figureIndexPageEnd} onChange={this.handleChange} />
                         </div>
                         <PdfPreview
                             url={url}
-                            pageStart={this.state.figureTableIndexPageStart}
-                            pageEnd={this.state.figureTableIndexPageEnd}
-                            section="Índice de tablas y figuras"
+                            pageStart={this.state.figureIndexPageStart}
+                            pageEnd={this.state.figureIndexPageEnd}
+                            section="Índice de figuras"
+                        />
+                    </div>
+                    <br></br>
+                    <div className="row">
+                        <div className="col-sm-4">
+                            <label>
+                                Página inicio del índice de tablas:
+                             </label>
+                            <input type="number" name="tableIndexPageStart" value={this.state.tableIndexPageStart} onChange={this.handleChange} />
+                            <br></br>
+
+                            <label>
+                                Página fin del índice de tablas:
+                            </label>
+                            <input type="number" name="tableIndexPageEnd" value={this.state.tableIndexPageEnd} onChange={this.handleChange} />
+                        </div>
+                        <PdfPreview
+                            url={url}
+                            pageStart={this.state.tableIndexPageStart}
+                            pageEnd={this.state.tableIndexPageEnd}
+                            section="Índice de figuras"
                         />
                     </div>
                     <br></br>

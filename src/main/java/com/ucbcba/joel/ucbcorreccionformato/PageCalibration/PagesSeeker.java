@@ -4,7 +4,6 @@ import com.ucbcba.joel.ucbcorreccionformato.General.GeneralSeeker;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
-import java.text.Normalizer;
 
 public class PagesSeeker {
 
@@ -71,12 +70,26 @@ public class PagesSeeker {
         return getNumberOfTrues(bool1,bool2,bool3,bool4)>=1;
     }
 
-    public int getLastGeneralIndexPage(int generalIndexPageStart) throws IOException {
+    public boolean isTheFigureIndexInThisPage(int page) throws IOException {
+        boolean bool1,bool2,bool3,bool4;
+        bool1 = generalSeeker.isTheWordInThePage(page,"Figura");
+        bool2 = generalSeeker.isTheWordInThePage(page,"FIGURA");
+        return getNumberOfTrues(bool1,bool2)>=1;
+    }
+
+    public boolean isTheTableIndexInThisPage(int page) throws IOException {
+        boolean bool3,bool4;
+        bool3 = generalSeeker.isTheWordInThePage(page,"TABLA");
+        bool4 = generalSeeker.isTheWordInThePage(page,"Tabla");
+        return getNumberOfTrues(bool3,bool4)>=1;
+    }
+
+    public int getLastGeneralIndexPage(int generalIndexPageStart,int lastIndexPage) throws IOException {
         int resp = 0;
         if(generalIndexPageStart == 0){
             return resp;
         }
-        for (int page = generalIndexPageStart; page <= pdfdocument.getNumberOfPages(); page++) {
+        for (int page = generalIndexPageStart; page <= lastIndexPage; page++) {
             if ( isTheGeneralIndexInThisPage(page) && !isTheFigureTableIndexInThisPage(page)){
                 resp = page;
             }else{
@@ -86,8 +99,58 @@ public class PagesSeeker {
         return resp;
     }
 
+    public int getFirstFigureIndexPage(int generalIndexPageEnd,int lastIndexPage) throws IOException {
+        int resp = 0;
+        if (generalIndexPageEnd+1 <= pdfdocument.getNumberOfPages()){
+            for (int page = generalIndexPageEnd+1; page <= lastIndexPage; page++) {
+                if ( isTheFigureIndexInThisPage(page) ){
+                    return page;
+                }
+            }
+        }
+        return resp;
+    }
 
-    public int getLastFigureTableIndexPage (int generalIndexPageStart) throws IOException {
+    public int getLastFigureIndexPage(int figureIndexPageStart,int lastIndexPage) throws IOException {
+        int resp = 0;
+        if(figureIndexPageStart == 0){
+            return resp;
+        }
+        for (int page = figureIndexPageStart; page <= lastIndexPage; page++) {
+            if ( isTheFigureIndexInThisPage(page) ){
+                resp = page;
+            }
+        }
+        return resp;
+    }
+
+    public int getFirstTableIndexPage(int generalIndexPageEnd,int lastIndexPage) throws IOException {
+        int resp = 0;
+        if (generalIndexPageEnd+1 <= pdfdocument.getNumberOfPages()){
+            for (int page = generalIndexPageEnd+1; page <= lastIndexPage; page++) {
+                if ( isTheTableIndexInThisPage(page) ){
+                    return page;
+                }
+            }
+        }
+        return resp;
+    }
+
+    public int getLastTableIndexPage(int tableIndexPageStart,int lastIndexPage) throws IOException {
+        int resp = 0;
+        if(tableIndexPageStart == 0){
+            return resp;
+        }
+        for (int page = tableIndexPageStart; page <= lastIndexPage; page++) {
+            if ( isTheTableIndexInThisPage(page) ){
+                resp = page;
+            }
+        }
+        return resp;
+    }
+
+
+    public int getIndexPage(int generalIndexPageStart) throws IOException {
         int resp = 0;
         if(generalIndexPageStart == 0){
             return resp;
@@ -104,15 +167,9 @@ public class PagesSeeker {
 
     public boolean isTheFirsBiographyInThisPage(int page) throws IOException {
         boolean bool1,bool2,bool3,bool4;
-        bool1 = generalSeeker.isTheWordInThePage(page,"BIBLIOGRAFÍA");
-        bool2 = generalSeeker.isTheWordInThePage(page,"Bibliografía");
-        String word = Normalizer.normalize("BIBLIOGRAFÍA", Normalizer.Form.NFD);
-        word = word.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-        bool3 = generalSeeker.isTheWordInThePage(page,word);
-        word = Normalizer.normalize("Bibliografía", Normalizer.Form.NFD);
-        word = word.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-        bool4 = generalSeeker.isTheWordInThePage(page,word);
-        return getNumberOfTrues(bool1,bool2,bool3,bool4) >= 1;
+        bool1 = generalSeeker.isTheWordInThePageAdvanced(page,"BIBLIOGRAFÍA");
+        bool2 = generalSeeker.isTheWordInThePageAdvanced(page,"Bibliografía");
+        return getNumberOfTrues(bool1,bool2) >= 1;
     }
 
     public int getFirstBiographyPage() throws IOException {
@@ -123,6 +180,14 @@ public class PagesSeeker {
             }
         }
         return resp;
+    }
+
+    public int getLastBiographyPage(int biographyPageStart, int annexedPageStart){
+        int resp = pdfdocument.getNumberOfPages()+1;
+        if (biographyPageStart == pdfdocument.getNumberOfPages()+1){
+            return resp;
+        }
+        return annexedPageStart-1;
     }
 
 
@@ -152,6 +217,14 @@ public class PagesSeeker {
             }
         }
         return resp;
+    }
+
+    public int getLastAnnexedPage(int annexedPageStart){
+        int resp = pdfdocument.getNumberOfPages()+1;
+        if (annexedPageStart == resp){
+            return resp;
+        }
+        return resp-1;
     }
 
 

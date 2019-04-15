@@ -25,7 +25,7 @@ public class Format {
         this.isItalic = isItalic;
     }
 
-    public List<String> getFormatErrors(float pageWidth){
+    public List<String> getFormatErrorComments(float pageWidth){
         List<String> comments = new ArrayList<>();
         if (!word.getFont().contains(font[0]) || !word.getFont().contains(font[1]) || !word.getFont().contains(font[2])){
             comments.add("Fuente: "+font[0]+" "+font[1]+" "+font[2]);
@@ -37,7 +37,7 @@ public class Format {
 
         if (isBold) {
             if (!word.getFont().contains("Bold")) {
-                comments.add("Negrilla");
+                comments.add("Tenga Negrilla");
             }
         }else{
             if (word.getFont().contains("Bold")){
@@ -47,7 +47,7 @@ public class Format {
 
         if (isItalic) {
             if (!word.getFont().contains("Italic")) {
-                comments.add("Cursiva");
+                comments.add("Tenga Cursiva");
             }
         }else{
             if (word.getFont().contains("Italic")){
@@ -57,13 +57,13 @@ public class Format {
 
         if(alignment.equals("Centrado")){
             if (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) >= 100){
-                comments.add("Alineado centrado");
+                comments.add("Tenga alineación centrada");
             }
         }
 
         if(alignment.equals("Derecho")){
             if (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) <= 20 || word.getXPlusWidth() < 500){
-                comments.add("Alineado al margen derecho");
+                comments.add("Tenga alineación al margen derecho");
             }
         }
 

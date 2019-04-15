@@ -6,18 +6,18 @@ import java.util.List;
 
 public class TableFormat extends Format {
 
-    private long figureNumeration;
+    private long tableNumeration;
 
-    public TableFormat(WordsProperties word, float fontSize, String alignment, boolean isBold, boolean isItalic, long figureNumeration) {
+    public TableFormat(WordsProperties word, float fontSize, String alignment, boolean isBold, boolean isItalic, long tableNumeration) {
         super(word, fontSize, alignment, isBold, isItalic);
-        this.figureNumeration = figureNumeration;
+        this.tableNumeration = tableNumeration;
     }
 
     @Override
-    public List<String> getFormatErrors(float pageWidth) {
-        List<String> comments =  super.getFormatErrors(pageWidth);
-        if (!word.toString().contains(Long.toString(figureNumeration))){
-            comments.add("Número de tabla debería ser "+ figureNumeration);
+    public List<String> getFormatErrorComments(float pageWidth) {
+        List<String> comments =  super.getFormatErrorComments(pageWidth);
+        if (!word.toString().contains("Tabla "+Long.toString(tableNumeration))){
+            comments.add("Número de tabla debería ser "+ tableNumeration);
         }
         return comments;
     }
