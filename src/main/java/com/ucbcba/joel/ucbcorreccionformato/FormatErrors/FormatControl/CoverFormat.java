@@ -5,11 +5,18 @@ import com.ucbcba.joel.ucbcorreccionformato.General.WordsProperties;
 import java.util.List;
 
 public class CoverFormat  extends  Format{
+
+    private String alignment;
+    private boolean isBold;
+    private boolean isItalic;
     private boolean isAllUpperCase;
     private boolean isFirstLetterUpperCase;
 
     public CoverFormat(WordsProperties word, float fontSize, String alignment, boolean isBold, boolean isItalic, boolean isAllUpperCase,boolean isFirstLetterUpperCase) {
-        super(word, fontSize, alignment, isBold, isItalic);
+        super(word, fontSize);
+        this.alignment = alignment;
+        this.isBold = isBold;
+        this.isItalic = isItalic;
         this.isAllUpperCase = isAllUpperCase;
         this.isFirstLetterUpperCase = isFirstLetterUpperCase;
     }
@@ -17,6 +24,39 @@ public class CoverFormat  extends  Format{
     @Override
     public List<String> getFormatErrorComments(float pageWidth){
         List<String> comments = super.getFormatErrorComments(pageWidth);;
+
+        if (isBold) {
+            if (!word.getFont().contains("Bold")) {
+                comments.add("Tenga Negrilla");
+            }
+        }else{
+            if (word.getFont().contains("Bold")){
+                comments.add("No tenga negrilla");
+            }
+        }
+
+        if (isItalic) {
+            if (!word.getFont().contains("Italic")) {
+                comments.add("Tenga Cursiva");
+            }
+        }else{
+            if (word.getFont().contains("Italic")){
+                comments.add("No tenga cursiva");
+            }
+        }
+
+        if(alignment.equals("Centrado")){
+            if (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) >= 100){
+                comments.add("Tenga alineación centrada");
+            }
+        }
+
+        if(alignment.equals("Derecho")){
+            if (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) <= 20 || word.getXPlusWidth() < 500){
+                comments.add("Tenga alineación al margen derecho");
+            }
+        }
+
         if (isAllUpperCase) {
             if (!isAllUpperCase(word.toString())) {
                 comments.add("Todo esté en mayúsculas");

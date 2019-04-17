@@ -35,7 +35,7 @@ public class PageNumerationFormat implements FormatRule {
         WordsProperties pageNumerationPage = getterWordLines.getPageNumeration(page);
 
         if(pageNumerationPage!=null){
-            Format numerationFormat = new PageFormat(pageNumerationPage,12,"Derecho",false,false,correctPageNumeration);
+            Format numerationFormat = new PageFormat(pageNumerationPage,12,"Derecho",correctPageNumeration);
             List<String> comments = numerationFormat.getFormatErrorComments(pageWidth);
             reportFormatErrors(comments, pageNumerationPage, formatErrors, pageWidth, pageHeight, page);
         }

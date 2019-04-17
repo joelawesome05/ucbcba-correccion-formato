@@ -95,7 +95,7 @@ public class FiguresFormat implements FormatRule {
                 }
                 WordsProperties figureNumerationWord = seeker.findFigureNumeration(image, pageNum);
                 if (figureNumerationWord != null) {
-                    comments = new FigureFormat(figureNumerationWord, 12, "Centrado", true, false, figureNumeration.get()).getFormatErrorComments(pageWidth);
+                    comments = new FigureFormat(figureNumerationWord, 12, "Centrado", true, figureNumeration.get()).getFormatErrorComments(pageWidth);
                     reportFormatErrors(comments, figureNumerationWord, formatErrors, pageWidth, pageHeight, pageNum);
                 } else {
                     commentsFigure.add("Tenga el título de la numeración = 'Figura " + figureNumeration + "'");
@@ -103,7 +103,7 @@ public class FiguresFormat implements FormatRule {
 
                 WordsProperties figureSource = seeker.findFigureSource(image, pageNum);
                 if (figureSource != null) {
-                    comments = new Format(figureSource, 12, "Centrado", false, false).getFormatErrorComments(pageWidth);
+                    comments = new Format(figureSource, 12).getFormatErrorComments(pageWidth);
                     reportFormatErrors(comments, figureSource, formatErrors, pageWidth, pageHeight, pageNum);
                 } else {
                     commentsFigure.add("Tenga la fuente de la figura");

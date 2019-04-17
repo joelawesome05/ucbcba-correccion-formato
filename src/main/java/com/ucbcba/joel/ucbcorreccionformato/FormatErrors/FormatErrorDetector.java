@@ -96,6 +96,17 @@ public class FormatErrorDetector {
         return figureFormatErrors;
     }
 
+    public List<FormatErrorReport> getEnglishWordsFormatErrors(Integer indexPageEnd, Integer annexedPage) throws IOException {
+        List<FormatErrorReport> englishWordsFormatErrors = new ArrayList<>();
+        if (indexPageEnd > 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && annexedPage - 1 <= pdfdocument.getNumberOfPages()) {
+            FormatRule englishWordsFormat = new EnglishWordsFormat(pdfdocument, idHighlights);
+            for (int page=indexPageEnd+1; page < annexedPage; page++){
+                englishWordsFormatErrors.addAll(englishWordsFormat.getFormatErrors(page));
+            }
+        }
+        return englishWordsFormatErrors;
+    }
+
     public List<FormatErrorReport> getBiographyFormatErrors(Integer biographyPage, Integer biographyPageEnd) throws IOException {
         List<FormatErrorReport> biographyFormatErrors = new ArrayList<>();
         if (biographyPage > 0  && biographyPage <= pdfdocument.getNumberOfPages() && biographyPageEnd <= pdfdocument.getNumberOfPages()) {

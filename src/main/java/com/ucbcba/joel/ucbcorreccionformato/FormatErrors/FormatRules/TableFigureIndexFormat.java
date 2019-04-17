@@ -42,7 +42,7 @@ public class TableFigureIndexFormat implements FormatRule {
         if (pageStart == page){
             if (!wordsLines.isEmpty()){
                 List<String> formatErrorscomments = new ArrayList<>();
-                Format titles = new TittleFormat(wordsLines.get(0),12,"Centrado",true,false,"ÍNDICE DE "+indexName);
+                Format titles = new TittleFormat(wordsLines.get(0),12,"Centrado",true,"ÍNDICE DE "+indexName);
                 formatErrorscomments = titles.getFormatErrorComments(pageWidth);
                 reportFormatErrors(formatErrorscomments, wordsLines.get(0), formatErrors, pageWidth, pageHeight, page);
                 lineStart++;
@@ -52,7 +52,7 @@ public class TableFigureIndexFormat implements FormatRule {
         for(int line=lineStart; line<wordsLines.size(); line++){
             List<String> formatErrorscomments = new ArrayList<>();
             WordsProperties currentWordLine = wordsLines.get(line);
-            Format chapterSubTitles = new Format(currentWordLine, 12, "Izquierdo", false, false);
+            Format chapterSubTitles = new Format(currentWordLine, 12);
             formatErrorscomments = chapterSubTitles.getFormatErrorComments(pageWidth);
             reportFormatErrors(formatErrorscomments, wordsLines.get(0), formatErrors, pageWidth, pageHeight, page);
         }

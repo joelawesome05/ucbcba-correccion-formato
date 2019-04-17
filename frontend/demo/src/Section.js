@@ -47,7 +47,7 @@ class Section extends Component {
                                         }}
                                     >
                                         <div>
-                                            <p><strong>Por favor verifique: </strong>{highlight.comment.text}</p>
+                                            <p>{highlight.comment.text}</p>
                                             {highlight.content.text ? (
                                                 <blockquote style={{ marginTop: "0.5rem" }}>
                                                     {`${highlight.content.text.slice(0, 90).trim()}…`}

@@ -47,7 +47,7 @@ public class GeneralIndexPageFormat implements FormatRule {
         if (generalIndexPageStart == page){
             if (!wordsLines.isEmpty()){
                 List<String> formatErrorscomments = new ArrayList<>();
-                Format titles = new TittleFormat(wordsLines.get(0),12,"Centrado",true,false,"ÍNDICE GENERAL");
+                Format titles = new TittleFormat(wordsLines.get(0),12,"Centrado",true,"ÍNDICE GENERAL");
                 formatErrorscomments = titles.getFormatErrorComments(pageWidth);
                 reportFormatErrors(formatErrorscomments, wordsLines.get(0), formatErrors, pageWidth, pageHeight, page);
                 lineStart++;

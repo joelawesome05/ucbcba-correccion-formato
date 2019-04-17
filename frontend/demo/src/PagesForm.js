@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import PDF from 'react-pdf-js';
-import PdfPreview from "./PdfPreview";
+
+import StepCover from "./wizards/StepCover"
+import StepGeneralIndex from "./wizards/StepGeneralIndex"
+import StepFigureIndex from "./wizards/StepFigureIndex"
+import StepTableIndex from "./wizards/StepTableIndex"
+import StepBiography from "./wizards/StepBiography"
+import StepAnnexed from "./wizards/StepAnnexed"
+
+
 
 var url = " ";
 class PagesForm extends Component {
@@ -8,6 +16,7 @@ class PagesForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentStep: 1,
             coverPage: 0,
             generalIndexPageStart: 0,
             generalIndexPageEnd: 0,
@@ -23,6 +32,8 @@ class PagesForm extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.nextStep = this.nextStep.bind(this)
+        this.previousStep = this.previousStep.bind(this)
         url = "/api/downloadFile/" + `${encodeURI(this.props.match.params.name)}`;
     }
 
@@ -65,7 +76,62 @@ class PagesForm extends Component {
         searchParams.set("annexedPageEnd", this.state.annexedPageEnd);
         const parameters = searchParams.toString();
         setTimeout(function () { this.props.history.push(`/verResultados/${encodeURI(this.props.match.params.name)}` + `?${parameters}`) }.bind(this), 2000);
+    }
 
+    nextStep() {
+        let currentStep = this.state.currentStep
+        currentStep = currentStep >= 5 ? 6 : currentStep + 1
+        this.setState({
+            currentStep: currentStep
+        })
+    }
+
+    previousStep() {
+        let currentStep = this.state.currentStep
+        currentStep = currentStep <= 1 ? 1 : currentStep - 1
+        this.setState({
+            currentStep: currentStep
+        })
+    }
+
+    get previousButton() {
+        let currentStep = this.state.currentStep;
+        if (currentStep !== 1) {
+            return (
+                <button
+                    className="btn btn-secondary"
+                    type="button" onClick={this.previousStep}>
+                    Anterior
+                </button>
+            )
+        }
+        return (
+            <button
+                className="btn btn-secondary disabled"
+                type="button" >
+                Anterior
+            </button>
+        );
+    }
+
+    get nextButton() {
+        let currentStep = this.state.currentStep;
+        if (currentStep < 6) {
+            return (
+                <button
+                    className="btn btn-primary"
+                    type="button" onClick={this.nextStep}>
+                    Siguiente
+                </button>
+            )
+        }
+        return (
+            <button
+                className="btn btn-primary disabled"
+                type="button">
+                Siguiente
+            </button>
+        );
     }
 
     render() {
@@ -73,130 +139,69 @@ class PagesForm extends Component {
             return <p style={{ color: "black" }}>Cargando...</p>;
         }
         return (
-            <div style={{ color: "black" }}>
+            <div>
                 <center>
                     <h3> Sistema de ayuda para la detección y corrección de errores de formato en trabajos académicos</h3>
                 </center>
-                <form onSubmit={this.handleSubmit} id="pagesForm" name="pagesForm">
-                    <div className="row">
-                        <div className="col-sm-4">
-                            <label>
-                                Página de la carátula:
-                            </label>
-                            <input type="number" name="coverPage" value={this.state.coverPage} onChange={this.handleChange} />
-                        </div>
-                        <PdfPreview
-                            url={url}
-                            pageStart={this.state.coverPage}
-                            pageEnd={this.state.coverPage}
-                            section="Carátula"
-                        />
-                    </div>
-                    <br></br>
-                    <div className="row">
-                        <div className="col-sm-4">
-                            <label>
-                                Página inicio del índice general:
-                            </label>
-                            <input type="number" name="generalIndexPageStart" value={this.state.generalIndexPageStart} onChange={this.handleChange} />
-                            <br></br>
-                            <label>
-                                Página fin del índice general:
-                            </label>
-                            <input type="number" name="generalIndexPageEnd" value={this.state.generalIndexPageEnd} onChange={this.handleChange} />
-                        </div>
-                        <PdfPreview
-                            url={url}
-                            pageStart={this.state.generalIndexPageStart}
-                            pageEnd={this.state.generalIndexPageEnd}
-                            section="Índice General"
-                        />
-                    </div>
-                    <br></br>
-                    <div className="row">
-                        <div className="col-sm-4">
-                            <label>
-                                Página inicio del índice de figuras:
-                             </label>
-                            <input type="number" name="figureIndexPageStart" value={this.state.figureIndexPageStart} onChange={this.handleChange} />
-                            <br></br>
+                <a href="/">
+                    Volver al Inicio
+                </a>
+                <p>Paso {this.state.currentStep} </p>
 
-                            <label>
-                                Página fin del índice de figuras:
-                            </label>
-                            <input type="number" name="figureIndexPageEnd" value={this.state.figureIndexPageEnd} onChange={this.handleChange} />
-                        </div>
-                        <PdfPreview
-                            url={url}
-                            pageStart={this.state.figureIndexPageStart}
-                            pageEnd={this.state.figureIndexPageEnd}
-                            section="Índice de figuras"
-                        />
-                    </div>
-                    <br></br>
-                    <div className="row">
-                        <div className="col-sm-4">
-                            <label>
-                                Página inicio del índice de tablas:
-                             </label>
-                            <input type="number" name="tableIndexPageStart" value={this.state.tableIndexPageStart} onChange={this.handleChange} />
-                            <br></br>
+                <form onSubmit={this.handleSubmit}>
 
-                            <label>
-                                Página fin del índice de tablas:
-                            </label>
-                            <input type="number" name="tableIndexPageEnd" value={this.state.tableIndexPageEnd} onChange={this.handleChange} />
-                        </div>
-                        <PdfPreview
-                            url={url}
-                            pageStart={this.state.tableIndexPageStart}
-                            pageEnd={this.state.tableIndexPageEnd}
-                            section="Índice de figuras"
-                        />
-                    </div>
-                    <br></br>
-                    <div className="row">
-                        <div className="col-sm-4">
-                            <label>
-                                Página inicio de la bibliografía:
-                            </label>
-                            <input type="number" name="biographyPageStart" value={this.state.biographyPageStart} onChange={this.handleChange} />
-                            <br></br>
-                            <label>
-                                Página fin de la bibliografía:
-                            </label>
-                            <input type="number" name="biographyPageEnd" value={this.state.biographyPageEnd} onChange={this.handleChange} />
-                        </div>
-                        <PdfPreview
-                            url={url}
-                            pageStart={this.state.biographyPageStart}
-                            pageEnd={this.state.biographyPageEnd}
-                            section="Bibliografía"
-                        />
-                    </div>
-                    <br></br>
-                    <div className="row">
-                        <div className="col-sm-4">
-                            <label>
-                                Página inicio de los anexos:
-                            </label>
-                            <input type="number" name="annexedPageStart" value={this.state.annexedPageStart} onChange={this.handleChange} />
-                            <br></br>
-                            <label>
-                                Página fin de los anexos:
-                            </label>
-                            <input type="number" name="annexedPageEnd" value={this.state.annexedPageEnd} onChange={this.handleChange} />
-                        </div>
-                        <PdfPreview
-                            url={url}
-                            pageStart={this.state.annexedPageStart}
-                            pageEnd={this.state.annexedPageEnd}
-                            section="Anexos"
-                        />
-                    </div>
-                    <br></br>
-                    <br></br>
-                    <button type="submit" className="btn btn-success btn-lg btn-block">Enviar</button>
+                    <StepCover
+                        currentStep={this.state.currentStep}
+                        handleChange={this.handleChange}
+                        coverPage={this.state.coverPage}
+                        url={url}
+                    />
+
+                    <StepGeneralIndex
+                        currentStep={this.state.currentStep}
+                        handleChange={this.handleChange}
+                        generalIndexPageStart={this.state.generalIndexPageStart}
+                        generalIndexPageEnd={this.state.generalIndexPageEnd}
+                        url={url}
+                    />
+
+                    <StepFigureIndex
+                        currentStep={this.state.currentStep}
+                        handleChange={this.handleChange}
+                        figureIndexPageStart={this.state.figureIndexPageStart}
+                        figureIndexPageEnd={this.state.figureIndexPageEnd}
+                        url={url}
+                    />
+
+                    <StepTableIndex
+                        currentStep={this.state.currentStep}
+                        handleChange={this.handleChange}
+                        tableIndexPageStart={this.state.tableIndexPageStart}
+                        tableIndexPageEnd={this.state.tableIndexPageEnd}
+                        url={url}
+                    />
+
+                    <StepBiography
+                        currentStep={this.state.currentStep}
+                        handleChange={this.handleChange}
+                        biographyPageStart={this.state.biographyPageStart}
+                        biographyPageEnd={this.state.biographyPageEnd}
+                        url={url}
+                    />
+
+                    <StepAnnexed
+                        currentStep={this.state.currentStep}
+                        handleChange={this.handleChange}
+                        annexedPageStart={this.state.annexedPageStart}
+                        annexedPageEnd={this.state.annexedPageEnd}
+                        url={url}
+                    />
+
+                    <center>
+                        {this.previousButton}
+                        {this.nextButton}
+                    </center>
+
                 </form>
             </div>
         );

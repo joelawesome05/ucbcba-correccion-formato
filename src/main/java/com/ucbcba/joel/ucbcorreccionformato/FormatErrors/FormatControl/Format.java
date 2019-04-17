@@ -10,19 +10,13 @@ public class Format {
     protected WordsProperties word;
     protected String[] font;
     protected float fontSize;
-    protected String alignment;
-    protected boolean isBold;
-    protected boolean isItalic;
 
 
 
-    public Format(WordsProperties word, float fontSize,String alignment, boolean isBold, boolean isItalic) {
+    public Format(WordsProperties word, float fontSize) {
         this.word = word;
         this.font = new String[]{"Times", "New", "Roman"};
         this.fontSize = fontSize;
-        this.alignment = alignment;
-        this.isBold = isBold;
-        this.isItalic = isItalic;
     }
 
     public List<String> getFormatErrorComments(float pageWidth){
@@ -34,39 +28,6 @@ public class Format {
         if (word.getFontSize() != fontSize){
             comments.add("Tamaño de la letra: "+ (int) fontSize +" puntos");
         }
-
-        if (isBold) {
-            if (!word.getFont().contains("Bold")) {
-                comments.add("Tenga Negrilla");
-            }
-        }else{
-            if (word.getFont().contains("Bold")){
-                comments.add("No tenga negrilla");
-            }
-        }
-
-        if (isItalic) {
-            if (!word.getFont().contains("Italic")) {
-                comments.add("Tenga Cursiva");
-            }
-        }else{
-            if (word.getFont().contains("Italic")){
-                comments.add("No tenga cursiva");
-            }
-        }
-
-        if(alignment.equals("Centrado")){
-            if (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) >= 100){
-                comments.add("Tenga alineación centrada");
-            }
-        }
-
-        if(alignment.equals("Derecho")){
-            if (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) <= 20 || word.getXPlusWidth() < 500){
-                comments.add("Tenga alineación al margen derecho");
-            }
-        }
-
         return comments;
     }
 

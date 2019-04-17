@@ -2,6 +2,7 @@ package com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatRules;
 
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.FigureFormat;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.Format;
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.SourceTableTittleFormat;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.TableFormat;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.HighlightsReport.FormatErrorReport;
 import com.ucbcba.joel.ucbcorreccionformato.General.GetterWordLines;
@@ -41,17 +42,17 @@ public class FiguresTablesFormat implements FormatRule {
             String arr[] = wordLine.toString().split(" ", 2);
             String firstWordLine = arr[0];
             if (firstWordLine.contains("Tabla")){
-                Format tableTittle = new TableFormat(wordLine,12,"Centrado",true,false,tableNumeration.get() );
+                Format tableTittle = new TableFormat(wordLine,12,"Centrado",true,tableNumeration.get() );
                 formatErrorscomments = tableTittle.getFormatErrorComments(pageWidth);
                 tableNumeration.incrementAndGet();
             }
             if (firstWordLine.contains("Figura")){
-                Format figureTittle = new FigureFormat(wordLine,12,"Centrado",true,false,figureNumeration.get());
+                Format figureTittle = new FigureFormat(wordLine,12,"Centrado",true, figureNumeration.get());
                 formatErrorscomments = figureTittle.getFormatErrorComments(pageWidth);
                 figureNumeration.incrementAndGet();
             }
             if (firstWordLine.contains("Fuente:")){
-                Format source = new Format(wordLine,12,"Centrado",false,false);
+                Format source = new SourceTableTittleFormat(wordLine,12,"Centrado",false);
                 formatErrorscomments = source.getFormatErrorComments(pageWidth);
             }
             reportFormatErrors(formatErrorscomments, wordLine, formatErrors, pageWidth, pageHeight, page);

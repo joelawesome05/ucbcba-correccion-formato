@@ -63,6 +63,7 @@ class App extends Component<Props, State> {
     figureindexformatErrors: [],
     tableindexformatErrors: [],
     numerationformatErrors: [],
+    englishwordsformatErrors: [],
     biographyformatErrors: [],
     figureformatErrors: [],
     figuretableformatErrors: []
@@ -105,6 +106,9 @@ class App extends Component<Props, State> {
     var numerationErrorJson = await (await fetch(`/api/numeration/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ numerationformatErrors: numerationErrorJson });
 
+    var englishwordsformatErrorsJson = await (await fetch(`/api/englishwords/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
+    this.setState({ englishwordsformatErrors: englishwordsformatErrorsJson });
+
     var biographyErrorsJson = await (await fetch(`/api/biography/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ biographyformatErrors: biographyErrorsJson });
 
@@ -118,7 +122,7 @@ class App extends Component<Props, State> {
       highlights: [...this.state.coverformatErrors, ...this.state.indexformatErrors,
       ...this.state.figureindexformatErrors, ...this.state.tableindexformatErrors,
       ...this.state.numerationformatErrors, ...this.state.figuretableformatErrors,
-      ...this.state.biographyformatErrors]
+      ...this.state.englishwordsformatErrors, ...this.state.biographyformatErrors]
     });
     window.addEventListener(
       "hashchange",
@@ -162,7 +166,7 @@ class App extends Component<Props, State> {
   render() {
     const { highlights, basicFormatReport, coverformatErrors,
       indexformatErrors, figureindexformatErrors, tableindexformatErrors,
-      numerationformatErrors, biographyformatErrors,
+      numerationformatErrors, englishwordsformatErrors, biographyformatErrors,
       figureformatErrors, figuretableformatErrors } = this.state;
 
     return (
@@ -176,6 +180,7 @@ class App extends Component<Props, State> {
           figureindexformatErrors={figureindexformatErrors}
           tableindexformatErrors={tableindexformatErrors}
           numerationformatErrors={numerationformatErrors}
+          englishwordsformatErrors={englishwordsformatErrors}
           figuretableformatErrors={figuretableformatErrors}
           biographyformatErrors={biographyformatErrors}
           figureformatErrors={figureformatErrors}

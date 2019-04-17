@@ -130,6 +130,27 @@ public class FormatErrorController {
         return formatErrors;
     }
 
+    @RequestMapping("/api/englishwords/errors/{fileName:.+}")
+    public List<FormatErrorReport> getEnglishWordsFormatErrors(@PathVariable String fileName
+            , @RequestParam(value="generalIndexPageEnd") Integer generalIndexPageEnd
+            , @RequestParam(value="figureIndexPageEnd") Integer figureIndexPageEnd
+            , @RequestParam(value="tableIndexPageEnd") Integer tableIndexPageEnd
+            , @RequestParam(value="biographyPageStart") Integer biographyPageStart)  {
+        List<FormatErrorReport> formatErrors = new ArrayList<>();
+        int indexPageEnd = getIndexPageEnd(generalIndexPageEnd, figureIndexPageEnd, tableIndexPageEnd);
+        String dirPdfFile = "uploads/" + fileName;
+        PDDocument pdfdocument = null;
+        try {
+            pdfdocument = PDDocument.load(new File(dirPdfFile));
+            FormatErrorDetector formatErrorDetector = new FormatErrorDetector(pdfdocument,idHighlights);
+            formatErrors = formatErrorDetector.getEnglishWordsFormatErrors(indexPageEnd,biographyPageStart);
+            pdfdocument.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return formatErrors;
+    }
+
     @RequestMapping("/api/biography/errors/{fileName:.+}")
     public List<FormatErrorReport> getBiographyFormatErrors(@PathVariable String fileName
             , @RequestParam(value="biographyPageStart") Integer biographyPage

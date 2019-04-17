@@ -5,11 +5,17 @@ import com.ucbcba.joel.ucbcorreccionformato.General.WordsProperties;
 import java.util.List;
 
 public class GeneralIndexFormat extends Format {
+    private String alignment;
+    private boolean isBold;
+    private boolean isItalic;
     private int nroBleeding;
     private boolean isAllUpperCase;
 
     public GeneralIndexFormat(WordsProperties word, float fontSize, String alignment, boolean isBold, boolean isItalic, boolean isAllUpperCase, int nroBleeding) {
-        super(word, fontSize, alignment, isBold, isItalic);
+        super(word, fontSize);
+        this.alignment = alignment;
+        this.isBold = isBold;
+        this.isItalic = isItalic;
         this.nroBleeding = nroBleeding;
         this.isAllUpperCase = isAllUpperCase;
     }
@@ -22,6 +28,26 @@ public class GeneralIndexFormat extends Format {
         if (word.length() > 0) {
             while (!Character.isLetter(word.charAt(indexFirstCharacter)) && word.length() > indexFirstCharacter+1) {
                 indexFirstCharacter++;
+            }
+        }
+
+        if (isBold) {
+            if (!word.getFont().contains("Bold")) {
+                comments.add("Tenga Negrilla");
+            }
+        }else{
+            if (word.getFont().contains("Bold")){
+                comments.add("No tenga negrilla");
+            }
+        }
+
+        if (isItalic) {
+            if (!word.getFont().contains("Italic")) {
+                comments.add("Tenga Cursiva");
+            }
+        }else{
+            if (word.getFont().contains("Italic")){
+                comments.add("No tenga cursiva");
             }
         }
 
