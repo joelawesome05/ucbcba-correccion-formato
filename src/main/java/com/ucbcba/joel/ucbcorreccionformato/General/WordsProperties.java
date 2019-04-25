@@ -86,6 +86,6 @@ public class WordsProperties implements CharSequence{
 
     public float getFontSizeBasic() {
         TextPosition first = textPositions.get((start+end)/2);
-        return Math.round(first.getFontSize());
+        return Math.round(first.getYScale());
     }
 }
