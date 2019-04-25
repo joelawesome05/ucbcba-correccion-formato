@@ -40,7 +40,8 @@ export type T_NewHighlight = {
   comment: {
     text: string,
     emoji: string
-  }
+  },
+  error: boolean
 };
 
 export type T_Highlight = { id: string } & T_NewHighlight;

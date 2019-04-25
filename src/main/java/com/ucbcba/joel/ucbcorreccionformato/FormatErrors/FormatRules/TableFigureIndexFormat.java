@@ -35,15 +35,16 @@ public class TableFigureIndexFormat implements FormatRule {
 
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
-        int lineStart = 0;
 
+        Format title = new TittleFormat(12,"Centrado",pageWidth,true,"ÍNDICE DE "+indexName);
+        Format normalFormat = new Format( 12);
+
+        int lineStart = 0;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
         List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
         if (pageStart == page){
             if (!wordsLines.isEmpty()){
-                List<String> formatErrorscomments = new ArrayList<>();
-                Format titles = new TittleFormat(wordsLines.get(0),12,"Centrado",true,"ÍNDICE DE "+indexName);
-                formatErrorscomments = titles.getFormatErrorComments(pageWidth);
+                List<String> formatErrorscomments = title.getFormatErrorComments(wordsLines.get(0));
                 reportFormatErrors(formatErrorscomments, wordsLines.get(0), formatErrors, pageWidth, pageHeight, page);
                 lineStart++;
             }
@@ -52,9 +53,8 @@ public class TableFigureIndexFormat implements FormatRule {
         for(int line=lineStart; line<wordsLines.size(); line++){
             List<String> formatErrorscomments = new ArrayList<>();
             WordsProperties currentWordLine = wordsLines.get(line);
-            Format chapterSubTitles = new Format(currentWordLine, 12);
-            formatErrorscomments = chapterSubTitles.getFormatErrorComments(pageWidth);
-            reportFormatErrors(formatErrorscomments, wordsLines.get(0), formatErrors, pageWidth, pageHeight, page);
+            formatErrorscomments = normalFormat.getFormatErrorComments(currentWordLine);
+            reportFormatErrors(formatErrorscomments, currentWordLine, formatErrors, pageWidth, pageHeight, page);
         }
         return formatErrors;
     }

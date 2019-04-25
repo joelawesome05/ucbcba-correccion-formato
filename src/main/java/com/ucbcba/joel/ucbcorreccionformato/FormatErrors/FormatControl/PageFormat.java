@@ -6,16 +6,18 @@ import java.util.List;
 
 public class PageFormat extends Format {
     private String alignment;
+    private float pageWidth;
     private int correctPageNumeration;
-    public PageFormat(WordsProperties word, float fontSize, String alignment, int correctPageNumeration) {
-        super(word, fontSize);
+    public PageFormat(float fontSize, String alignment, float pageWidth, int correctPageNumeration) {
+        super(fontSize);
         this.alignment = alignment;
+        this.pageWidth = pageWidth;
         this.correctPageNumeration = correctPageNumeration;
     }
 
     @Override
-    public List<String> getFormatErrorComments(float pageWidth) {
-        List<String> comments =  super.getFormatErrorComments(pageWidth);
+    public List<String> getFormatErrorComments(WordsProperties word) {
+        List<String> comments =  super.getFormatErrorComments(word);
         if(alignment.equals("Derecho")){
             if (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) <= 20 || word.getXPlusWidth() < 500){
                 comments.add("Tenga alineación al margen derecho");

@@ -19,7 +19,6 @@ type Props = {
   numerationformatErrors: Array<T_ManuscriptHighlight>,
   englishwordsformatErrors: Array<T_ManuscriptHighlight>,
   biographyformatErrors: Array<T_ManuscriptHighlight>,
-  figureformatErrors: Array<T_ManuscriptHighlight>,
   figuretableformatErrors: Array<T_ManuscriptHighlight>
 };
 
@@ -30,7 +29,7 @@ const updateHash = highlight => {
 function Sidebar({ highlights, resetHighlights, basicFormatReport,
   coverformatErrors, indexformatErrors, figureindexformatErrors, tableindexformatErrors,
   numerationformatErrors, englishwordsformatErrors,
-  biographyformatErrors, figureformatErrors, figuretableformatErrors }: Props) {
+  biographyformatErrors, figuretableformatErrors }: Props) {
   return (
     <div className="sidebar" style={{ width: "25vw" }}>
       <div className="description" style={{ padding: "1rem" }}>
@@ -107,12 +106,6 @@ function Sidebar({ highlights, resetHighlights, basicFormatReport,
       <Section
         section="Extranjerismo (Inglés)"
         formatErros={englishwordsformatErrors}
-      />
-
-      <hr></hr>
-      <Section
-        section="Figuras"
-        formatErros={figureformatErrors}
       />
 
       <hr></hr>

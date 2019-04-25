@@ -7,16 +7,18 @@ import java.util.List;
 public class SourceTableTittleFormat extends Format {
 
     private String alignment;
+    private float pageWidth;
     private boolean isBold;
-    public SourceTableTittleFormat(WordsProperties word, float fontSize, String alignment, boolean isBold) {
-        super(word, fontSize);
+    public SourceTableTittleFormat(float fontSize, String alignment, float pageWidth, boolean isBold) {
+        super(fontSize);
         this.alignment = alignment;
+        this.pageWidth = pageWidth;
         this.isBold = isBold;
     }
 
     @Override
-    public List<String> getFormatErrorComments(float pageWidth){
-        List<String> comments = super.getFormatErrorComments(pageWidth);
+    public List<String> getFormatErrorComments(WordsProperties word){
+        List<String> comments = super.getFormatErrorComments(word);
 
         if (isBold) {
             if (!word.getFont().contains("Bold")) {

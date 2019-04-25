@@ -93,6 +93,7 @@ public class FormatErrorDetector {
                 figureFormatErrors.addAll(figureTablesFormat.getFormatErrors(page));
             }
         }
+        figureFormatErrors.addAll(getFigureFormatErrors(indexPageEnd,annexedPage));
         return figureFormatErrors;
     }
 
@@ -111,20 +112,20 @@ public class FormatErrorDetector {
         List<FormatErrorReport> biographyFormatErrors = new ArrayList<>();
         if (biographyPage > 0  && biographyPage <= pdfdocument.getNumberOfPages() && biographyPageEnd <= pdfdocument.getNumberOfPages()) {
             for (int page=biographyPage; page <= biographyPageEnd; page++){
-                FormatRule biographyFormat = new BiographyPageFormat(pdfdocument, idHighlights);
+                FormatRule biographyFormat = new BiographyPageFormat(pdfdocument, idHighlights,biographyPage);
                 biographyFormatErrors.addAll(biographyFormat.getFormatErrors(page));
             }
         }
         return biographyFormatErrors;
     }
 
-    public List<FormatErrorReport> getFigureFormatErrors(Integer figureTableIndexPageEnd, Integer annexedPage) throws IOException {
+    public List<FormatErrorReport> getFigureFormatErrors(Integer indexPageEnd, Integer annexedPage) throws IOException {
         List<FormatErrorReport> figureFormatErrors = new ArrayList<>();
         int page = 0;
         for( PDPage pdfPage : pdfdocument.getPages() ) {
             page++;
-            if (page > figureTableIndexPageEnd && page < annexedPage) {
-                FormatRule figuresFormat = new FiguresFormat(pdfdocument, idHighlights, pdfPage, figureNumeration);
+            if (page > indexPageEnd && page < annexedPage) {
+                FormatRule figuresFormat = new FiguresFormat(pdfdocument, idHighlights, pdfPage);
                 figureFormatErrors.addAll(figuresFormat.getFormatErrors(page));
             }
         }

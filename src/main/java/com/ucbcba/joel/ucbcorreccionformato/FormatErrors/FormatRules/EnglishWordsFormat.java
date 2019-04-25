@@ -34,6 +34,8 @@ public class EnglishWordsFormat implements FormatRule {
 
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
+
+        Format englishWordFormat = new EnglishWordFormat(12,true);
         PDFTextStripper stripper = new PDFTextStripper() {
             @Override
             protected void writeString(String string, List<TextPosition> textPositions) throws IOException {
@@ -48,9 +50,7 @@ public class EnglishWordsFormat implements FormatRule {
                             } else if (!word.isEmpty()) {
                                 if(isEnglishWord(word)){
                                     WordsProperties englihWord =new WordsProperties(word);
-                                    List<String> formatErrorscomments = new ArrayList<>();
-                                    Format englishWordFormat = new EnglishWordFormat(englihWord, 12,true);
-                                    formatErrorscomments = englishWordFormat.getFormatErrorComments(pageWidth);
+                                    List<String> formatErrorscomments = englishWordFormat.getFormatErrorComments(englihWord);
                                     reportFormatErrors(formatErrorscomments, englihWord, formatErrors, pageWidth, pageHeight, page);
                                 }
                                 word.clear();
@@ -61,9 +61,7 @@ public class EnglishWordsFormat implements FormatRule {
                 if (!word.isEmpty()) {
                     if(isEnglishWord(word)){
                         WordsProperties englihWord =new WordsProperties(word);
-                        List<String> formatErrorscomments = new ArrayList<>();
-                        Format englishWordFormat = new EnglishWordFormat(englihWord, 12,true);
-                        formatErrorscomments = englishWordFormat.getFormatErrorComments(pageWidth);
+                        List<String> formatErrorscomments = englishWordFormat.getFormatErrorComments(englihWord);
                         reportFormatErrors(formatErrorscomments, englihWord, formatErrors, pageWidth, pageHeight, page);
                     }
                     word.clear();
@@ -81,7 +79,7 @@ public class EnglishWordsFormat implements FormatRule {
 
     private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorReport> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatWarning(comments, words, pageWidth, pageHeight, page));
         }
     }
 

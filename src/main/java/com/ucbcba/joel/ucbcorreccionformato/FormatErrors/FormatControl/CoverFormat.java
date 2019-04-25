@@ -7,14 +7,16 @@ import java.util.List;
 public class CoverFormat  extends  Format{
 
     private String alignment;
+    private float pageWidth;
     private boolean isBold;
     private boolean isItalic;
     private boolean isAllUpperCase;
     private boolean isFirstLetterUpperCase;
 
-    public CoverFormat(WordsProperties word, float fontSize, String alignment, boolean isBold, boolean isItalic, boolean isAllUpperCase,boolean isFirstLetterUpperCase) {
-        super(word, fontSize);
+    public CoverFormat(float fontSize, String alignment,float pageWidth, boolean isBold, boolean isItalic, boolean isAllUpperCase,boolean isFirstLetterUpperCase) {
+        super(fontSize);
         this.alignment = alignment;
+        this.pageWidth = pageWidth;
         this.isBold = isBold;
         this.isItalic = isItalic;
         this.isAllUpperCase = isAllUpperCase;
@@ -22,8 +24,8 @@ public class CoverFormat  extends  Format{
     }
 
     @Override
-    public List<String> getFormatErrorComments(float pageWidth){
-        List<String> comments = super.getFormatErrorComments(pageWidth);;
+    public List<String> getFormatErrorComments(WordsProperties word){
+        List<String> comments = super.getFormatErrorComments(word);;
 
         if (isBold) {
             if (!word.getFont().contains("Bold")) {

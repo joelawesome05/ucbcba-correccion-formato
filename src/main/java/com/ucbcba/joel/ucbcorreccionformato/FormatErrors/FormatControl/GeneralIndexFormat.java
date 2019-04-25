@@ -6,14 +6,16 @@ import java.util.List;
 
 public class GeneralIndexFormat extends Format {
     private String alignment;
+    private float pageWidth;
     private boolean isBold;
     private boolean isItalic;
     private int nroBleeding;
     private boolean isAllUpperCase;
 
-    public GeneralIndexFormat(WordsProperties word, float fontSize, String alignment, boolean isBold, boolean isItalic, boolean isAllUpperCase, int nroBleeding) {
-        super(word, fontSize);
+    public GeneralIndexFormat(float fontSize, String alignment, float pageWidth, boolean isBold, boolean isItalic, boolean isAllUpperCase, int nroBleeding) {
+        super(fontSize);
         this.alignment = alignment;
+        this.pageWidth = pageWidth;
         this.isBold = isBold;
         this.isItalic = isItalic;
         this.nroBleeding = nroBleeding;
@@ -21,8 +23,8 @@ public class GeneralIndexFormat extends Format {
     }
 
     @Override
-    public List<String> getFormatErrorComments(float pageWidth) {
-        List<String> comments = super.getFormatErrorComments(pageWidth);
+    public List<String> getFormatErrorComments(WordsProperties word) {
+        List<String> comments = super.getFormatErrorComments(word);
         int indexFirstCharacter = 0;
 
         if (word.length() > 0) {

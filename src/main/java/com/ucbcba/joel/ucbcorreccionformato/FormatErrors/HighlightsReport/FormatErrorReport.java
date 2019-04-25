@@ -5,12 +5,14 @@ public class FormatErrorReport {
     private Position position;
     private Comment comment;
     private String id;
+    private boolean error;
 
-    public FormatErrorReport(Content content, Position position, Comment comment, String id) {
+    public FormatErrorReport(Content content, Position position, Comment comment, String id, boolean error) {
         this.content = content;
         this.position = position;
         this.comment = comment;
         this.id = id;
+        this.error = error;
     }
 
 
@@ -40,5 +42,13 @@ public class FormatErrorReport {
 
     public void setComment(Comment comment) {
         this.comment = comment;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
     }
 }

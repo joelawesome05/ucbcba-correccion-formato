@@ -20,6 +20,21 @@ public class BasicFormatController {
             , @RequestParam(value="tableIndexPageEnd") Integer tableIndexPageEnd
             , @RequestParam(value="annexedPageStart") Integer annexedPage) {
         List<BasicFormatReport> basicFormatReports = new ArrayList<>();
+        int indexPageEnd = getIndexPageEnd(generalIndexPageEnd, figureIndexPageEnd, tableIndexPageEnd);
+        String dirPdfFile = "uploads/"+fileName;
+        PDDocument pdfdocument = null;
+        try {
+            pdfdocument = PDDocument.load( new File(dirPdfFile) );
+            BasicFormatDetector formatErrorDetector = new BasicFormatDetector(pdfdocument);
+            basicFormatReports = formatErrorDetector.getBasicFormatReport(indexPageEnd,annexedPage);
+            pdfdocument.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return basicFormatReports;
+    }
+
+    private int getIndexPageEnd(Integer generalIndexPageEnd, Integer figureIndexPageEnd, Integer tableIndexPageEnd) {
         int indexPageEnd = 0;
         if (generalIndexPageEnd > figureIndexPageEnd) {
             if (generalIndexPageEnd > tableIndexPageEnd) {
@@ -32,17 +47,6 @@ public class BasicFormatController {
         } else {
             indexPageEnd = tableIndexPageEnd;
         }
-        String dirPdfFile = "uploads/"+fileName;
-        PDDocument pdfdocument = null;
-        try {
-            pdfdocument = PDDocument.load( new File(dirPdfFile) );
-            BasicFormatDetector formatErrorDetector = new BasicFormatDetector(pdfdocument);
-            formatErrorDetector.analyzeBasicFormat(indexPageEnd,annexedPage);
-            basicFormatReports = formatErrorDetector.getBasicFormatReports();
-            pdfdocument.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return basicFormatReports;
+        return indexPageEnd;
     }
 }

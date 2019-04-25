@@ -28,15 +28,17 @@ public class PageNumerationFormat implements FormatRule {
     @Override
     public List<FormatErrorReport> getFormatErrors(int page) throws IOException {
         List<FormatErrorReport> formatErrors = new ArrayList<>();
+
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
+
+        Format numerationFormat = new PageFormat(12,"Derecho",pageWidth,correctPageNumeration);
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
         WordsProperties pageNumerationPage = getterWordLines.getPageNumeration(page);
 
         if(pageNumerationPage!=null){
-            Format numerationFormat = new PageFormat(pageNumerationPage,12,"Derecho",correctPageNumeration);
-            List<String> comments = numerationFormat.getFormatErrorComments(pageWidth);
+            List<String> comments = numerationFormat.getFormatErrorComments(pageNumerationPage);
             reportFormatErrors(comments, pageNumerationPage, formatErrors, pageWidth, pageHeight, page);
         }
         return formatErrors;

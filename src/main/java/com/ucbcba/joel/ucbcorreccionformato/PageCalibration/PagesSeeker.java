@@ -37,7 +37,8 @@ public class PagesSeeker {
 
     public int getCoverPage() throws IOException {
         int resp = 0;
-        for (int page = 1; page <= pdfdocument.getNumberOfPages(); page++) {
+        int page=1;
+        if( page <= pdfdocument.getNumberOfPages()) {
             if ( isTheCoverInThisPage(page) ){
                 return page;
             }
@@ -47,12 +48,12 @@ public class PagesSeeker {
 
 
     public boolean isTheGeneralIndexInThisPage(int page) throws IOException {
-        return generalSeeker.isTheWordInThePage(page,"..........");
+        return generalSeeker.isTheWordInThePage(page,".....");
     }
 
     public int getFirstGeneralIndexPage() throws IOException {
         int resp = 0;
-        for (int page = 1; page <= pdfdocument.getNumberOfPages(); page++) {
+        for(int page=1;page<=pdfdocument.getNumberOfPages();page++){
             if ( isTheGeneralIndexInThisPage(page) ){
                 return page;
             }

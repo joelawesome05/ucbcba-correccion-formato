@@ -31,8 +31,11 @@ public class FiguresTablesFormat implements FormatRule {
     @Override
     public List<FormatErrorReport> getFormatErrors(int page) throws IOException {
         List<FormatErrorReport> formatErrors = new ArrayList<>();
+
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
+
+        Format source = new SourceTableTittleFormat(12,"Centrado",pageWidth,false);
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
         List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
@@ -42,18 +45,17 @@ public class FiguresTablesFormat implements FormatRule {
             String arr[] = wordLine.toString().split(" ", 2);
             String firstWordLine = arr[0];
             if (firstWordLine.contains("Tabla")){
-                Format tableTittle = new TableFormat(wordLine,12,"Centrado",true,tableNumeration.get() );
-                formatErrorscomments = tableTittle.getFormatErrorComments(pageWidth);
+                Format tableTittle = new TableFormat(12,"Centrado",pageWidth,true,tableNumeration.get());
+                formatErrorscomments = tableTittle.getFormatErrorComments(wordLine);
                 tableNumeration.incrementAndGet();
             }
             if (firstWordLine.contains("Figura")){
-                Format figureTittle = new FigureFormat(wordLine,12,"Centrado",true, figureNumeration.get());
-                formatErrorscomments = figureTittle.getFormatErrorComments(pageWidth);
+                Format figureTittle = new FigureFormat(12,"Centrado",pageWidth,true, figureNumeration.get());
+                formatErrorscomments = figureTittle.getFormatErrorComments(wordLine);
                 figureNumeration.incrementAndGet();
             }
             if (firstWordLine.contains("Fuente:")){
-                Format source = new SourceTableTittleFormat(wordLine,12,"Centrado",false);
-                formatErrorscomments = source.getFormatErrorComments(pageWidth);
+                formatErrorscomments = source.getFormatErrorComments(wordLine);
             }
             reportFormatErrors(formatErrorscomments, wordLine, formatErrors, pageWidth, pageHeight, page);
         }

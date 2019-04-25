@@ -65,7 +65,6 @@ class App extends Component<Props, State> {
     numerationformatErrors: [],
     englishwordsformatErrors: [],
     biographyformatErrors: [],
-    figureformatErrors: [],
     figuretableformatErrors: []
   };
 
@@ -111,9 +110,6 @@ class App extends Component<Props, State> {
 
     var biographyErrorsJson = await (await fetch(`/api/biography/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ biographyformatErrors: biographyErrorsJson });
-
-    //var figureErrorsJson = await (await fetch(`/api/figure/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
-    //this.setState({ figureformatErrors: figureErrorsJson });
 
     var figuretableformatErrorsJson = await (await fetch(`/api/figuretable/errors//${encodeURI(this.props.match.params.name)}` + `${(this.props.location.search)}`)).json();
     this.setState({ figuretableformatErrors: figuretableformatErrorsJson });
@@ -167,7 +163,7 @@ class App extends Component<Props, State> {
     const { highlights, basicFormatReport, coverformatErrors,
       indexformatErrors, figureindexformatErrors, tableindexformatErrors,
       numerationformatErrors, englishwordsformatErrors, biographyformatErrors,
-      figureformatErrors, figuretableformatErrors } = this.state;
+      figuretableformatErrors } = this.state;
 
     return (
       <div className="App" style={{ display: "flex", height: "100vh" }}>
@@ -183,7 +179,6 @@ class App extends Component<Props, State> {
           englishwordsformatErrors={englishwordsformatErrors}
           figuretableformatErrors={figuretableformatErrors}
           biographyformatErrors={biographyformatErrors}
-          figureformatErrors={figureformatErrors}
 
         />
         <div

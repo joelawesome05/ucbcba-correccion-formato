@@ -1,14 +1,15 @@
 package com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatRules;
 
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.Bibliographies.PatternBibliographyReferences;
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.Format;
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.TittleFormat;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.HighlightsReport.*;
-import com.ucbcba.joel.ucbcorreccionformato.General.GeneralSeeker;
+import com.ucbcba.joel.ucbcorreccionformato.General.GetterWordLines;
+import com.ucbcba.joel.ucbcorreccionformato.General.ReportFormatError;
 import com.ucbcba.joel.ucbcorreccionformato.General.WordsProperties;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.IOException;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,116 +19,73 @@ import java.util.regex.Pattern;
 public class BiographyPageFormat implements  FormatRule {
 
     private PDDocument pdfdocument;
-    private GeneralSeeker seeker;
-    private AtomicLong counter;
+    private AtomicLong idHighlights;
+    private int biographyPageStart;
 
-    public BiographyPageFormat(PDDocument pdfdocument, AtomicLong counter){
+    public BiographyPageFormat(PDDocument pdfdocument, AtomicLong idHighlights,int biographyPageStart){
         this.pdfdocument = pdfdocument;
-        this.seeker = new GeneralSeeker(pdfdocument);
-        this.counter = counter;
+        this.idHighlights = idHighlights;
+        this.biographyPageStart = biographyPageStart;
     }
+
     @Override
     public List<FormatErrorReport> getFormatErrors(int page) throws IOException {
+        List<FormatErrorReport> formatErrors = new ArrayList<>();
+
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
-        List<FormatErrorReport> formatErrors = new ArrayList<>();
-        PDFTextStripper pdfStripper = new PDFTextStripper();
-        pdfStripper.setStartPage(page);
-        pdfStripper.setEndPage(page);
-        pdfStripper.setParagraphStart("\n");
-        pdfStripper.setSortByPosition(true);
-        List<String> ref_bibliografy = new ArrayList<>();
-        boolean end=false;
-        //Recorre la página linea por linea
-        for (String line : pdfStripper.getText(pdfdocument).split(pdfStripper.getParagraphStart())) {
-            String arr[] = line.split(" ", 2);
-            // Condicional si encuentra una linea en blanco
-            if (!arr[0].equals("")) {
-                String wordLine = line.trim();
-                if (!wordLine.contains("BIBLIOGRAFÍA") && !wordLine.contains("Bibliografía") && !wordLine.contains("BIBLIOGRAFÍA")) {
-                    //Condicional paara evitar el control en la paginación
-                    if ((wordLine.length() - wordLine.replaceAll(" ", "").length() >= 1) || wordLine.length() > 4) {
-                        if (wordLine.charAt(0) == '[') {
-                            StringBuilder bibliographic = new StringBuilder();
-                            for (String lines : ref_bibliografy) {
-                                bibliographic.append(lines).append(" ");
-                            }
-                            if(bibliographic.length()!=0){
-                                List<String> comments = new ArrayList<>();
-                                PatternBibliographyReferences pattern = getPattern(bibliographic.toString());
-                                if (pattern!=null) {
-                                    Matcher matcher = pattern.getMatcher(bibliographic.toString());
-                                    if (!matcher.find()) {
-                                        comments.add("La referencia en "+pattern.getName()+".");
-                                    }
-                                }else{
-                                    comments.add("Consultar la Guía para la presentación de trabajos académicos.");
-                                }
-                                reportFormatErrors(comments, ref_bibliografy, formatErrors, pageWidth, pageHeight, page);
-                            }
-                            ref_bibliografy = new ArrayList<>();
-                            ref_bibliografy.add(wordLine);
-                        } else {
-                            ref_bibliografy.add(wordLine);
-                        }
-                    }
+
+        Format biographyTitle = new TittleFormat(12,"Izquierdo",pageWidth,true,"BIBLIOGRAFÍA");
+
+
+        GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
+        List<List<WordsProperties>> biography =   getterWordLines.getBiographyLines(page);
+        if (biographyPageStart == page){
+            if (!biography.isEmpty()){
+                if(!biography.get(0).isEmpty()) {
+                    List<String> formatErrorscomments = biographyTitle.getFormatErrorComments(biography.get(0).get(0));
+                    reportFormatErrors(formatErrorscomments, biography.get(0).get(0), formatErrors, pageWidth, pageHeight, page);
+                    biography.remove(0);
                 }
             }
         }
-        StringBuilder bibliographic = new StringBuilder();
-        for (String lines : ref_bibliografy) {
-            bibliographic.append(lines).append(" ");
-        }
-        if(bibliographic.length()!=0){
-            List<String> comments = new ArrayList<>();
-            PatternBibliographyReferences pattern = getPattern(bibliographic.toString());
+
+        for(List<WordsProperties> bibliographyElement:biography){
+            List<String> formatErrorscomments = new ArrayList<>();
+            String bibliographyElementString = getString(bibliographyElement);
+            PatternBibliographyReferences pattern = getPattern(bibliographyElementString);
             if (pattern!=null) {
-                Matcher matcher = pattern.getMatcher(bibliographic.toString());
+                Matcher matcher = pattern.getMatcher(bibliographyElementString);
                 if (!matcher.find()) {
-                    comments.add("La referencia en "+pattern.getName()+".");
+                    formatErrorscomments.add("Revisar la guía de referencias en "+pattern.getName());
                 }
             }else{
-                comments.add("Consultar la Guía para la presentación de trabajos académicos.");
+                formatErrorscomments.add("La referencia siga las normas de presentación según la Guía");
             }
-            reportFormatErrors(comments, ref_bibliografy, formatErrors, pageWidth, pageHeight, page);
+            reportFormatErrors(formatErrorscomments, bibliographyElement, formatErrors, pageWidth, pageHeight, page);
         }
+
+
         return formatErrors;
     }
 
-    private void reportFormatErrors(List<String> comments, List<String> ref_bibliografy, List<FormatErrorReport> formatErrors, float pageWidth, float pageHeight, int page) throws IOException {
+    private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorReport> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            List<BoundingRect> boundingRects = new ArrayList<>();
-            String contentText = "";
-            float x = 0,y=0,endX=0,upperY=0;
-            for (int i = 0;i<ref_bibliografy.size();i++){
-                String lineWord = ref_bibliografy.get(i);
-                List<WordsProperties> lineWordWithProperties = seeker.findWordsFromAPage(page,lineWord);
-                if (lineWordWithProperties.size() == 0) {
-                    lineWord = Normalizer.normalize(lineWord, Normalizer.Form.NFD);
-                    lineWord = lineWord.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-                    lineWordWithProperties = seeker.findWordsFromAPage(page, lineWord);
-                }
-                if (lineWordWithProperties.size()!=0){
-                    WordsProperties word = lineWordWithProperties.get(0);
-                    BoundingRect boundingRect = new BoundingRect(word.getX(), word.getYPlusHeight(), word.getXPlusWidth(),word.getY(),pageWidth,pageHeight);
-                    boundingRects.add(boundingRect);
-                    if (i==0){
-                        x = word.getX();
-                        upperY = word.getYPlusHeight();
-                        contentText = lineWord;
-                    }
-                    if (i==ref_bibliografy.size()-1){
-                        endX = word.getXPlusWidth();
-                        y = word.getY();
-                    }
-                }
-            }
-            BoundingRect mainBoundingRect = new BoundingRect(x, upperY, endX,y,pageWidth,pageHeight);
-            Position position = new Position(mainBoundingRect,boundingRects,page);
-            Content content = new Content(contentText);
-            Comment comment = new Comment(comments.get(0),"");
-            String id = String.valueOf(counter.incrementAndGet());
-            formatErrors.add(new FormatErrorReport(content,position,comment,id));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page));
+        }
+    }
+
+    private String getString(List<WordsProperties> bibliography){
+        StringBuilder bibliographyString = new StringBuilder();
+        for(WordsProperties line:bibliography){
+            bibliographyString.append(line.toString());
+        }
+        return bibliographyString.toString();
+    }
+
+    private void reportFormatErrors(List<String> comments, List<WordsProperties> ref_bibliografy, List<FormatErrorReport> formatErrors, float pageWidth, float pageHeight, int page) throws IOException {
+        if (comments.size() != 0) {
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, ref_bibliografy, pageWidth, pageHeight, page));
         }
     }
 

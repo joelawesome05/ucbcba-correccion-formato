@@ -6,16 +6,16 @@ import java.util.List;
 
 public class EnglishWordFormat extends Format {
 
-    private boolean isItalic;;
+    private boolean isItalic;
 
-    public EnglishWordFormat(WordsProperties word, float fontSize, boolean isItalic) {
-        super(word, fontSize);
+    public EnglishWordFormat( float fontSize, boolean isItalic) {
+        super(fontSize);
         this.isItalic = isItalic;
     }
 
     @Override
-    public List<String> getFormatErrorComments(float pageWidth){
-        List<String> comments = super.getFormatErrorComments(pageWidth);
+    public List<String> getFormatErrorComments(WordsProperties word){
+        List<String> comments = super.getFormatErrorComments(word);
 
         if (isItalic) {
             if (!word.getFontBassic().contains("Italic")) {

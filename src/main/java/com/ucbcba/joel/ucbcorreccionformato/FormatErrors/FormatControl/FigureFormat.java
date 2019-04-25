@@ -7,19 +7,21 @@ import java.util.List;
 public class FigureFormat extends Format {
 
     private String alignment;
+    private float pageWidth;
     private boolean isBold;
     private long figureNumeration;
 
-    public FigureFormat(WordsProperties word, float fontSize, String alignment, boolean isBold, long figureNumeration) {
-        super(word, fontSize);
+    public FigureFormat(float fontSize, String alignment, float pageWidth, boolean isBold, long figureNumeration) {
+        super(fontSize);
         this.alignment = alignment;
+        this.pageWidth = pageWidth;
         this.isBold = isBold;
         this.figureNumeration = figureNumeration;
     }
 
     @Override
-    public List<String> getFormatErrorComments(float pageWidth) {
-        List<String> comments =  super.getFormatErrorComments(pageWidth);
+    public List<String> getFormatErrorComments(WordsProperties word) {
+        List<String> comments =  super.getFormatErrorComments(word);
         if (isBold) {
             if (!word.getFont().contains("Bold")) {
                 comments.add("Tenga Negrilla");

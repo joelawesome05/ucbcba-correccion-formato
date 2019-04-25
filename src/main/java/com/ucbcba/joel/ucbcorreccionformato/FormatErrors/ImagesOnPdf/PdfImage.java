@@ -8,12 +8,20 @@ public class PdfImage {
     private Matrix matrix;
     private Integer page;
     private float pageHeight;
+    private float x;
+    private float y;
+    private float endX;
+    private float endY;
 
     public PdfImage(PDImageXObject pdImageXObject,Matrix matrix,Integer page,float pageHeight){
         this.pdImageXObject = pdImageXObject;
         this.matrix = matrix;
         this.page = page;
         this.pageHeight = pageHeight;
+        this.x = matrix.getTranslateX();
+        this.y = pageHeight - (matrix.getTranslateY() + matrix.getScalingFactorY());
+        this.endX = this.x +  matrix.getScalingFactorX();
+        this.endY =  pageHeight - matrix.getTranslateY();
     }
 
     public int getPage(){
@@ -21,27 +29,35 @@ public class PdfImage {
     }
 
     public float getX(){
-        return matrix.getTranslateX();
+        return x;
     }
 
     public float getY(){
-        return pageHeight - (matrix.getTranslateY() + getHeightDisplayed());
+        return y;
     }
 
     public float getEndX(){
-        return getX() + getWidthDisplayed();
+        return endX;
     }
 
     public float getEndY(){
-        return pageHeight - matrix.getTranslateY();
+        return endY;
     }
 
-    public int getWidth(){
-        return pdImageXObject.getWidth();
+    public void setX(float x) {
+        this.x = x;
     }
 
-    public int getHeight(){
-        return pdImageXObject.getHeight();
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setEndX(float endX) {
+        this.endX = endX;
+    }
+
+    public void setEndY(float endY) {
+        this.endY = endY;
     }
 
     public float getWidthDisplayed(){
@@ -55,4 +71,28 @@ public class PdfImage {
     public float getYInverse(){ return matrix.getTranslateY();}
 
     public float getYInverseFirst(){ return matrix.getTranslateY()+ getHeightDisplayed();}
+
+    public boolean isFigureHorizontal(){
+        if(matrix.getShearX() == 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean doesFigureRotateToTheRight(){
+        if(matrix.getShearY() < 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public float getShearX(){
+        return matrix.getShearX();
+    }
+
+    public float getTranslateY(){
+        return matrix.getTranslateY();
+    }
 }

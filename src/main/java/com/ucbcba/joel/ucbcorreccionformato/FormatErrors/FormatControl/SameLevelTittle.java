@@ -8,23 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SameLevelTittle {
-    private WordsProperties word;
     private int currentPage;
     private int lastIndexPage;
-    private String numeration;
+
     private GeneralSeeker seeker;
 
-    public SameLevelTittle(WordsProperties word, int currentPage, int lastIndexPage, String numeration, GeneralSeeker seeker) {
-        this.word = word;
+    public SameLevelTittle(int currentPage, int lastIndexPage, GeneralSeeker seeker) {
         this.currentPage = currentPage;
         this.lastIndexPage = lastIndexPage;
-        this.numeration = numeration;
         this.seeker = seeker;
     }
 
-    public List<String> getFormatErrorComments() throws IOException {
+    public List<String> getFormatErrorComments(WordsProperties word, String currentNumeration) throws IOException {
         List<String> comments =  new ArrayList<>();
-        String nextNumeration = removeLastTwoChars(numeration)+"2.";
+        String nextNumeration = removeLastTwoChars(currentNumeration)+"2.";
         List<WordsProperties> nextNumerationFound = seeker.findWordsFromPages(currentPage,lastIndexPage,nextNumeration);
         for(WordsProperties numeration : nextNumerationFound){
             if (numeration.getX() == word.getX()){

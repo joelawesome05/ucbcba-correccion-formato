@@ -65,7 +65,7 @@ public class WordsProperties implements CharSequence{
     }
 
     public float getYPlusHeight() {
-        return textPositions.get(start).getYDirAdj() - textPositions.get(start).getFontSizeInPt();
+        return textPositions.get(start).getYDirAdj() - textPositions.get(start).getYScale();
     }
 
 
@@ -76,7 +76,7 @@ public class WordsProperties implements CharSequence{
 
     public float getFontSize() {
         TextPosition first = textPositions.get(start);
-        return Math.round(first.getFontSize());
+        return Math.round(first.getYScale());
     }
 
     public String getFontBassic() {

@@ -31,6 +31,15 @@ public class CoverPageFormat implements FormatRule {
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
 
+        Format nameOfTheInstitution =  new CoverFormat(18, "Centrado", pageWidth,true, false, true,false);
+        Format regionalAcademicUnit = new CoverFormat( 16, "Centrado", pageWidth,true, false, true,false);
+        Format DepartmentAndCareer = new CoverFormat(14, "Centrado",pageWidth, true, false, false,true);
+        Format titleOfTheWork = new CoverFormat(16, "Centrado", pageWidth,true, false, false,false);
+        Format typeOfTheWork = new CoverFormat( 12, "Derecho", pageWidth,false, true, false,true);
+        Format authorName = new CoverFormat(14, "Centrado", pageWidth,true, false, false,true);
+        Format cityCountryAndYear = new CoverFormat(12, "Centrado", pageWidth, false, false, false, false);
+
+
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
         List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
         int totalLines = wordsLines.size()-1;
@@ -40,36 +49,29 @@ public class CoverPageFormat implements FormatRule {
             List<String> formatErrorscomments = new ArrayList<>();
             WordsProperties currentWordLine = wordsLines.get(line);
             if (line == 0) {
-                Format nameOfTheInstitution =  new CoverFormat(currentWordLine, 18, "Centrado", true, false, true,false);
-                formatErrorscomments = nameOfTheInstitution.getFormatErrorComments(pageWidth);
+                formatErrorscomments = nameOfTheInstitution.getFormatErrorComments(currentWordLine);
             }
             if (line == 1) {
-                Format regionalAcademicUnit = new CoverFormat(currentWordLine, 16, "Centrado", true, false, true,false);
-                formatErrorscomments = regionalAcademicUnit.getFormatErrorComments(pageWidth);
+                formatErrorscomments = regionalAcademicUnit.getFormatErrorComments(currentWordLine);
             }
             if (line == 2 || line == 3) {
-                Format DepartmentAndCareer = new CoverFormat(currentWordLine, 14, "Centrado", true, false, false,true);
-                formatErrorscomments = DepartmentAndCareer.getFormatErrorComments(pageWidth);
+                formatErrorscomments = DepartmentAndCareer.getFormatErrorComments(currentWordLine);
             }
 
             if (line >= 4 && line < lineTypeOfWork) {
-                Format titleOfTheWork = new CoverFormat(currentWordLine, 16, "Centrado", true, false, false,false);
-                formatErrorscomments = titleOfTheWork.getFormatErrorComments(pageWidth);
+                formatErrorscomments = titleOfTheWork.getFormatErrorComments(currentWordLine);
             }
 
             if (line == lineTypeOfWork) {
-                Format typeOfTheWork = new CoverFormat(currentWordLine, 12, "Derecho", false, true, false,true);
-                formatErrorscomments = typeOfTheWork.getFormatErrorComments(pageWidth);
+                formatErrorscomments = typeOfTheWork.getFormatErrorComments(currentWordLine);
             }
 
             if (line > lineTypeOfWork && line <= totalLines - 2) {
-                Format authorName = new CoverFormat(currentWordLine, 14, "Centrado", true, false, false,true);
-                formatErrorscomments = authorName.getFormatErrorComments(pageWidth);
+                formatErrorscomments = authorName.getFormatErrorComments(currentWordLine);
             }
 
             if (line == totalLines || line == totalLines - 1) {
-                Format cityCountryAndYear = new CoverFormat(currentWordLine, 12, "Centrado", false, false, false, false);
-                formatErrorscomments = cityCountryAndYear.getFormatErrorComments(pageWidth);
+                formatErrorscomments = cityCountryAndYear.getFormatErrorComments(currentWordLine);
             }
             reportFormatErrors(formatErrorscomments, currentWordLine, formatErrors, pageWidth, pageHeight, page);
         }

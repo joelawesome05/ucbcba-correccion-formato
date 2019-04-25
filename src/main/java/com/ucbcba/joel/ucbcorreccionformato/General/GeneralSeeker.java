@@ -1,5 +1,8 @@
 package com.ucbcba.joel.ucbcorreccionformato.General;
 
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.FigureFormat;
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.Format;
+import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.FormatControl.TableFormat;
 import com.ucbcba.joel.ucbcorreccionformato.FormatErrors.ImagesOnPdf.PdfImage;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -73,43 +76,18 @@ public class GeneralSeeker {
         return listWordPositionSequences;
     }
 
-    public String getLastWordsLine(int page) throws IOException {
-        String resp = "";
-        PDFTextStripper pdfStripper = new PDFTextStripper();
-        pdfStripper.setStartPage(page);
-        pdfStripper.setEndPage(page);
-        pdfStripper.setParagraphStart("\n");
-        pdfStripper.setSortByPosition(true);
-        for (String line: pdfStripper.getText(pdfdocument).split(pdfStripper.getParagraphStart()))
-        {
-            String arr[] = line.split(" ", 2);
-            if (!arr[0].equals("")) {
-                resp = line.trim();
-            }
 
-        }
-        return resp;
-    }
+    public boolean hasTittleTheFigure(PdfImage image, int pageNum) throws IOException {
+        boolean resp = false;
+        GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
+        List<WordsProperties> wordsLines = getterWordLines.getWordLines(pageNum);
 
-    public WordsProperties findFigureNumeration(PdfImage image, int pageNum) throws IOException {
-        WordsProperties resp = null;
-        PDFTextStripper pdfStripper = new PDFTextStripper();
-        pdfStripper.setStartPage(pageNum);
-        pdfStripper.setEndPage(pageNum);
-        pdfStripper.setParagraphStart("\n");
-        pdfStripper.setSortByPosition(true);
-
-        for (String line : pdfStripper.getText(pdfdocument).split(pdfStripper.getParagraphStart())) {
-            String arr[] = line.split(" ", 2);
-            if (!arr[0].equals("")) {
-                String wordLine = line.trim();
-                if (arr[0].contains("Figura")) {
-                    List<WordsProperties> words = findWordsFromAPage(pageNum, wordLine);
-                    for (WordsProperties word : words) {
-                        if ((image.getY() > word.getY()) && (image.getY() - 150 < word.getY())) {
-                            resp = word;
-                        }
-                    }
+        for(WordsProperties wordLine:wordsLines){
+            String arr[] = wordLine.toString().split(" ", 2);
+            String firstWordLine = arr[0];
+            if (firstWordLine.contains("Figura")){
+                if ((image.getEndY() > wordLine.getY()) && (image.getEndY() - image.getHeightDisplayed() - 200 < wordLine.getY())) {
+                    return true;
                 }
             }
         }
