@@ -21,16 +21,16 @@ public class PageController {
             pdfdocument = PDDocument.load(new File(dirPdfFile));
             PdfDocument document = new PdfDocument(pdfdocument);
             pages.add(document.getCoverPage());
-            pages.add(document.getGeneralIndexPageStart());
-            pages.add(document.getGeneralIndexPageEnd());
-            pages.add(document.getFigureIndexPageStart());
-            pages.add(document.getFigureIndexPageEnd());
-            pages.add(document.getTableIndexPageStart());
-            pages.add(document.getTableIndexPageEnd());
-            pages.add(document.getBiographyPageStart());
-            pages.add(document.getBiographyPageEnd());
-            pages.add(document.getAnnexedPageStart());
-            pages.add(document.getAnnexedPageEnd());
+            pages.add(document.getGeneralIndexStartPage());
+            pages.add(document.getGeneralIndexEndPage());
+            pages.add(document.getFigureIndexStartPage());
+            pages.add(document.getFigureIndexEndPage());
+            pages.add(document.getTableIndexStartPage());
+            pages.add(document.getTableIndexEndPage());
+            pages.add(document.getBibliographyStartPage());
+            pages.add(document.getBibliographyEndPage());
+            pages.add(document.getAnnexesStartPage());
+            pages.add(document.getAnnexesEndPage());
             pdfdocument.close();
         } catch (IOException e) {
             e.printStackTrace();

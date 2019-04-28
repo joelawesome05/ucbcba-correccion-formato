@@ -7,33 +7,33 @@ import java.io.IOException;
 public class PdfDocument {
     private PDDocument pdfdocument;
     private int coverPage;
-    private int generalIndexPageStart;
-    private int generalIndexPageEnd;
-    private int figureIndexPageStart;
-    private int figureIndexPageEnd;
-    private int tableIndexPageStart;
-    private int tableIndexPageEnd;
+    private int generalIndexStartPage;
+    private int generalIndexEndPage;
+    private int figureIndexStartPage;
+    private int figureIndexEndPage;
+    private int tableIndexStartPage;
+    private int tableIndexEndPage;
     private int figureTableIndexPageEnd;
-    private int biographyPageStart;
-    private int biographyPageEnd;
-    private int annexedPageStart;
-    private int annexedPageEnd;
+    private int bibliographyStartPage;
+    private int bibliographyEndPage;
+    private int annexesStartPage;
+    private int annexesEndPage;
 
     public PdfDocument(PDDocument pdfdocument) throws IOException {
         this.pdfdocument = pdfdocument;
-        PagesSeeker seeker = new PagesSeeker(pdfdocument);
-        this.coverPage = seeker.getCoverPage();
-        this.generalIndexPageStart = seeker.getFirstGeneralIndexPage();
-        int lastIndexPage = seeker.getIndexPage(generalIndexPageStart);
-        this.generalIndexPageEnd = seeker.getLastGeneralIndexPage(generalIndexPageStart,lastIndexPage);
-        this.figureIndexPageStart = seeker.getFirstFigureIndexPage(generalIndexPageEnd,lastIndexPage);
-        this.figureIndexPageEnd = seeker.getLastFigureIndexPage(figureIndexPageStart,lastIndexPage);
-        this.tableIndexPageStart = seeker.getFirstTableIndexPage(generalIndexPageEnd,lastIndexPage);
-        this.tableIndexPageEnd = seeker.getLastTableIndexPage(tableIndexPageStart,lastIndexPage);
-        this.biographyPageStart = seeker.getFirstBiographyPage();
-        this.annexedPageStart = seeker.getFirstAnnexedPage();
-        this.biographyPageEnd = seeker.getLastBiographyPage(biographyPageStart,annexedPageStart);
-        this.annexedPageEnd = seeker.getLastAnnexedPage(annexedPageStart);
+        PagesFinder pagesFinder = new PagesFinder(pdfdocument);
+        this.coverPage = pagesFinder.getCoverPage();
+        this.generalIndexStartPage = pagesFinder.getGeneralIndexStartPage();
+        int lastIndexPage = pagesFinder.getLastIndexPage(generalIndexStartPage);
+        this.generalIndexEndPage = pagesFinder.getGeneralIndexEndPage(generalIndexStartPage,lastIndexPage);
+        this.figureIndexStartPage = pagesFinder.getFigureIndexStartPage(generalIndexEndPage,lastIndexPage);
+        this.figureIndexEndPage = pagesFinder.getFigureIndexEndPage(figureIndexStartPage,lastIndexPage);
+        this.tableIndexStartPage = pagesFinder.getTableIndexStartPage(generalIndexEndPage,lastIndexPage);
+        this.tableIndexEndPage = pagesFinder.getTableIndexEndPage(tableIndexStartPage,lastIndexPage);
+        this.bibliographyStartPage = pagesFinder.getBibliographyStartPage();
+        this.annexesStartPage = pagesFinder.getAnnexesStartPage();
+        this.bibliographyEndPage = pagesFinder.getBibliographyEndPage(bibliographyStartPage, annexesStartPage);
+        this.annexesEndPage = pagesFinder.getAnnexesEndPage(annexesStartPage);
     }
 
     public int getCoverPage() {
@@ -44,40 +44,40 @@ public class PdfDocument {
         this.coverPage = coverPage;
     }
 
-    public int getGeneralIndexPageStart() {
-        return generalIndexPageStart;
+    public int getGeneralIndexStartPage() {
+        return generalIndexStartPage;
     }
 
-    public void setGeneralIndexPageStart(int generalIndexPageStart) {
-        this.generalIndexPageStart = generalIndexPageStart;
+    public void setGeneralIndexStartPage(int generalIndexStartPage) {
+        this.generalIndexStartPage = generalIndexStartPage;
     }
 
-    public int getGeneralIndexPageEnd() {
-        return generalIndexPageEnd;
+    public int getGeneralIndexEndPage() {
+        return generalIndexEndPage;
     }
 
-    public void setGeneralIndexPageEnd(int generalIndexPageEnd) {
-        this.generalIndexPageEnd = generalIndexPageEnd;
+    public void setGeneralIndexEndPage(int generalIndexEndPage) {
+        this.generalIndexEndPage = generalIndexEndPage;
     }
 
-    public int getAnnexedPageStart() {
-        return annexedPageStart;
+    public int getAnnexesStartPage() {
+        return annexesStartPage;
     }
 
-    public void setAnnexedPageStart(int annexedPageStart) {
-        this.annexedPageStart = annexedPageStart;
+    public void setAnnexesStartPage(int annexesStartPage) {
+        this.annexesStartPage = annexesStartPage;
     }
 
     public PDDocument getPdfdocument() {
         return pdfdocument;
     }
 
-    public int getBiographyPageStart() {
-        return biographyPageStart;
+    public int getBibliographyStartPage() {
+        return bibliographyStartPage;
     }
 
-    public void setBiographyPageStart(int biographyPageStart) {
-        this.biographyPageStart = biographyPageStart;
+    public void setBibliographyStartPage(int bibliographyStartPage) {
+        this.bibliographyStartPage = bibliographyStartPage;
     }
 
     public int getFigureTableIndexPageEnd() {
@@ -88,27 +88,27 @@ public class PdfDocument {
         this.figureTableIndexPageEnd = figureTableIndexPageEnd;
     }
 
-    public int getFigureIndexPageStart() {
-        return figureIndexPageStart;
+    public int getFigureIndexStartPage() {
+        return figureIndexStartPage;
     }
 
-    public int getFigureIndexPageEnd() {
-        return figureIndexPageEnd;
+    public int getFigureIndexEndPage() {
+        return figureIndexEndPage;
     }
 
-    public int getTableIndexPageStart() {
-        return tableIndexPageStart;
+    public int getTableIndexStartPage() {
+        return tableIndexStartPage;
     }
 
-    public int getTableIndexPageEnd() {
-        return tableIndexPageEnd;
+    public int getTableIndexEndPage() {
+        return tableIndexEndPage;
     }
 
-    public int getBiographyPageEnd() {
-        return biographyPageEnd;
+    public int getBibliographyEndPage() {
+        return bibliographyEndPage;
     }
 
-    public int getAnnexedPageEnd() {
-        return annexedPageEnd;
+    public int getAnnexesEndPage() {
+        return annexesEndPage;
     }
 }
