@@ -57,10 +57,10 @@ public class BibliographyPageFormat implements  FormatRule {
             if (pattern!=null) {
                 Matcher matcher = pattern.getMatcher(bibliographyElementString);
                 if (!matcher.find()) {
-                    formatErrorscomments.add("Revisar la guía de referencias en "+pattern.getName());
+                    formatErrorscomments.add("Por favor revisar la guía de referencias bibliográficas en "+pattern.getName());
                 }
             }else{
-                formatErrorscomments.add("La referencia siga las normas de presentación según la Guía");
+                formatErrorscomments.add("Por favor revisar que la referencias siga las normas de presentación según la Guía");
             }
             reportFormatErrors(formatErrorscomments, bibliographyElement, formatErrors, pageWidth, pageHeight, page);
         }

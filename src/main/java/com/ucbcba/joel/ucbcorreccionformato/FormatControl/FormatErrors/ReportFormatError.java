@@ -31,7 +31,7 @@ public class ReportFormatError {
     }
 
     public FormatErrorResponse reportFormatWarning(List<String> comments, WordsProperties word, float pageWidth, float pageHeight, int page,String type){
-        StringBuilder commentStr = new StringBuilder("Por favor comprobar si debería: ");
+        StringBuilder commentStr = new StringBuilder("Por favor verifique si debería: ");
         for (int i = 0; i < comments.size(); i++) {
             if (i != 0) {
                 commentStr.append(" - ").append(comments.get(i));
@@ -46,7 +46,7 @@ public class ReportFormatError {
     }
 
     public FormatErrorResponse reportFormatError(List<String> comments, List<WordsProperties> word, float pageWidth, float pageHeight, int page,String type){
-        StringBuilder commentStr = new StringBuilder("Por favor verficar: ");
+        StringBuilder commentStr = new StringBuilder();
         for (int i = 0; i < comments.size(); i++) {
             if (i != 0) {
                 commentStr.append(" - ").append(comments.get(i));

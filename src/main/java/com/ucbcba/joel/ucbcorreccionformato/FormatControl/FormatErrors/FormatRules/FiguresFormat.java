@@ -48,7 +48,7 @@ public class FiguresFormat implements FormatRule {
             List<String> commentsFigureError = new ArrayList<>();
             List<String> commentsFigureWarnings = new ArrayList<>();
             if (!image.isFigureHorizontal()) {
-                commentsFigureError.add("Figura en sentido vertical. Por favor oriente de forma orientación la presente hoja");
+                commentsFigureError.add("Figura en sentido vertical. La presente hoja debe tener orientación horizontal");
                 if(image.doesFigureRotateToTheRight()){
                     image.setY(image.getEndY());
                     image.setEndX(image.getX()+image.getHeightDisplayed());
