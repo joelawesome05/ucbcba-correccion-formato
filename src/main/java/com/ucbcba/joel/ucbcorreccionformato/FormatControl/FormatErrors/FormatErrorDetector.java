@@ -68,15 +68,15 @@ public class FormatErrorDetector {
     }
 
 
-    public List<FormatErrorResponse> getPageNumerationFormatErrors(Integer indexPageEnd, Integer annexedPage) throws IOException {
+    public List<FormatErrorResponse> getPageNumerationFormatErrors(Integer indexPageEnd, Integer annexesStartPage, Integer annexesEndPage) throws IOException {
         List<FormatErrorResponse> pageNumerationFormatErrors = new ArrayList<>();
-        if (indexPageEnd > 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && annexedPage - 1 <= pdfdocument.getNumberOfPages()) {
-            for (int page=indexPageEnd+1; page < annexedPage; page++){
+        if (indexPageEnd > 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && annexesStartPage <= pdfdocument.getNumberOfPages() && annexesEndPage <= pdfdocument.getNumberOfPages()) {
+            for (int page=indexPageEnd+1; page < annexesStartPage; page++){
                 FormatRule pageNumerationFormat = new PageNumerationFormat(pdfdocument, idHighlights,page);
                 pageNumerationFormatErrors.addAll(pageNumerationFormat.getFormatErrors(page));
             }
             int pageNumerationAnnexes = 1;
-            for (int page=annexedPage; page <= pdfdocument.getNumberOfPages(); page++){
+            for (int page=annexesStartPage; page <= annexesEndPage; page++){
                 FormatRule pageNumerationFormat = new PageNumerationFormat(pdfdocument, idHighlights,pageNumerationAnnexes);
                 pageNumerationFormatErrors.addAll(pageNumerationFormat.getFormatErrors(page));
                 pageNumerationAnnexes++;
@@ -85,15 +85,15 @@ public class FormatErrorDetector {
         return pageNumerationFormatErrors;
     }
 
-    public List<FormatErrorResponse> getFigureTableFormatErrors(Integer indexPageEnd, Integer annexedPage) throws IOException {
+    public List<FormatErrorResponse> getFigureTableFormatErrors(Integer indexPageEnd, Integer bibliographyStartPage) throws IOException {
         List<FormatErrorResponse> figureFormatErrors = new ArrayList<>();
-        if (indexPageEnd > 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && annexedPage - 1 <= pdfdocument.getNumberOfPages()) {
-            FormatRule figureTablesFormat = new FiguresTablesFormat(pdfdocument, idHighlights, tableNumeration,figureNumeration);
-            for (int page=indexPageEnd+1; page < annexedPage; page++){
+        if (indexPageEnd > 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && bibliographyStartPage <= pdfdocument.getNumberOfPages()) {
+            FormatRule figureTablesFormat = new FiguresTablesFormat(pdfdocument, idHighlights, tableNumeration,figureNumeration,bibliographyStartPage);
+            for (int page=indexPageEnd+1; page < bibliographyStartPage; page++){
                 figureFormatErrors.addAll(figureTablesFormat.getFormatErrors(page));
             }
+            figureFormatErrors.addAll(getFigureFormatErrors(indexPageEnd,bibliographyStartPage));
         }
-        figureFormatErrors.addAll(getFigureFormatErrors(indexPageEnd,annexedPage));
         return figureFormatErrors;
     }
 

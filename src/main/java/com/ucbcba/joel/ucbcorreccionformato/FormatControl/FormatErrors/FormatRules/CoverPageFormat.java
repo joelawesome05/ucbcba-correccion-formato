@@ -41,7 +41,7 @@ public class CoverPageFormat implements FormatRule {
 
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
+        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutAnyNumeration(page);
         int totalLines = wordsLines.size()-1;
         int lineTypeOfWork = getLineTypeOfWork(wordsLines,totalLines-3);
 
@@ -75,6 +75,13 @@ public class CoverPageFormat implements FormatRule {
             }
             reportFormatErrors(formatErrorscomments, currentWordLine, formatErrors, pageWidth, pageHeight, page);
         }
+
+        WordsProperties numeration = getterWordLines.getIndexCoverPageNumeration(page);
+        if(numeration!=null){
+            List<String> formatErrorscomments = new ArrayList<>();
+            formatErrorscomments.add("Esta sección no tenga numeración");
+            reportFormatErrors(formatErrorscomments, numeration, formatErrors, pageWidth, pageHeight, page);
+        }
         return formatErrors;
     }
 
@@ -90,7 +97,7 @@ public class CoverPageFormat implements FormatRule {
 
     private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page,"caratula"));
         }
     }
 }

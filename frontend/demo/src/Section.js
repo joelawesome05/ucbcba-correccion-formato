@@ -4,6 +4,7 @@ import { faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 class Section extends Component {
     constructor(props) {
@@ -55,6 +56,7 @@ class Section extends Component {
                     <div className="highlight__location">
                         Página {highlight.position.pageNumber}
                     </div>
+                    <p className="resolve" onClick={this.props.removeHighlight.bind(this, index)}>resolver</p>
                 </li>)
             } else {
                 warnings.push(<li
@@ -86,6 +88,8 @@ class Section extends Component {
                     <div className="highlight__location">
                         Página {highlight.position.pageNumber}
                     </div>
+                    <p className="resolve" onClick={this.props.removeHighlight.bind(this, index)}>resolver</p>
+
                 </li>)
             }
 
@@ -93,50 +97,54 @@ class Section extends Component {
 
         return (
             <div>
-                <h4 style={{ marginBottom: "1rem", padding: "1rem" }} > {section}
-                    <button onClick={() => this.setState({ showing: !showing })}>
-                        {showing ?
-                            <FontAwesomeIcon icon={faAngleUp} />
-                            :
-                            <FontAwesomeIcon icon={faAngleDown} />
-                        }
-                    </button>
-                </h4>
-
-                {showing
-                    ? <div>
-                        {this.props.formatErros.length == 0 ?
-                            <p> No se encontraron errores</p>
-                            :
-                            <ul className="sidebar__highlights">
-                                {errors.length != 0 ? (
+                <div>
+                    <div className={showing ? 'row buttonSection activeGrey' : 'row buttonSection'} onClick={() => this.setState({ showing: !showing })}>
+                        <div className="col-sm-6"> <h5> {section} </h5> </div>
+                        <div className="col-sm-4 iconsSeccion">
+                            {this.props.formatErros.length == 0 ? (
+                                <div className="checkGreen">  <FontAwesomeIcon icon={faCheck} /> </div>
+                            ) : (
                                     <div>
-                                        <center>
-                                            <h5 style={{ paddingLeft: "1rem" }} >
-                                                Errores
-                                            <i style={{ color: "red" }}> <FontAwesomeIcon icon={faExclamationCircle} /> </i>
-                                            </h5>
-                                        </center>
-                                        {errors}
+                                        <div className="errorsNro">  {errors.length} <FontAwesomeIcon icon={faExclamationCircle} /> </div>
+                                        <div className="warningsNro">   {warnings.length} <FontAwesomeIcon icon={faExclamationTriangle} /> </div>
                                     </div>
-                                ) : null}
-                                {warnings.length != 0 ? (
-                                    <div>
-                                        <center>
-                                            <h5 style={{ paddingTop: "1rem" }} >
-                                                Advertencias
-                                            <i style={{ color: "#ffae42" }}> <FontAwesomeIcon icon={faExclamationTriangle} /> </i>
-                                            </h5>
-                                        </center>
-                                        {warnings}
-                                    </div>
-                                ) : null}
-                            </ul>
-                        }
+                                )}
+                        </div>
+                        <div className="col-sm-2">
+                            <div>
+                                {showing ?
+                                    <FontAwesomeIcon icon={faAngleUp} />
+                                    :
+                                    <FontAwesomeIcon icon={faAngleDown} />
+                                }
+                            </div>
+                        </div>
                     </div>
-                    : null
+                </div>
+
+                {
+                    showing
+                        ? <div>
+                            {this.props.formatErros.length == 0 ?
+                                null
+                                :
+                                <ul className="sidebar__highlights">
+                                    {errors.length != 0 ? (
+                                        <div>
+                                            {errors}
+                                        </div>
+                                    ) : null}
+                                    {warnings.length != 0 ? (
+                                        <div>
+                                            {warnings}
+                                        </div>
+                                    ) : null}
+                                </ul>
+                            }
+                        </div>
+                        : null
                 }
-            </div>
+            </div >
         )
     }
 

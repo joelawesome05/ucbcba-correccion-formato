@@ -20,12 +20,14 @@ public class FiguresTablesFormat implements FormatRule {
     private AtomicLong idHighlights;
     private AtomicLong tableNumeration;
     private AtomicLong figureNumeration;
+    private Integer lastPage;
 
-    public FiguresTablesFormat(PDDocument pdfdocument, AtomicLong idHighlights, AtomicLong tableNumeration, AtomicLong figureNumeration){
+    public FiguresTablesFormat(PDDocument pdfdocument, AtomicLong idHighlights, AtomicLong tableNumeration, AtomicLong figureNumeration,Integer lastPage){
         this.pdfdocument = pdfdocument;
         this.idHighlights = idHighlights;
         this.tableNumeration = tableNumeration;
         this.figureNumeration = figureNumeration;
+        this.lastPage = lastPage;
     }
 
     @Override
@@ -39,20 +41,25 @@ public class FiguresTablesFormat implements FormatRule {
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
         List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
-
-        for(WordsProperties wordLine:wordsLines){
+        WordsProperties wordLine;
+        for(int pos=0; pos<wordsLines.size(); pos++){
+            wordLine = wordsLines.get(pos);
             List<String> formatErrorscomments = new ArrayList<>();
             String arr[] = wordLine.toString().split(" ", 2);
             String firstWordLine = arr[0];
             if (firstWordLine.contains("Tabla")){
-                Format tableTittle = new TableFormat(12,"Centrado",pageWidth,true,tableNumeration.get());
-                formatErrorscomments = tableTittle.getFormatErrorComments(wordLine);
-                tableNumeration.incrementAndGet();
+                if(isValidTittle(pos,page)) {
+                    Format tableTittle = new TableFormat(12, "Centrado", pageWidth, true, tableNumeration.get());
+                    formatErrorscomments = tableTittle.getFormatErrorComments(wordLine);
+                    tableNumeration.incrementAndGet();
+                }
             }
             if (firstWordLine.contains("Figura")){
-                Format figureTittle = new FigureFormat(12,"Centrado",pageWidth,true, figureNumeration.get());
-                formatErrorscomments = figureTittle.getFormatErrorComments(wordLine);
-                figureNumeration.incrementAndGet();
+                if(isValidTittle(pos,page)) {
+                    Format figureTittle = new FigureFormat(12, "Centrado", pageWidth, true, figureNumeration.get());
+                    formatErrorscomments = figureTittle.getFormatErrorComments(wordLine);
+                    figureNumeration.incrementAndGet();
+                }
             }
             if (firstWordLine.contains("Fuente:")){
                 formatErrorscomments = source.getFormatErrorComments(wordLine);
@@ -62,9 +69,63 @@ public class FiguresTablesFormat implements FormatRule {
 
         return formatErrors;
     }
+
+    private boolean isValidTittle(int pos, int currentPage) throws IOException {
+        boolean resp = isValidCurrentPage(currentPage,pos);
+        if(!resp) {
+            for (int page = currentPage+1; page < lastPage; page++) {
+                if (isValidOtherPage(page)) {
+                    return true;
+                }
+            }
+        }
+        return resp;
+    }
+
+    private boolean isValidCurrentPage(int page, int posStart) throws IOException {
+        boolean resp = false;
+        GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
+        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
+        WordsProperties wordLine;
+        for(int pos=posStart+1; pos<wordsLines.size(); pos++){
+            wordLine = wordsLines.get(pos);
+            String arr[] = wordLine.toString().split(" ", 2);
+            String firstWordLine = arr[0];
+            if (firstWordLine.contains("Tabla")) {
+                return false;
+            }
+            if (firstWordLine.contains("Figura")) {
+                return false;
+            }
+            if (firstWordLine.contains("Fuente:")) {
+                return true;
+            }
+        }
+        return resp;
+    }
+
+    private boolean isValidOtherPage(int page) throws IOException {
+        boolean resp = false;
+        GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
+        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
+        for (WordsProperties wordLine : wordsLines) {
+            String arr[] = wordLine.toString().split(" ", 2);
+            String firstWordLine = arr[0];
+            if (firstWordLine.contains("Tabla")) {
+                return false;
+            }
+            if (firstWordLine.contains("Figura")) {
+                return false;
+            }
+            if (firstWordLine.contains("Fuente:")) {
+                return true;
+            }
+        }
+        return resp;
+    }
     private void reportFormatErrors(List<String> comments, WordsProperties word, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, word, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, word, pageWidth, pageHeight, page,"tablaFigura"));
         }
     }
 }

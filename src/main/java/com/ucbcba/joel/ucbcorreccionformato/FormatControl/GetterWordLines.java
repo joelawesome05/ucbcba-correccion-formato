@@ -93,6 +93,29 @@ public class GetterWordLines {
         return wordLine;
     }
 
+    public List<WordsProperties> getWordLinesWithoutAnyNumeration(int page) throws IOException {
+        List<WordsProperties> wordLine = getWordLines(page);
+        if(!wordLine.isEmpty()) {
+            WordsProperties lastLine = wordLine.get(wordLine.size() - 1);
+            if (lastLine.length() < 4) {
+                wordLine.remove(wordLine.size() - 1);
+            }
+        }
+        return wordLine;
+    }
+
+    public WordsProperties getIndexCoverPageNumeration(int page) throws IOException {
+        List<WordsProperties> wordLine = new ArrayList<WordsProperties>();
+        wordLine = getWordLines(page);
+        if(!wordLine.isEmpty()) {
+            WordsProperties lastLine = wordLine.get(wordLine.size() - 1);
+            if (lastLine.length() < 4) {
+                return lastLine;
+            }
+        }
+        return null;
+    }
+
     private boolean isPageNumeration(WordsProperties lastLine){
         boolean resp = true;
         String pageNumeration = lastLine.toString();

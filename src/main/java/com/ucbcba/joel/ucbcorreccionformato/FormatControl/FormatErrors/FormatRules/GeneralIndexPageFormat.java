@@ -39,7 +39,7 @@ public class GeneralIndexPageFormat implements FormatRule {
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
 
-        Format generalIndextitle = new TittleFormat(12,"Centrado",pageWidth,true,"ÍNDICE GENERAL");
+        Format generalIndextitle = new TittleFormat(12,"Centrado",pageWidth,true,"INDICE GENERAL");
         Format titles = new GeneralIndexFormat(12,"Izquierdo",pageWidth,true,false,true,0);
         Format chapterTitles = new GeneralIndexFormat(12, "Izquierdo", pageWidth, true, false, true, 0);
         Format chapterSubTitles = new GeneralIndexFormat(12, "Izquierdo", pageWidth,true, false, false, 1);
@@ -50,7 +50,7 @@ public class GeneralIndexPageFormat implements FormatRule {
 
         int lineStart = 0;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
+        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutAnyNumeration(page);
 
         if (generalIndexPageStart == page){
             if (!wordsLines.isEmpty()){
@@ -105,12 +105,18 @@ public class GeneralIndexPageFormat implements FormatRule {
             }
             reportFormatErrors(formatErrorscomments, currentWordLine, formatErrors, pageWidth, pageHeight, page);
         }
+        WordsProperties numeration = getterWordLines.getIndexCoverPageNumeration(page);
+        if(numeration!=null){
+            List<String> formatErrorscomments = new ArrayList<>();
+            formatErrorscomments.add("Esta sección no tenga numeración");
+            reportFormatErrors(formatErrorscomments, numeration, formatErrors, pageWidth, pageHeight, page);
+        }
         return formatErrors;
     }
 
     private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page,"indiceGeneral"));
         }
     }
 

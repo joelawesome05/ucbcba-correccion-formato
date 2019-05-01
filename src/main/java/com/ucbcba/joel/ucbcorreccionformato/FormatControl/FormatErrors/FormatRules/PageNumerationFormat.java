@@ -45,7 +45,7 @@ public class PageNumerationFormat implements FormatRule {
 
     private void reportFormatErrors(List<String> comments, WordsProperties pageNumerationPage, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, pageNumerationPage, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, pageNumerationPage, pageWidth, pageHeight, page,"numeracion"));
         }
     }
 }

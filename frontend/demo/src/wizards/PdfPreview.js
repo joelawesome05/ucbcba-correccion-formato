@@ -25,6 +25,13 @@ class PdfPreview extends Component {
                 )
             }
         }
+        if (!this.props.pageStart || !this.props.pageEnd) {
+            return (
+                <center>
+                    <p> Esperando por el rango de páginas. </p>
+                </center>
+            )
+        }
         var pdfPages = [];
         for (var i = this.props.pageStart; i <= this.props.pageEnd; i++) {
             pdfPages.push(
@@ -32,7 +39,7 @@ class PdfPreview extends Component {
                     file={this.props.url}
                     onDocumentComplete={this.onDocumentComplete}
                     page={i}
-                    scale={0.5}
+                    scale={0.35}
                     key={i}
                 />);
         }

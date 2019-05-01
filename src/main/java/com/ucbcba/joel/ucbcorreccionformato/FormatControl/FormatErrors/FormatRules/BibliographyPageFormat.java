@@ -35,7 +35,7 @@ public class BibliographyPageFormat implements  FormatRule {
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
 
-        Format biographyTitle = new TittleFormat(12,"Izquierdo",pageWidth,true,"BIBLIOGRAFÍA");
+        Format biographyTitle = new TittleFormat(12,"Izquierdo",pageWidth,true,"BIBLIOGRAFIA");
 
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
@@ -71,7 +71,7 @@ public class BibliographyPageFormat implements  FormatRule {
 
     private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page,"bibliografia"));
         }
     }
 
@@ -85,7 +85,7 @@ public class BibliographyPageFormat implements  FormatRule {
 
     private void reportFormatErrors(List<String> comments, List<WordsProperties> ref_bibliografy, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) throws IOException {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, ref_bibliografy, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, ref_bibliografy, pageWidth, pageHeight, page,"bibliografia"));
         }
     }
 

@@ -13,7 +13,6 @@ public class PdfDocument {
     private int figureIndexEndPage;
     private int tableIndexStartPage;
     private int tableIndexEndPage;
-    private int figureTableIndexPageEnd;
     private int bibliographyStartPage;
     private int bibliographyEndPage;
     private int annexesStartPage;
@@ -78,14 +77,6 @@ public class PdfDocument {
 
     public void setBibliographyStartPage(int bibliographyStartPage) {
         this.bibliographyStartPage = bibliographyStartPage;
-    }
-
-    public int getFigureTableIndexPageEnd() {
-        return figureTableIndexPageEnd;
-    }
-
-    public void setFigureTableIndexPageEnd(int figureTableIndexPageEnd) {
-        this.figureTableIndexPageEnd = figureTableIndexPageEnd;
     }
 
     public int getFigureIndexStartPage() {

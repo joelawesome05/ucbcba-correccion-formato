@@ -7,8 +7,9 @@ import StepFigureIndex from "./wizards/StepFigureIndex"
 import StepTableIndex from "./wizards/StepTableIndex"
 import StepBiography from "./wizards/StepBiography"
 import StepAnnexed from "./wizards/StepAnnexed"
+import { Link } from 'react-router-dom';
 
-
+import "./style/PagesForm.css";
 
 var url = " ";
 class PagesForm extends Component {
@@ -33,12 +34,21 @@ class PagesForm extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.nextStep = this.nextStep.bind(this)
-        this.previousStep = this.previousStep.bind(this)
-        url = "/api/downloadFile/" + `${encodeURI(this.props.match.params.name)}`;
+        this.previousStep = this.previousStep.bind(this);
+        this.getNumbebuttons = this.getNumbebuttons.bind(this);
+        this.goStep1 = this.goStep1.bind(this);
+        this.goStep2 = this.goStep2.bind(this);
+        this.goStep3 = this.goStep3.bind(this);
+        this.goStep4 = this.goStep4.bind(this);
+        this.goStep5 = this.goStep5.bind(this);
+        this.goStep6 = this.goStep6.bind(this);
+        url = "/api/downloadFile/" + `${encodeURI(this.props.match.params.name)}.pdf`;
     }
 
     async componentDidMount() {
-        var pages = await (await fetch(`/api/getPages/${encodeURI(this.props.match.params.name)}`)).json();
+        document.body.style = 'background: none;';
+        document.body.style = 'background-image: ./images/pattern_news.png;';
+        var pages = await (await fetch(`/api/getPages/${encodeURI(this.props.match.params.name)}.pdf`)).json();
         this.setState({
             coverPage: pages[0],
             generalIndexPageStart: pages[1],
@@ -59,25 +69,59 @@ class PagesForm extends Component {
         this.setState({ [event.target.name]: event.target.type === 'number' ? parseInt(event.target.value) : event.target.value });
     }
 
-
     handleSubmit(event) {
         event.preventDefault();
         const searchParams = new URLSearchParams();
         searchParams.set("coverPage", this.state.coverPage);
-        searchParams.set("generalIndexPageStart", this.state.generalIndexPageStart);
-        searchParams.set("generalIndexPageEnd", this.state.generalIndexPageEnd);
-        searchParams.set("figureIndexPageStart", this.state.figureIndexPageStart);
-        searchParams.set("figureIndexPageEnd", this.state.figureIndexPageEnd);
-        searchParams.set("tableIndexPageStart", this.state.tableIndexPageStart);
-        searchParams.set("tableIndexPageEnd", this.state.tableIndexPageEnd);
-        searchParams.set("biographyPageStart", this.state.biographyPageStart);
-        searchParams.set("biographyPageEnd", this.state.biographyPageEnd);
-        searchParams.set("annexedPageStart", this.state.annexedPageStart);
-        searchParams.set("annexedPageEnd", this.state.annexedPageEnd);
+        searchParams.set("generalIndexStartPage", this.state.generalIndexPageStart);
+        searchParams.set("generalIndexEndPage", this.state.generalIndexPageEnd);
+        searchParams.set("figureIndexStartPage", this.state.figureIndexPageStart);
+        searchParams.set("figureIndexEndPage", this.state.figureIndexPageEnd);
+        searchParams.set("tableIndexStartPage", this.state.tableIndexPageStart);
+        searchParams.set("tableIndexEndPage", this.state.tableIndexPageEnd);
+        searchParams.set("bibliographyStartPage", this.state.biographyPageStart);
+        searchParams.set("bibliographyEndPage", this.state.biographyPageEnd);
+        searchParams.set("annexesStartPage", this.state.annexedPageStart);
+        searchParams.set("annexesEndPage", this.state.annexedPageEnd);
         const parameters = searchParams.toString();
-        setTimeout(function () { this.props.history.push(`/verResultados/${encodeURI(this.props.match.params.name)}` + `?${parameters}`) }.bind(this), 2000);
+        this.props.history.push(`/verResultados/${encodeURI(this.props.match.params.name)}` + `?${parameters}`);
     }
 
+    goStep1() {
+        this.setState({
+            currentStep: 1
+        });
+    }
+
+    goStep2() {
+        this.setState({
+            currentStep: 2
+        });
+    }
+
+    goStep3() {
+        this.setState({
+            currentStep: 3
+        });
+    }
+
+    goStep4() {
+        this.setState({
+            currentStep: 4
+        });
+    }
+
+    goStep5() {
+        this.setState({
+            currentStep: 5
+        });
+    }
+
+    goStep6() {
+        this.setState({
+            currentStep: 6
+        });
+    }
     nextStep() {
         let currentStep = this.state.currentStep
         currentStep = currentStep >= 5 ? 6 : currentStep + 1
@@ -94,67 +138,325 @@ class PagesForm extends Component {
         })
     }
 
-    get previousButton() {
-        let currentStep = this.state.currentStep;
-        if (currentStep !== 1) {
+    getNumbebuttons() {
+        if (this.state.currentStep == 1) {
             return (
-                <button
-                    className="btn btn-secondary"
-                    type="button" onClick={this.previousStep}>
-                    Anterior
-                </button>
-            )
-        }
-        return (
-            <button
-                className="btn btn-secondary disabled"
-                type="button" >
-                Anterior
-            </button>
-        );
-    }
+                <div className="row">
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-blue" disabled> 1 </button>
+                            <p >Carátula </p>
+                        </center>
+                    </div>
 
-    get nextButton() {
-        let currentStep = this.state.currentStep;
-        if (currentStep < 6) {
-            return (
-                <button
-                    className="btn btn-primary"
-                    type="button" onClick={this.nextStep}>
-                    Siguiente
-                </button>
-            )
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
+                            <p>Índice General</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep3}> 3 </button>
+                            <p>Índice de Figuras</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
+                            <p>Índice de Tablas</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
+                            <p>Bibliografía</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
+                            <p>Anexos</p>
+                        </center>
+                    </div>
+                </div>
+            );
         }
-        return (
-            <button
-                className="btn btn-primary disabled"
-                type="button">
-                Siguiente
-            </button>
-        );
+        if (this.state.currentStep == 2) {
+            return (
+                <div className="row">
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
+                            <p >Carátula </p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-blue" disabled> 2 </button>
+                            <p>Índice General</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep3}> 3 </button>
+                            <p>Índice de Figuras</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
+                            <p>Índice de Tablas</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
+                            <p>Bibliografía</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
+                            <p>Anexos</p>
+                        </center>
+                    </div>
+                </div>
+            );
+        }
+        if (this.state.currentStep == 3) {
+            return (
+                <div className="row">
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
+                            <p >Carátula </p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
+                            <p>Índice General</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-blue" disabled> 3 </button>
+                            <p>Índice de Figuras</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
+                            <p>Índice de Tablas</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep5}> 5 </button>
+                            <p>Bibliografía</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep6}> 6 </button>
+                            <p>Anexos</p>
+                        </center>
+                    </div>
+                </div>
+            );
+        }
+        if (this.state.currentStep == 4) {
+            return (
+                <div className="row">
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep1}> 1 </button>
+                            <p >Carátula </p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep2}> 2 </button>
+                            <p>Índice General</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep3}> 3 </button>
+                            <p>Índice de Figuras</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-blue" disabled> 4 </button>
+                            <p>Índice de Tablas</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep5}> 5 </button>
+                            <p>Bibliografía</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep6}> 6 </button>
+                            <p>Anexos</p>
+                        </center>
+                    </div>
+                </div>
+            );
+        }
+        if (this.state.currentStep == 5) {
+            return (
+                <div className="row">
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep1}> 1 </button>
+                            <p >Carátula </p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep2}> 2 </button>
+                            <p>Índice General</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep3}> 3 </button>
+                            <p>Índice de Figuras</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep4}> 4 </button>
+                            <p>Índice de Tablas</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-blue" disabled> 5 </button>
+                            <p>Bibliografía</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep6}> 6 </button>
+                            <p>Anexos</p>
+                        </center>
+                    </div>
+                </div>
+            );
+        }
+        if (this.state.currentStep == 6) {
+            return (
+                <div className="row">
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep1}> 1 </button>
+                            <p >Carátula </p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep2}> 2 </button>
+                            <p>Índice General</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep3} > 3 </button>
+                            <p>Índice de Figuras</p>
+                        </center>
+                    </div>
+
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep4}> 4 </button>
+                            <p>Índice de Tablas</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-white" onClick={this.goStep5}> 5 </button>
+                            <p>Bibliografía</p>
+                        </center>
+                    </div>
+                    <div className="col-lg-2">
+                        <center>
+                            <button type="button" class="btn-circle-blue" disabled> 6 </button>
+                            <p>Anexos</p>
+                        </center>
+                    </div>
+                </div>
+            );
+        }
+        return null;
     }
 
     render() {
         if (this.state.isLoading) {
-            return <p style={{ color: "black" }}>Cargando...</p>;
+            return (
+                <div>
+                    <div className="mynavbar">
+                        <center>
+                            <Link to="/">
+                                <img src={require('./images/ucbcba.png')} />
+                            </Link>
+                        </center>
+                    </div>
+                    <div className="center-loader">
+                        <center>
+                            <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                            <h5> Calibrando páginas...</h5>
+                        </center>
+                    </div>
+                </div>);
         }
+        var numberButtons = this.getNumbebuttons();
         return (
             <div>
-                <center>
-                    <h3> Sistema de ayuda para la detección y corrección de errores de formato en trabajos académicos</h3>
-                </center>
-                <a href="/">
-                    Volver al Inicio
-                </a>
-                <p>Paso {this.state.currentStep} </p>
-
-                <form onSubmit={this.handleSubmit}>
-
+                <div className="mynavbar">
+                    <center>
+                        <Link to="/">
+                            <img src={require('./images/ucbcba.png')} />
+                        </Link>
+                    </center>
+                </div>
+                <div className="container main">
+                    <div className="row justify-content-md-center">
+                        <div className="presentation">
+                            <center>
+                                <h3 className="text-guide-1"> Calibración de páginas</h3>
+                                <p className="text-guide-3"> Por favor verifique el rango de páginas de cada sección y modifique el rango de páginas de ser necesario </p>
+                            </center>
+                        </div>
+                    </div>
+                    {numberButtons}
                     <StepCover
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
                         coverPage={this.state.coverPage}
                         url={url}
+                        nextStep={this.nextStep}
                     />
 
                     <StepGeneralIndex
@@ -163,6 +465,8 @@ class PagesForm extends Component {
                         generalIndexPageStart={this.state.generalIndexPageStart}
                         generalIndexPageEnd={this.state.generalIndexPageEnd}
                         url={url}
+                        nextStep={this.nextStep}
+                        previousStep={this.previousStep}
                     />
 
                     <StepFigureIndex
@@ -171,6 +475,8 @@ class PagesForm extends Component {
                         figureIndexPageStart={this.state.figureIndexPageStart}
                         figureIndexPageEnd={this.state.figureIndexPageEnd}
                         url={url}
+                        nextStep={this.nextStep}
+                        previousStep={this.previousStep}
                     />
 
                     <StepTableIndex
@@ -179,6 +485,8 @@ class PagesForm extends Component {
                         tableIndexPageStart={this.state.tableIndexPageStart}
                         tableIndexPageEnd={this.state.tableIndexPageEnd}
                         url={url}
+                        nextStep={this.nextStep}
+                        previousStep={this.previousStep}
                     />
 
                     <StepBiography
@@ -187,6 +495,8 @@ class PagesForm extends Component {
                         biographyPageStart={this.state.biographyPageStart}
                         biographyPageEnd={this.state.biographyPageEnd}
                         url={url}
+                        nextStep={this.nextStep}
+                        previousStep={this.previousStep}
                     />
 
                     <StepAnnexed
@@ -195,14 +505,11 @@ class PagesForm extends Component {
                         annexedPageStart={this.state.annexedPageStart}
                         annexedPageEnd={this.state.annexedPageEnd}
                         url={url}
+                        previousStep={this.previousStep}
+                        handleSubmit={this.handleSubmit}
                     />
 
-                    <center>
-                        {this.previousButton}
-                        {this.nextButton}
-                    </center>
-
-                </form>
+                </div>
             </div>
         );
     }

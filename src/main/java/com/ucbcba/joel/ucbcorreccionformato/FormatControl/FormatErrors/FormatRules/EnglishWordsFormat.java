@@ -79,7 +79,7 @@ public class EnglishWordsFormat implements FormatRule {
 
     private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatWarning(comments, words, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatWarning(comments, words, pageWidth, pageHeight, page,"extranjerismo"));
         }
     }
 
@@ -91,7 +91,7 @@ public class EnglishWordsFormat implements FormatRule {
         }
         String  result = builder.toString().replaceAll("[^\\w\\sáéíóúAÉÍÓÚÑñ]","");
         result = result.toLowerCase();
-        if (result.length() > 3 ){
+        if (result.length() > 2 ){
             if (dictionary.contains(result)){
                 if (!diccionario.contains(result)){
                     if(!isPluralSpanishWord(result)){

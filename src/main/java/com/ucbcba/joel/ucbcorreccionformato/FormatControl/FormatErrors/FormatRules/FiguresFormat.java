@@ -48,7 +48,7 @@ public class FiguresFormat implements FormatRule {
             List<String> commentsFigureError = new ArrayList<>();
             List<String> commentsFigureWarnings = new ArrayList<>();
             if (!image.isFigureHorizontal()) {
-                commentsFigureError.add("Figura en sentido vertical detectada. Por favor que la presente hoja tenga orientación horizontal");
+                commentsFigureError.add("Figura en sentido vertical. Por favor oriente de forma orientación la presente hoja");
                 if(image.doesFigureRotateToTheRight()){
                     image.setY(image.getEndY());
                     image.setEndX(image.getX()+image.getHeightDisplayed());
@@ -62,10 +62,10 @@ public class FiguresFormat implements FormatRule {
             }
 
             if(!doesTheFigureHasTittle(image, pageNum)){
-                commentsFigureWarnings.add("La figura tenga su título");
+                commentsFigureWarnings.add("Su título");
             }
             if (!doesTheFigureHasSource(image, pageNum)) {
-                commentsFigureWarnings.add("La figura tenga su fuente");
+                commentsFigureWarnings.add("Su fuente");
             }
             reportFigureWarnings(formatErrors, image, commentsFigureWarnings, pageWidth, pageHeight, pageNum);
             reportFigureErrors(formatErrors, image, commentsFigureError, pageWidth, pageHeight, pageNum);
@@ -159,13 +159,13 @@ public class FiguresFormat implements FormatRule {
 
     private void reportFigureWarnings(List<FormatErrorResponse> formatErrors, PdfImage image, List<String> commentsFigure, float pageWidth, float pageHeight, int page) {
         if (commentsFigure.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFigureFormatWarning(commentsFigure, image, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFigureFormatWarning(commentsFigure, image, pageWidth, pageHeight, page,"tablaFigura"));
         }
     }
 
     private void reportFigureErrors(List<FormatErrorResponse> formatErrors, PdfImage image, List<String> commentsFigure, float pageWidth, float pageHeight, int page) {
         if (commentsFigure.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFigureFormatError(commentsFigure, image, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFigureFormatError(commentsFigure, image, pageWidth, pageHeight, page,"tablaFigura"));
         }
     }
 

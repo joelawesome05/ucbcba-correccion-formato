@@ -6,13 +6,15 @@ public class FormatErrorResponse {
     private Comment comment;
     private String id;
     private boolean error;
+    private String type;
 
-    public FormatErrorResponse(Content content, Position position, Comment comment, String id, boolean error) {
+    public FormatErrorResponse(Content content, Position position, Comment comment, String id, boolean error,String type) {
         this.content = content;
         this.position = position;
         this.comment = comment;
         this.id = id;
         this.error = error;
+        this.type = type;
     }
 
 
@@ -50,5 +52,13 @@ public class FormatErrorResponse {
 
     public void setError(boolean error) {
         this.error = error;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

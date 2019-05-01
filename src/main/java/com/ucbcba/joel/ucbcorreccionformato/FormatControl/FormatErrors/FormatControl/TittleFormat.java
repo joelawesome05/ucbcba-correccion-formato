@@ -22,10 +22,9 @@ public class TittleFormat extends  Format {
     @Override
     public List<String> getFormatErrorComments(WordsProperties word){
         List<String> comments = super.getFormatErrorComments(word);
-        String correctTittleNormalized = Normalizer.normalize(correctTittle, Normalizer.Form.NFD);
-        correctTittleNormalized = correctTittleNormalized.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-
-        if (!word.toString().contains(correctTittle) && !word.toString().contains(correctTittleNormalized)) {
+        String wordString = Normalizer.normalize(word.toString(), Normalizer.Form.NFD);
+        wordString = wordString.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        if (!wordString.contains(correctTittle)) {
             comments.add("El título sea: "+correctTittle);
         }
 

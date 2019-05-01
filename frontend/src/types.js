@@ -41,7 +41,8 @@ export type T_NewHighlight = {
     text: string,
     emoji: string
   },
-  error: boolean
+  error: boolean,
+  type: string
 };
 
 export type T_Highlight = { id: string } & T_NewHighlight;

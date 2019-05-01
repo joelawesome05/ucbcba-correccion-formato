@@ -33,11 +33,12 @@ public class TableFigureIndexFormat implements FormatRule {
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
 
-        Format title = new TittleFormat(12,"Centrado",pageWidth,true,"ÍNDICE DE "+indexName);
+        Format title = new TittleFormat(12,"Centrado",pageWidth,true,"INDICE DE "+indexName);
         Format normalFormat = new Format( 12);
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
+        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutAnyNumeration(page);
+
         if (pageStart == page){
             if (!wordsLines.isEmpty()){
                 List<String> formatErrorscomments = title.getFormatErrorComments(wordsLines.get(0));
@@ -51,12 +52,19 @@ public class TableFigureIndexFormat implements FormatRule {
             formatErrorscomments = normalFormat.getFormatErrorComments(wordLine);
             reportFormatErrors(formatErrorscomments, wordLine, formatErrors, pageWidth, pageHeight, page);
         }
+
+        WordsProperties numeration = getterWordLines.getIndexCoverPageNumeration(page);
+        if(numeration!=null){
+            List<String> formatErrorscomments = new ArrayList<>();
+            formatErrorscomments.add("Esta sección no tenga numeración");
+            reportFormatErrors(formatErrorscomments, numeration, formatErrors, pageWidth, pageHeight, page);
+        }
         return formatErrors;
     }
 
     private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (comments.size() != 0) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page));
+            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page,indexName));
         }
     }
 }

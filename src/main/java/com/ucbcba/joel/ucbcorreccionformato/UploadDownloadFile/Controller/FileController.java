@@ -15,10 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 public class FileController {
 
@@ -30,6 +26,8 @@ public class FileController {
     @PostMapping("/api/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
+
+        fileName = fileName.substring(0, fileName.lastIndexOf("."));
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/api/downloadFile/")

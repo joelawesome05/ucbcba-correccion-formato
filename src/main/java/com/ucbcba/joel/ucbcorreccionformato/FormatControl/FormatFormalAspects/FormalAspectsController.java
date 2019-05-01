@@ -15,10 +15,10 @@ import java.util.List;
 public class FormalAspectsController {
     @RequestMapping("/api/basicFormat/{fileName:.+}")
     public List<FormalAspectsResponse> getBasicMisstakes(@PathVariable String fileName
-            , @RequestParam(value="generalIndexPageEnd") Integer generalIndexPageEnd
-            , @RequestParam(value="figureIndexPageEnd") Integer figureIndexPageEnd
-            , @RequestParam(value="tableIndexPageEnd") Integer tableIndexPageEnd
-            , @RequestParam(value="annexedPageStart") Integer annexedPage) {
+            , @RequestParam(value="generalIndexEndPage") Integer generalIndexPageEnd
+            , @RequestParam(value="figureIndexEndPage") Integer figureIndexPageEnd
+            , @RequestParam(value="tableIndexEndPage") Integer tableIndexPageEnd
+            , @RequestParam(value="annexesStartPage") Integer annexedPage) {
         List<FormalAspectsResponse> formalAspectsResponses = new ArrayList<>();
         int indexPageEnd = getIndexEndPage(generalIndexPageEnd, figureIndexPageEnd, tableIndexPageEnd);
         String dirPdfFile = "uploads/"+fileName;
