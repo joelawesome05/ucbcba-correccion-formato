@@ -19,14 +19,14 @@ public class FormalAspectsDetector {
 
     public List<FormalAspectsResponse> getFormalAspectsResponses(Integer indexPageEnd, Integer annexedPage) throws IOException {
         List<FormalAspectsResponse> resp = new ArrayList<>();
-        int page = (indexPageEnd+annexedPage)/2;
-
-        resp.add(getFormatSheetSize(page));
-        resp.add(getFormatFont(page));
-        resp.add(getFormatLineSpacing(page));
-        resp.add(getFormatMargin(page));
-        resp.add(getFormatNumeration(page));
-
+        if(indexPageEnd >= 0 && indexPageEnd<=pdfdocument.getNumberOfPages() && indexPageEnd<annexedPage && annexedPage-1 <= pdfdocument.getNumberOfPages()) {
+            int page = (indexPageEnd + annexedPage) / 2;
+            resp.add(getFormatSheetSize(page));
+            resp.add(getFormatFont(page));
+            resp.add(getFormatLineSpacing(page));
+            resp.add(getFormatMargin(page));
+            resp.add(getFormatNumeration(page));
+        }
         return resp;
     }
 

@@ -112,10 +112,10 @@ class App extends Component<Props, State> {
     });
   }
 
-  removeHighlight = (index) => {
+  removeHighlight = (_id) => {
     this.setState({
-      highlights: this.state.highlights.filter((e, i) => {
-        return i !== index
+      highlights: this.state.highlights.filter((highlight, i) => {
+        return highlight.id !== _id
       })
     });
   }

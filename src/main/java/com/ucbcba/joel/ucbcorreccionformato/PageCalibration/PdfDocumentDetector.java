@@ -4,7 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
 
-public class PdfDocument {
+public class PdfDocumentDetector {
     private PDDocument pdfdocument;
     private int coverPage;
     private int generalIndexStartPage;
@@ -18,7 +18,7 @@ public class PdfDocument {
     private int annexesStartPage;
     private int annexesEndPage;
 
-    public PdfDocument(PDDocument pdfdocument) throws IOException {
+    public PdfDocumentDetector(PDDocument pdfdocument) throws IOException {
         this.pdfdocument = pdfdocument;
         PagesFinder pagesFinder = new PagesFinder(pdfdocument);
         this.coverPage = pagesFinder.getCoverPage();
@@ -33,6 +33,11 @@ public class PdfDocument {
         this.annexesStartPage = pagesFinder.getAnnexesStartPage();
         this.bibliographyEndPage = pagesFinder.getBibliographyEndPage(bibliographyStartPage, annexesStartPage);
         this.annexesEndPage = pagesFinder.getAnnexesEndPage(annexesStartPage);
+    }
+
+    public PdfDocumentResponse getPdfPages(){
+        return new PdfDocumentResponse(coverPage,generalIndexStartPage,generalIndexEndPage,figureIndexStartPage,figureIndexEndPage,
+                tableIndexStartPage,tableIndexEndPage,bibliographyStartPage,bibliographyEndPage,annexesStartPage,annexesEndPage);
     }
 
     public int getCoverPage() {

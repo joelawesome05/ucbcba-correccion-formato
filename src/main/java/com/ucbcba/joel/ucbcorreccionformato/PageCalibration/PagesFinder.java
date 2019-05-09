@@ -89,6 +89,7 @@ public class PagesFinder {
         if(generalIndexPageStart == 0){
             return resp;
         }
+        resp = generalIndexPageStart;
         for (int page = generalIndexPageStart; page <= lastIndexPage; page++) {
             if ( isTheGeneralIndexInThePage(page) && !isTheFigureTableIndexInThePage(page)){
                 resp = page;
@@ -173,7 +174,7 @@ public class PagesFinder {
     }
 
     public int getBibliographyStartPage() throws IOException {
-        int resp = pdfdocument.getNumberOfPages()+1;
+        int resp = 0;
         for (int page = pdfdocument.getNumberOfPages(); page >= 1; page--) {
             if ( isTheBibliographyInThePage(page) ){
                 return page;
@@ -183,16 +184,19 @@ public class PagesFinder {
     }
 
     public int getBibliographyEndPage(int biographyPageStart, int annexedPageStart){
-        int resp = pdfdocument.getNumberOfPages()+1;
-        if (biographyPageStart == pdfdocument.getNumberOfPages()+1){
+        int resp = 0;
+        if (biographyPageStart == resp){
             return resp;
+        }
+        if (annexedPageStart == resp){
+            return pdfdocument.getNumberOfPages();
         }
         return annexedPageStart-1;
     }
 
 
     public boolean isTheAnnexesStartInThePage(int page) throws IOException {
-        boolean bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8,bool9,bool10,bool11,bool12;
+        boolean bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8,bool9,bool10,bool11,bool12,bool13,bool14;
         bool1 = wordsFinder.isTheWordInThePage(page,"Anexo 1 ");
         bool2 = wordsFinder.isTheWordInThePage(page,"anexo 1 ");
         bool3 = wordsFinder.isTheWordInThePage(page,"ANEXO 1 ");
@@ -205,12 +209,14 @@ public class PagesFinder {
         bool10 = wordsFinder.isTheWordInThePage(page,"Anexo 1.");
         bool11 = wordsFinder.isTheWordInThePage(page,"anexo 1.");
         bool12 = wordsFinder.isTheWordInThePage(page,"ANEXO 1.");
-        return getNumberOfTrues(bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8,bool9,bool10,bool11,bool12) >= 1;
+        bool13 = wordsFinder.isTheWordInThePage(page,"ANEXO A");
+        bool14 = wordsFinder.isTheWordInThePage(page,"Anexo A.");
+        return getNumberOfTrues(bool1,bool2,bool3,bool4,bool5,bool6,bool7,bool8,bool9,bool10,bool11,bool12,bool13,bool14) >= 1;
     }
 
 
     public int getAnnexesStartPage() throws IOException {
-        int resp = pdfdocument.getNumberOfPages()+1;
+        int resp = 0;
         for (int page = pdfdocument.getNumberOfPages(); page >= 1; page--) {
             if ( isTheAnnexesStartInThePage(page) ){
                 return page;
@@ -220,11 +226,11 @@ public class PagesFinder {
     }
 
     public int getAnnexesEndPage(int annexedPageStart){
-        int resp = pdfdocument.getNumberOfPages()+1;
+        int resp = 0;
         if (annexedPageStart == resp){
             return resp;
         }
-        return resp-1;
+        return pdfdocument.getNumberOfPages();
     }
 
 

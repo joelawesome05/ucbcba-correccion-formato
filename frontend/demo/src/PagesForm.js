@@ -18,17 +18,23 @@ class PagesForm extends Component {
         super(props);
         this.state = {
             currentStep: 1,
-            coverPage: 0,
-            generalIndexPageStart: 0,
-            generalIndexPageEnd: 0,
-            figureIndexPageStart: 0,
-            figureIndexPageEnd: 0,
-            tableIndexPageStart: 0,
-            tableIndexPageEnd: 0,
-            biographyPageStart: 0,
-            biographyPageEnd: 0,
-            annexedPageStart: 0,
-            annexedPageEnd: 0,
+            coverPage: '',
+            generalIndexPageStart: '',
+            generalIndexPageEnd: '',
+            figureIndexPageStart: '',
+            figureIndexPageEnd: '',
+            tableIndexPageStart: '',
+            tableIndexPageEnd: '',
+            biographyPageStart: '',
+            biographyPageEnd: '',
+            annexedPageStart: '',
+            annexedPageEnd: '',
+            noCoverPage: false,
+            noGeneralIndex: false,
+            noFigureIndex: false,
+            noTableIndex: false,
+            noBiography: false,
+            noAnnexes: false,
             isLoading: true,
         };
         this.handleChange = this.handleChange.bind(this);
@@ -42,27 +48,182 @@ class PagesForm extends Component {
         this.goStep4 = this.goStep4.bind(this);
         this.goStep5 = this.goStep5.bind(this);
         this.goStep6 = this.goStep6.bind(this);
+        this.handleCoverPage = this.handleCoverPage.bind(this);
+        this.handleGeneralIndex = this.handleGeneralIndex.bind(this);
+        this.handleFigureIndex = this.handleFigureIndex.bind(this);
+        this.handleTableIndex = this.handleTableIndex.bind(this);
+        this.handleBibliography = this.handleBibliography.bind(this);
+        this.handleAnnexes = this.handleAnnexes.bind(this);
         url = "/api/downloadFile/" + `${encodeURI(this.props.match.params.name)}.pdf`;
     }
 
     async componentDidMount() {
         document.body.style = 'background: none;';
         document.body.style = 'background-image: ./images/pattern_news.png;';
-        var pages = await (await fetch(`/api/getPages/${encodeURI(this.props.match.params.name)}.pdf`)).json();
-        this.setState({
-            coverPage: pages[0],
-            generalIndexPageStart: pages[1],
-            generalIndexPageEnd: pages[2],
-            figureIndexPageStart: pages[3],
-            figureIndexPageEnd: pages[4],
-            tableIndexPageStart: pages[5],
-            tableIndexPageEnd: pages[6],
-            biographyPageStart: pages[7],
-            biographyPageEnd: pages[8],
-            annexedPageStart: pages[9],
-            annexedPageEnd: pages[10]
-        });
+        var pdfDocument = await (await fetch(`/api/getPages/${encodeURI(this.props.match.params.name)}.pdf`)).json();
+        if (pdfDocument.coverPage === 0) {
+            this.setState({
+                noCoverPage: true
+            });
+        } else {
+            this.setState({
+                coverPage: pdfDocument.coverPage
+            });
+        }
+
+        if (pdfDocument.generalIndexStartPage === 0) {
+            this.setState({
+                noGeneralIndex: true
+            });
+        } else {
+            this.setState({
+                generalIndexPageStart: pdfDocument.generalIndexStartPage,
+                generalIndexPageEnd: pdfDocument.generalIndexEndPage
+            });
+        }
+
+        if (pdfDocument.figureIndexStartPage === 0) {
+            this.setState({
+                noFigureIndex: true
+            });
+        } else {
+            this.setState({
+                figureIndexPageStart: pdfDocument.figureIndexStartPage,
+                figureIndexPageEnd: pdfDocument.figureIndexEndPage
+            });
+        }
+        if (pdfDocument.tableIndexStartPage === 0) {
+            this.setState({
+                noTableIndex: true
+            });
+        } else {
+            this.setState({
+                tableIndexPageStart: pdfDocument.tableIndexStartPage,
+                tableIndexPageEnd: pdfDocument.tableIndexEndPage
+            });
+        }
+        if (pdfDocument.bibliographyStartPage === 0) {
+            this.setState({
+                noBiography: true
+            });
+        } else {
+            this.setState({
+                biographyPageStart: pdfDocument.bibliographyStartPage,
+                biographyPageEnd: pdfDocument.bibliographyEndPage
+            });
+        }
+        if (pdfDocument.annexesStartPage === 0) {
+            this.setState({
+                noAnnexes: true
+            });
+        } else {
+            this.setState({
+                annexedPageStart: pdfDocument.annexesStartPage,
+                annexedPageEnd: pdfDocument.annexesEndPage
+            });
+        }
+
         this.setState({ isLoading: false });
+    }
+
+    handleCoverPage() {
+        this.setState({
+            noCoverPage: !this.state.noCoverPage
+        });
+        if (this.state.noCoverPage) {
+            this.setState({
+                coverPage: 1
+            });
+        } else {
+            this.setState({
+                coverPage: ''
+            });
+        }
+    }
+
+    handleGeneralIndex() {
+        this.setState({
+            noGeneralIndex: !this.state.noGeneralIndex
+        });
+        if (this.state.noGeneralIndex) {
+            this.setState({
+                generalIndexPageStart: 1,
+                generalIndexPageEnd: 1
+            });
+        } else {
+            this.setState({
+                generalIndexPageStart: '',
+                generalIndexPageEnd: ''
+            });
+        }
+    }
+
+    handleFigureIndex() {
+        this.setState({
+            noFigureIndex: !this.state.noFigureIndex
+        });
+        if (this.state.noFigureIndex) {
+            this.setState({
+                figureIndexPageStart: 1,
+                figureIndexPageEnd: 1,
+            });
+        } else {
+            this.setState({
+                figureIndexPageStart: '',
+                figureIndexPageEnd: ''
+            });
+        }
+    }
+
+    handleTableIndex() {
+        this.setState({
+            noTableIndex: !this.state.noTableIndex
+        });
+        if (this.state.noTableIndex) {
+            this.setState({
+                tableIndexPageStart: 1,
+                tableIndexPageEnd: 1
+            });
+        } else {
+            this.setState({
+                tableIndexPageStart: '',
+                tableIndexPageEnd: ''
+            });
+        }
+    }
+
+    handleBibliography() {
+        this.setState({
+            noBiography: !this.state.noBiography
+        });
+        if (this.state.noBiography) {
+            this.setState({
+                biographyPageStart: 1,
+                biographyPageEnd: 1
+            });
+        } else {
+            this.setState({
+                biographyPageStart: '',
+                biographyPageEnd: ''
+            });
+        }
+    }
+
+    handleAnnexes() {
+        this.setState({
+            noAnnexes: !this.state.noAnnexes
+        });
+        if (this.state.noAnnexes) {
+            this.setState({
+                annexedPageStart: 1,
+                annexedPageEnd: 1
+            });
+        } else {
+            this.setState({
+                annexedPageStart: '',
+                annexedPageEnd: ''
+            });
+        }
     }
 
     handleChange(event) {
@@ -456,6 +617,8 @@ class PagesForm extends Component {
                         handleChange={this.handleChange}
                         coverPage={this.state.coverPage}
                         url={url}
+                        handleCoverPage={this.handleCoverPage}
+                        noCoverPage={this.state.noCoverPage}
                         nextStep={this.nextStep}
                     />
 
@@ -465,6 +628,8 @@ class PagesForm extends Component {
                         generalIndexPageStart={this.state.generalIndexPageStart}
                         generalIndexPageEnd={this.state.generalIndexPageEnd}
                         url={url}
+                        handleGeneralIndex={this.handleGeneralIndex}
+                        noGeneralIndex={this.state.noGeneralIndex}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
                     />
@@ -475,6 +640,8 @@ class PagesForm extends Component {
                         figureIndexPageStart={this.state.figureIndexPageStart}
                         figureIndexPageEnd={this.state.figureIndexPageEnd}
                         url={url}
+                        handleFigureIndex={this.handleFigureIndex}
+                        noFigureIndex={this.state.noFigureIndex}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
                     />
@@ -485,6 +652,8 @@ class PagesForm extends Component {
                         tableIndexPageStart={this.state.tableIndexPageStart}
                         tableIndexPageEnd={this.state.tableIndexPageEnd}
                         url={url}
+                        handleTableIndex={this.handleTableIndex}
+                        noTableIndex={this.state.noTableIndex}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
                     />
@@ -495,6 +664,8 @@ class PagesForm extends Component {
                         biographyPageStart={this.state.biographyPageStart}
                         biographyPageEnd={this.state.biographyPageEnd}
                         url={url}
+                        handleBibliography={this.handleBibliography}
+                        noBiography={this.state.noBiography}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
                     />
@@ -505,6 +676,8 @@ class PagesForm extends Component {
                         annexedPageStart={this.state.annexedPageStart}
                         annexedPageEnd={this.state.annexedPageEnd}
                         url={url}
+                        handleAnnexes={this.handleAnnexes}
+                        noAnnexes={this.state.noAnnexes}
                         previousStep={this.previousStep}
                         handleSubmit={this.handleSubmit}
                     />

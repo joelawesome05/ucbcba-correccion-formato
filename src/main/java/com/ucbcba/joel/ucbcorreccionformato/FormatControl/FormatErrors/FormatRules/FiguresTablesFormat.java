@@ -71,17 +71,62 @@ public class FiguresTablesFormat implements FormatRule {
     }
 
     private boolean isValidTittle(int pos, int currentPage) throws IOException {
-        boolean resp = isValidCurrentPage(currentPage,pos);
-        if(!resp) {
-            for (int page = currentPage+1; page < lastPage; page++) {
-                if (isValidOtherPage(page)) {
-                    return true;
+        boolean resp = hasTheKeyWords(currentPage,pos);
+        if(resp){
+            return isValidCurrentPage(currentPage,pos);
+        }else {
+            for (int page = currentPage + 1; page < lastPage; page++) {
+                if(hasTheKeyWords(page)) {
+
+                        return isValidOtherPage(page);
+
                 }
+            }
+        }
+        return false;
+    }
+
+    public boolean hasTheKeyWords(int page,int posStart) throws IOException {
+        boolean resp = false;
+        GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
+        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
+        WordsProperties wordLine;
+        for(int pos=posStart+1; pos<wordsLines.size(); pos++){
+            wordLine = wordsLines.get(pos);
+            String arr[] = wordLine.toString().split(" ", 2);
+            String firstWordLine = arr[0];
+            if (firstWordLine.contains("Tabla")) {
+                return true;
+            }
+            if (firstWordLine.contains("Figura")) {
+                return true;
+            }
+            if (firstWordLine.contains("Fuente:")) {
+                return true;
             }
         }
         return resp;
     }
 
+    public boolean hasTheKeyWords(int page) throws IOException {
+        boolean resp = false;
+        GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
+        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
+        for(WordsProperties wordLine: wordsLines){
+            String arr[] = wordLine.toString().split(" ", 2);
+            String firstWordLine = arr[0];
+            if (firstWordLine.contains("Tabla")) {
+                return true;
+            }
+            if (firstWordLine.contains("Figura")) {
+                return true;
+            }
+            if (firstWordLine.contains("Fuente:")) {
+                return true;
+            }
+        }
+        return resp;
+    }
     private boolean isValidCurrentPage(int page, int posStart) throws IOException {
         boolean resp = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);

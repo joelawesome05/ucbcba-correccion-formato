@@ -33,7 +33,7 @@ public class GeneralIndexFormat extends Format {
             }
         }
 
-        if (isBold) {
+        /*if (isBold) {
             if (!word.allCharsHaveFontTypeOf("Bold")) {
                 comments.add("Tenga Negrilla");
             }
@@ -49,6 +49,25 @@ public class GeneralIndexFormat extends Format {
             }
         }else{
             if (word.someCharsHaveFontTypeOf("Italic")){
+                comments.add("No tenga cursiva");
+            }
+        }*/
+        if (isBold) {
+            if (!word.getFontName(0).contains("Bold")) {
+                comments.add("Tenga Negrilla");
+            }
+        }else{
+            if (word.getFontName(0).contains("Bold")){
+                comments.add("No tenga negrilla");
+            }
+        }
+
+        if (isItalic) {
+            if (!word.getFontName(0).contains("Italic")) {
+                comments.add("Tenga Cursiva");
+            }
+        }else{
+            if (word.getFontName(0).contains("Italic")){
                 comments.add("No tenga cursiva");
             }
         }

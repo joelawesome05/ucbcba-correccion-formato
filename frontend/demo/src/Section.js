@@ -56,7 +56,7 @@ class Section extends Component {
                     <div className="highlight__location">
                         Página {highlight.position.pageNumber}
                     </div>
-                    <p className="resolve" onClick={this.props.removeHighlight.bind(this, index)}>resolver</p>
+                    <p className="resolve" onClick={this.props.removeHighlight.bind(this, highlight.id)}>resolver</p>
                 </li>)
             } else {
                 warnings.push(<li
@@ -88,7 +88,7 @@ class Section extends Component {
                     <div className="highlight__location">
                         Página {highlight.position.pageNumber}
                     </div>
-                    <p className="resolve" onClick={this.props.removeHighlight.bind(this, index)}>resolver</p>
+                    <p className="resolve" onClick={this.props.removeHighlight.bind(this, highlight.id)}>resolver</p>
 
                 </li>)
             }

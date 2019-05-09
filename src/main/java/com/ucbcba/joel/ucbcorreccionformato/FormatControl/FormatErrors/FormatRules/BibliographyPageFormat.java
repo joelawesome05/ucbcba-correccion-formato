@@ -60,7 +60,7 @@ public class BibliographyPageFormat implements  FormatRule {
                     formatErrorscomments.add("Por favor revisar la guía de referencias bibliográficas en "+pattern.getName());
                 }
             }else{
-                formatErrorscomments.add("Por favor revisar que la referencias siga las normas de presentación según la Guía");
+                formatErrorscomments.add("Por favor revisar que la referencia bibliográfica siga las normas de presentación según la Guía");
             }
             reportFormatErrors(formatErrorscomments, bibliographyElement, formatErrors, pageWidth, pageHeight, page);
         }
@@ -173,11 +173,16 @@ public class BibliographyPageFormat implements  FormatRule {
         }
 
         if (lineWord.contains(":")){
-            if( lineWord.contains("“")){
-                return movies;
-            }else{
+            Matcher matcher = book_bibliography.matcher(lineWord);
+            if (matcher.find()){
                 return book;
             }
+            matcher = movies_bibliography.matcher(lineWord);
+            if (matcher.find()){
+                return movies;
+            }
+            return book;
+
         }
 
         return null;

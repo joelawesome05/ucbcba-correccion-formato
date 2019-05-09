@@ -27,19 +27,23 @@ public class FormatErrorDetector {
 
     public List<FormatErrorResponse> getCoverPageFormatErrors(Integer coverPage) throws IOException {
         List<FormatErrorResponse> coverPageFormatErrors = new ArrayList<>();
-        FormatRule coverPageFormat = new CoverPageFormat(pdfdocument, idHighlights);
-        if (coverPage > 0  && coverPage <= pdfdocument.getNumberOfPages()) {
-            coverPageFormatErrors.addAll(coverPageFormat.getFormatErrors(coverPage));
+        if(coverPage!=null) {
+            FormatRule coverPageFormat = new CoverPageFormat(pdfdocument, idHighlights);
+            if (coverPage > 0 && coverPage <= pdfdocument.getNumberOfPages()) {
+                coverPageFormatErrors.addAll(coverPageFormat.getFormatErrors(coverPage));
+            }
         }
         return coverPageFormatErrors;
     }
 
     public List<FormatErrorResponse> getGeneralIndexFormatErrors(Integer generalIndexPageStart, Integer generalIndexPageEnd) throws IOException {
         List<FormatErrorResponse> generaIndexFormatErrors = new ArrayList<>();
-        if (generalIndexPageStart > 0  && generalIndexPageStart <= pdfdocument.getNumberOfPages() && generalIndexPageEnd <= pdfdocument.getNumberOfPages()) {
-            FormatRule generalIndexPageFormat = new GeneralIndexPageFormat(pdfdocument, idHighlights,generalIndexPageStart,generalIndexPageEnd);
-            for (int page=generalIndexPageStart; page <= generalIndexPageEnd; page++){
-                generaIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
+        if(generalIndexPageStart!=null) {
+            if (generalIndexPageStart > 0 && generalIndexPageStart <= pdfdocument.getNumberOfPages() && generalIndexPageEnd <= pdfdocument.getNumberOfPages()) {
+                FormatRule generalIndexPageFormat = new GeneralIndexPageFormat(pdfdocument, idHighlights, generalIndexPageStart, generalIndexPageEnd);
+                for (int page = generalIndexPageStart; page <= generalIndexPageEnd; page++) {
+                    generaIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
+                }
             }
         }
         return generaIndexFormatErrors;
@@ -47,10 +51,12 @@ public class FormatErrorDetector {
 
     public List<FormatErrorResponse> getFigureIndexFormatErrors(Integer figureIndexPageStart, Integer figureIndexPageEnd) throws IOException {
         List<FormatErrorResponse> figureIndexFormatErrors = new ArrayList<>();
-        if (figureIndexPageStart > 0  && figureIndexPageStart <= pdfdocument.getNumberOfPages() && figureIndexPageEnd <= pdfdocument.getNumberOfPages()) {
-            FormatRule generalIndexPageFormat = new TableFigureIndexFormat(pdfdocument, idHighlights,figureIndexPageStart,"FIGURAS");
-            for (int page=figureIndexPageStart; page <= figureIndexPageEnd; page++){
-                figureIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
+        if(figureIndexPageStart!=null) {
+            if (figureIndexPageStart > 0 && figureIndexPageStart <= pdfdocument.getNumberOfPages() && figureIndexPageEnd <= pdfdocument.getNumberOfPages()) {
+                FormatRule generalIndexPageFormat = new TableFigureIndexFormat(pdfdocument, idHighlights, figureIndexPageStart, "FIGURAS");
+                for (int page = figureIndexPageStart; page <= figureIndexPageEnd; page++) {
+                    figureIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
+                }
             }
         }
         return figureIndexFormatErrors;
@@ -58,10 +64,12 @@ public class FormatErrorDetector {
 
     public List<FormatErrorResponse> getTableIndexFormatErrors(Integer tableIndexPageStart, Integer tableIndexPageEnd) throws IOException {
         List<FormatErrorResponse> figureIndexFormatErrors = new ArrayList<>();
-        if (tableIndexPageStart > 0  && tableIndexPageStart <= pdfdocument.getNumberOfPages() && tableIndexPageEnd <= pdfdocument.getNumberOfPages()) {
-            FormatRule generalIndexPageFormat = new TableFigureIndexFormat(pdfdocument, idHighlights,tableIndexPageStart,"TABLAS");
-            for (int page=tableIndexPageStart; page <= tableIndexPageEnd; page++){
-                figureIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
+        if(tableIndexPageStart!=null) {
+            if (tableIndexPageStart > 0 && tableIndexPageStart <= pdfdocument.getNumberOfPages() && tableIndexPageEnd <= pdfdocument.getNumberOfPages()) {
+                FormatRule generalIndexPageFormat = new TableFigureIndexFormat(pdfdocument, idHighlights, tableIndexPageStart, "TABLAS");
+                for (int page = tableIndexPageStart; page <= tableIndexPageEnd; page++) {
+                    figureIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
+                }
             }
         }
         return figureIndexFormatErrors;
@@ -69,25 +77,36 @@ public class FormatErrorDetector {
 
 
     public List<FormatErrorResponse> getPageNumerationFormatErrors(Integer indexPageEnd, Integer annexesStartPage, Integer annexesEndPage) throws IOException {
+        if(annexesStartPage==null){
+            annexesStartPage = pdfdocument.getNumberOfPages()+1;
+        }
+        if(annexesEndPage==null){
+            annexesEndPage = pdfdocument.getNumberOfPages()+1;
+        }
         List<FormatErrorResponse> pageNumerationFormatErrors = new ArrayList<>();
-        if (indexPageEnd > 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && annexesStartPage <= pdfdocument.getNumberOfPages() && annexesEndPage <= pdfdocument.getNumberOfPages()) {
+        if (indexPageEnd >= 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && annexesStartPage -1 <= pdfdocument.getNumberOfPages() ) {
             for (int page=indexPageEnd+1; page < annexesStartPage; page++){
                 FormatRule pageNumerationFormat = new PageNumerationFormat(pdfdocument, idHighlights,page);
                 pageNumerationFormatErrors.addAll(pageNumerationFormat.getFormatErrors(page));
             }
-            int pageNumerationAnnexes = 1;
-            for (int page=annexesStartPage; page <= annexesEndPage; page++){
-                FormatRule pageNumerationFormat = new PageNumerationFormat(pdfdocument, idHighlights,pageNumerationAnnexes);
-                pageNumerationFormatErrors.addAll(pageNumerationFormat.getFormatErrors(page));
-                pageNumerationAnnexes++;
+            if(annexesEndPage <= pdfdocument.getNumberOfPages()) {
+                int pageNumerationAnnexes = 1;
+                for (int page = annexesStartPage; page <= annexesEndPage; page++) {
+                    FormatRule pageNumerationFormat = new PageNumerationFormat(pdfdocument, idHighlights, pageNumerationAnnexes);
+                    pageNumerationFormatErrors.addAll(pageNumerationFormat.getFormatErrors(page));
+                    pageNumerationAnnexes++;
+                }
             }
         }
         return pageNumerationFormatErrors;
     }
 
     public List<FormatErrorResponse> getFigureTableFormatErrors(Integer indexPageEnd, Integer bibliographyStartPage) throws IOException {
+        if(bibliographyStartPage==null){
+            bibliographyStartPage = pdfdocument.getNumberOfPages()+1;
+        }
         List<FormatErrorResponse> figureFormatErrors = new ArrayList<>();
-        if (indexPageEnd > 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && bibliographyStartPage <= pdfdocument.getNumberOfPages()) {
+        if (indexPageEnd >= 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && bibliographyStartPage -1 <= pdfdocument.getNumberOfPages()) {
             FormatRule figureTablesFormat = new FiguresTablesFormat(pdfdocument, idHighlights, tableNumeration,figureNumeration,bibliographyStartPage);
             for (int page=indexPageEnd+1; page < bibliographyStartPage; page++){
                 figureFormatErrors.addAll(figureTablesFormat.getFormatErrors(page));
@@ -97,11 +116,14 @@ public class FormatErrorDetector {
         return figureFormatErrors;
     }
 
-    public List<FormatErrorResponse> getEnglishWordsFormatErrors(Integer indexPageEnd, Integer annexedPage) throws IOException {
+    public List<FormatErrorResponse> getEnglishWordsFormatErrors(Integer indexPageEnd, Integer bibliographyStartPage) throws IOException {
+        if(bibliographyStartPage==null){
+            bibliographyStartPage = pdfdocument.getNumberOfPages()+1;
+        }
         List<FormatErrorResponse> englishWordsFormatErrors = new ArrayList<>();
-        if (indexPageEnd > 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && annexedPage - 1 <= pdfdocument.getNumberOfPages()) {
+        if (indexPageEnd >= 0  && indexPageEnd <= pdfdocument.getNumberOfPages() && bibliographyStartPage - 1 <= pdfdocument.getNumberOfPages()) {
             FormatRule englishWordsFormat = new EnglishWordsFormat(pdfdocument, idHighlights);
-            for (int page=indexPageEnd+1; page < annexedPage; page++){
+            for (int page=indexPageEnd+1; page < bibliographyStartPage; page++){
                 englishWordsFormatErrors.addAll(englishWordsFormat.getFormatErrors(page));
             }
         }
@@ -110,10 +132,12 @@ public class FormatErrorDetector {
 
     public List<FormatErrorResponse> getBibliographyFormatErrors(Integer biographyPage, Integer biographyPageEnd) throws IOException {
         List<FormatErrorResponse> biographyFormatErrors = new ArrayList<>();
-        if (biographyPage > 0  && biographyPage <= pdfdocument.getNumberOfPages() && biographyPageEnd <= pdfdocument.getNumberOfPages()) {
-            for (int page=biographyPage; page <= biographyPageEnd; page++){
-                FormatRule bibliographyFormat = new BibliographyPageFormat(pdfdocument, idHighlights,biographyPage);
-                biographyFormatErrors.addAll(bibliographyFormat.getFormatErrors(page));
+        if(biographyPage!=null && biographyPageEnd!=null) {
+            if (biographyPage > 0 && biographyPage <= pdfdocument.getNumberOfPages() && biographyPageEnd <= pdfdocument.getNumberOfPages()) {
+                for (int page = biographyPage; page <= biographyPageEnd; page++) {
+                    FormatRule bibliographyFormat = new BibliographyPageFormat(pdfdocument, idHighlights, biographyPage);
+                    biographyFormatErrors.addAll(bibliographyFormat.getFormatErrors(page));
+                }
             }
         }
         return biographyFormatErrors;

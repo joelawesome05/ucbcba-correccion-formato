@@ -37,6 +37,15 @@ public class FormatErrorController {
         PDDocument pdfdocument = null;
         try {
             pdfdocument = PDDocument.load(new File(dirPdfFile));
+            if(generalIndexEndPage==null){
+                generalIndexEndPage = 0;
+            }
+            if(figureIndexEndPage==null){
+                figureIndexEndPage = 0;
+            }
+            if(tableIndexEndPage==null){
+                tableIndexEndPage = 0;
+            }
             int indexEndPage = getIndexPageEnd(generalIndexEndPage, figureIndexEndPage, tableIndexEndPage);
             FormatErrorDetector formatErrorDetector = new FormatErrorDetector(pdfdocument,idHighlights);
             formatErrors.addAll(formatErrorDetector.getCoverPageFormatErrors(coverPage));

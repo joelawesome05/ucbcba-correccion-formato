@@ -13,28 +13,18 @@ import java.util.List;
 @RestController
 public class PageController {
     @RequestMapping("/api/getPages/{fileName:.+}")
-    public List<Integer> getPages(@PathVariable String fileName)  {
-        List<Integer> pages = new ArrayList<>();
+    public PdfDocumentResponse getPages(@PathVariable String fileName)  {
+        PdfDocumentResponse resp = null;
         String dirPdfFile = "uploads/" + fileName;
         PDDocument pdfdocument = null;
         try {
             pdfdocument = PDDocument.load(new File(dirPdfFile));
-            PdfDocument document = new PdfDocument(pdfdocument);
-            pages.add(document.getCoverPage());
-            pages.add(document.getGeneralIndexStartPage());
-            pages.add(document.getGeneralIndexEndPage());
-            pages.add(document.getFigureIndexStartPage());
-            pages.add(document.getFigureIndexEndPage());
-            pages.add(document.getTableIndexStartPage());
-            pages.add(document.getTableIndexEndPage());
-            pages.add(document.getBibliographyStartPage());
-            pages.add(document.getBibliographyEndPage());
-            pages.add(document.getAnnexesStartPage());
-            pages.add(document.getAnnexesEndPage());
+            PdfDocumentDetector document = new PdfDocumentDetector(pdfdocument);
+            resp = document.getPdfPages();
             pdfdocument.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return pages;
+        return resp;
     }
 }

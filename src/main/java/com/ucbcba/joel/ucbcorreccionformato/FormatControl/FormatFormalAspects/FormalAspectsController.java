@@ -14,17 +14,30 @@ import java.util.List;
 @RestController
 public class FormalAspectsController {
     @RequestMapping("/api/basicFormat/{fileName:.+}")
-    public List<FormalAspectsResponse> getBasicMisstakes(@PathVariable String fileName
-            , @RequestParam(value="generalIndexEndPage") Integer generalIndexPageEnd
-            , @RequestParam(value="figureIndexEndPage") Integer figureIndexPageEnd
-            , @RequestParam(value="tableIndexEndPage") Integer tableIndexPageEnd
+    public List<FormalAspectsResponse> getFormalAspects(@PathVariable String fileName
+            , @RequestParam(value="generalIndexEndPage") Integer generalIndexEndPage
+            , @RequestParam(value="figureIndexEndPage") Integer figureIndexEndPage
+            , @RequestParam(value="tableIndexEndPage") Integer tableIndexEndPage
             , @RequestParam(value="annexesStartPage") Integer annexedPage) {
         List<FormalAspectsResponse> formalAspectsResponses = new ArrayList<>();
-        int indexPageEnd = getIndexEndPage(generalIndexPageEnd, figureIndexPageEnd, tableIndexPageEnd);
+
         String dirPdfFile = "uploads/"+fileName;
         PDDocument pdfdocument = null;
         try {
             pdfdocument = PDDocument.load( new File(dirPdfFile) );
+            if(generalIndexEndPage==null){
+                generalIndexEndPage = 0;
+            }
+            if(figureIndexEndPage==null){
+                figureIndexEndPage = 0;
+            }
+            if(tableIndexEndPage==null){
+                tableIndexEndPage = 0;
+            }
+            if(annexedPage==null){
+                annexedPage = pdfdocument.getNumberOfPages();
+            }
+            int indexPageEnd = getIndexEndPage(generalIndexEndPage, figureIndexEndPage, tableIndexEndPage);
             FormalAspectsDetector formatErrorDetector = new FormalAspectsDetector(pdfdocument);
             formalAspectsResponses = formatErrorDetector.getFormalAspectsResponses(indexPageEnd,annexedPage);
             pdfdocument.close();

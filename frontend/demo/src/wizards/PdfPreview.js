@@ -16,22 +16,30 @@ class PdfPreview extends Component {
 
 
     render() {
+        if (this.props.active) {
+            return (<center>
+                <p> No tengo esta sección </p>
+            </center>)
+        } else {
+            if (!this.props.pageStart || !this.props.pageEnd) {
+                return (
+                    <center>
+                        <p> Esperando por el rango de páginas. </p>
+                    </center>
+                )
+            }
+        };
+
         if (this.state.totalPages != null) {
             if ((this.props.pageStart > this.props.pageEnd) || (this.props.pageStart < 1) || (this.props.pageEnd > this.state.totalPages)) {
                 return (
                     <center>
-                        <p> No se pudo mostrar las páginas del documento. </p>
+                        <p> Rango de páginas inexistentes del documento. </p>
                     </center>
                 )
             }
         }
-        if (!this.props.pageStart || !this.props.pageEnd) {
-            return (
-                <center>
-                    <p> Esperando por el rango de páginas. </p>
-                </center>
-            )
-        }
+
         var pdfPages = [];
         for (var i = this.props.pageStart; i <= this.props.pageEnd; i++) {
             pdfPages.push(
