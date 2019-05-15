@@ -142,7 +142,7 @@ class App extends Component<Props, State> {
         <div>
           <div className="center-loader">
             <center>
-              <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+              <div className="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
               <h5> Cargando...</h5>
             </center>
           </div>

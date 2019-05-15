@@ -29,7 +29,7 @@
     "react-bootstrap": "^1.0.0-beta.5",
     "react-cookie": "3.0.4",
     "react-dom": "^16.6.3",
-    "react-pdf-js": "^4.0.2",
+    "react-pdf": "^4.0.5",
     "react-pointable": "^1.1.1",
     "react-rnd": "^7.1.5",
     "react-router": "^2.4.1",

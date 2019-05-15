@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import "./style/FileForm.css";
+import ucbImage from './images/ucbcba.png';
+import { Link } from 'react-router-dom';
 
 class FileForm extends Component {
 
@@ -77,7 +79,9 @@ class FileForm extends Component {
             <div >
                 <div className="mynavbar">
                     <center>
-                        <img src={require('./images/ucbcba.png')} />
+                        <Link to="/">
+                            <img src={ucbImage} />
+                        </Link>
                     </center>
                 </div>
 

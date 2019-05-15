@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import PDF from 'react-pdf-js';
+import { Document, Page, pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 class PdfPreview extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            totalPages: null
+            numPages: null
         };
     }
 
-    onDocumentComplete = (pages) => {
-        this.setState({ totalPages: pages });
+    onDocumentLoadSuccess = ({ numPages }) => {
+        this.setState({ numPages });
     }
 
 
@@ -31,8 +32,8 @@ class PdfPreview extends Component {
             }
         };
 
-        if (this.state.totalPages != null) {
-            if ((this.props.pageStart > this.props.pageEnd) || (this.props.pageStart < 1) || (this.props.pageEnd > this.state.totalPages)) {
+        if (this.state.numPages != null) {
+            if ((this.props.pageStart > this.props.pageEnd) || (this.props.pageStart < 1) || (this.props.pageEnd > this.state.numPages)) {
                 return (
                     <center>
                         <p> Rango de páginas inexistentes del documento. </p>
@@ -44,17 +45,17 @@ class PdfPreview extends Component {
         var pdfPages = [];
         for (var i = this.props.pageStart; i <= this.props.pageEnd; i++) {
             pdfPages.push(
-                <PDF
-                    file={this.props.url}
-                    onDocumentComplete={this.onDocumentComplete}
-                    page={i}
-                    scale={0.35}
-                    key={i}
-                />);
+                <Page pageNumber={i} scale={0.35} className="pagesPDf" loading={"Cargando PDF..."} />);
         }
         return (
             <center>
-                {pdfPages}
+                <Document
+                    file={this.props.url}
+                    onLoadSuccess={this.onDocumentLoadSuccess}
+                    loading={"Cargando PDF..."}
+                >
+                    {pdfPages}
+                </Document>
             </center>
         )
     }

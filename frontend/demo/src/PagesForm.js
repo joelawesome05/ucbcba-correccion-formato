@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PDF from 'react-pdf-js';
 
 import StepCover from "./wizards/StepCover"
 import StepGeneralIndex from "./wizards/StepGeneralIndex"
@@ -8,7 +7,7 @@ import StepTableIndex from "./wizards/StepTableIndex"
 import StepBiography from "./wizards/StepBiography"
 import StepAnnexed from "./wizards/StepAnnexed"
 import { Link } from 'react-router-dom';
-
+import ucbImage from './images/ucbcba.png';
 import "./style/PagesForm.css";
 
 var url = " ";
@@ -422,13 +421,13 @@ class PagesForm extends Component {
                     </div>
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep5}> 5 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
                             <p>Bibliografía</p>
                         </center>
                     </div>
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep6}> 6 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
                             <p>Anexos</p>
                         </center>
                     </div>
@@ -440,40 +439,40 @@ class PagesForm extends Component {
                 <div className="row">
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep1}> 1 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
                             <p >Carátula </p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep2}> 2 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
                             <p>Índice General</p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep3}> 3 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep3}> 3 </button>
                             <p>Índice de Figuras</p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-blue" disabled> 4 </button>
+                            <button type="button" className="btn-circle-blue" disabled> 4 </button>
                             <p>Índice de Tablas</p>
                         </center>
                     </div>
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep5}> 5 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
                             <p>Bibliografía</p>
                         </center>
                     </div>
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep6}> 6 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
                             <p>Anexos</p>
                         </center>
                     </div>
@@ -485,40 +484,40 @@ class PagesForm extends Component {
                 <div className="row">
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep1}> 1 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
                             <p >Carátula </p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep2}> 2 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
                             <p>Índice General</p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep3}> 3 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep3}> 3 </button>
                             <p>Índice de Figuras</p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep4}> 4 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
                             <p>Índice de Tablas</p>
                         </center>
                     </div>
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-blue" disabled> 5 </button>
+                            <button type="button" className="btn-circle-blue" disabled> 5 </button>
                             <p>Bibliografía</p>
                         </center>
                     </div>
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep6}> 6 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
                             <p>Anexos</p>
                         </center>
                     </div>
@@ -530,40 +529,40 @@ class PagesForm extends Component {
                 <div className="row">
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep1}> 1 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
                             <p >Carátula </p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep2}> 2 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
                             <p>Índice General</p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep3} > 3 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep3} > 3 </button>
                             <p>Índice de Figuras</p>
                         </center>
                     </div>
 
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep4}> 4 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
                             <p>Índice de Tablas</p>
                         </center>
                     </div>
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-white" onClick={this.goStep5}> 5 </button>
+                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
                             <p>Bibliografía</p>
                         </center>
                     </div>
                     <div className="col-lg-2">
                         <center>
-                            <button type="button" class="btn-circle-blue" disabled> 6 </button>
+                            <button type="button" className="btn-circle-blue" disabled> 6 </button>
                             <p>Anexos</p>
                         </center>
                     </div>
@@ -580,13 +579,13 @@ class PagesForm extends Component {
                     <div className="mynavbar">
                         <center>
                             <Link to="/">
-                                <img src={require('./images/ucbcba.png')} />
+                                <img src={ucbImage} />
                             </Link>
                         </center>
                     </div>
                     <div className="center-loader">
                         <center>
-                            <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                            <div className="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                             <h5> Calibrando páginas...</h5>
                         </center>
                     </div>

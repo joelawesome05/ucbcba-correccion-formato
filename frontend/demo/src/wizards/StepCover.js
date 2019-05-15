@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PDF from 'react-pdf-js';
 import PdfPreview from "./PdfPreview";
 import { Link } from 'react-router-dom';
 

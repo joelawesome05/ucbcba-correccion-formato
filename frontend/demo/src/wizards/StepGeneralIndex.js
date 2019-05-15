@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PDF from 'react-pdf-js';
 import PdfPreview from "./PdfPreview";
 import "../style/PagesForm.css";
 
@@ -104,7 +103,7 @@ class StepGeneralIndex extends Component {
                     </div>
 
                     <div className="col-lg-8">
-                        <div class="scrollable">
+                        <div className="scrollable">
                             <center>
                                 <PdfPreview
                                     url={this.props.url}
