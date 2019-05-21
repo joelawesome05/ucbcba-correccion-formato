@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page } from 'react-pdf/dist/entry.webpack';
+import { pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 class PdfPreview extends Component {
@@ -26,7 +27,7 @@ class PdfPreview extends Component {
                 return (
 
                     <center>
-                        <p> Esperando por el rango de páginas. </p>
+                        <p> Esperando por un rango de páginas </p>
                     </center>
                 )
             }
@@ -36,7 +37,7 @@ class PdfPreview extends Component {
             if ((this.props.pageStart > this.props.pageEnd) || (this.props.pageStart < 1) || (this.props.pageEnd > this.state.numPages)) {
                 return (
                     <center>
-                        <p> Rango de páginas inexistentes del documento. </p>
+                        <p> Rango de páginas inválido </p>
                     </center>
                 )
             }
@@ -45,7 +46,7 @@ class PdfPreview extends Component {
         var pdfPages = [];
         for (var i = this.props.pageStart; i <= this.props.pageEnd; i++) {
             pdfPages.push(
-                <Page pageNumber={i} scale={0.35} className="pagesPDf" loading={"Cargando PDF..."} />);
+                <Page pageNumber={i} scale={0.35} key={i} className="pagesPDf" loading={"Cargando PDF..."} />);
         }
         return (
             <center>

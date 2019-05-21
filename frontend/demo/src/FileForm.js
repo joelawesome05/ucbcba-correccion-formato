@@ -42,7 +42,6 @@ class FileForm extends Component {
             }
         ).then(
             data => {
-                console.log(data);
                 if (data.status) {
                     throw new Error((data && data.message) || "Ocurrió algún error.");
                 } else {

@@ -4,13 +4,6 @@ import PdfPreview from "./PdfPreview";
 class StepTableIndex extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            totalPages: null
-        };
-    }
-
-    onDocumentComplete = (pages) => {
-        this.setState({ totalPages: pages });
     }
 
     render() {
@@ -25,19 +18,15 @@ class StepTableIndex extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página inicial:</label>
                         <input
-                            name="tableIndexPageStart"
+                            name="tableIndexStartPage"
                             type="number"
-                            value={this.props.tableIndexPageStart}
-                            onChange={this.props.handleChange}
                         />
                     </div>
                     <div className="leftForm">
                         <label className="myLabel">Página final:</label>
                         <input
-                            name="tableIndexPageEnd"
+                            name="tableIndexEndPage"
                             type="number"
-                            value={this.props.tableIndexPageEnd}
-                            onChange={this.props.handleChange}
                         />
                     </div>
                 </fieldset>
@@ -48,9 +37,9 @@ class StepTableIndex extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página inicial:</label>
                         <input
-                            name="tableIndexPageStart"
+                            name="tableIndexStartPage"
                             type="number"
-                            value={this.props.tableIndexPageStart}
+                            value={this.props.tableIndexStartPage}
                             onChange={this.props.handleChange}
                             min="1"
                             required
@@ -59,9 +48,9 @@ class StepTableIndex extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página final:</label>
                         <input
-                            name="tableIndexPageEnd"
+                            name="tableIndexEndPage"
                             type="number"
-                            value={this.props.tableIndexPageEnd}
+                            value={this.props.tableIndexEndPage}
                             onChange={this.props.handleChange}
                             min="1"
                             required
@@ -71,7 +60,14 @@ class StepTableIndex extends Component {
 
             );
         };
-
+        var errorMessage = null;
+        if (!this.props.validInputs) {
+            errorMessage = (<div>
+                <center>
+                    <p className="alert alert-danger myAlert" role="alert"> Por favor ingrese un rango de páginas válido </p>
+                </center>
+            </div>);
+        }
         return (
             <div>
                 <center><h4 className="tittle-wizard"> Índice de Tablas </h4> </center>
@@ -80,11 +76,11 @@ class StepTableIndex extends Component {
                         <div className="inputs-buttons">
                             <div className="custom-control custom-checkbox checkBoxForm">
                                 <input type="checkbox" className="custom-control-input" id="customCheck1" onChange={() => { this.props.handleTableIndex() }} checked={this.props.noTableIndex} />
-                                <label className="custom-control-label" for="customCheck1">No tengo esta sección</label>
+                                <label className="custom-control-label" htmlFor="customCheck1">No tengo esta sección</label>
                             </div>
                             <form onSubmit={this.props.nextStep}>
                                 {inputs}
-
+                                {errorMessage}
                                 <div className="next-previous-buttons">
                                     <div className="leftForm">
                                         <button
@@ -107,8 +103,8 @@ class StepTableIndex extends Component {
                             <center>
                                 <PdfPreview
                                     url={this.props.url}
-                                    pageStart={this.props.tableIndexPageStart}
-                                    pageEnd={this.props.tableIndexPageEnd}
+                                    pageStart={this.props.tableIndexStartPage}
+                                    pageEnd={this.props.tableIndexEndPage}
                                     active={this.props.noTableIndex}
                                 />
                             </center>

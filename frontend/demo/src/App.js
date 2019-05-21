@@ -18,6 +18,9 @@ import Spinner from "./Spinner";
 import Sidebar from "./Sidebar";
 
 import type { T_Highlight, T_NewHighlight } from "../../src/types";
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRedo } from '@fortawesome/free-solid-svg-icons'
 
 import "./style/App.css";
 
@@ -59,6 +62,7 @@ class App extends Component<Props, State> {
     highlights: [],
     basicFormatReport: [],
     isLoading: true,
+    error: false
   };
 
   state: State;
@@ -82,12 +86,50 @@ class App extends Component<Props, State> {
   async componentDidMount() {
     document.body.style = 'background-image: none;';
     document.body.style = 'background: #717579;';
-    var basicFormatReportJson = await (await fetch(`/api/basicFormat/${encodeURI(this.props.match.params.name)}.pdf` + `${(this.props.location.search)}`)).json();
-    this.setState({ basicFormatReport: basicFormatReportJson });
+    //var basicFormatReportJson = await (await fetch(`/api/basicFormat/${encodeURI(this.props.match.params.name)}.pdf` + `${(this.props.location.search)}`)).json();
+    //this.setState({ basicFormatReport: basicFormatReportJson });
+    await fetch(`/api/basicFormat/${encodeURI(this.props.match.params.name)}.pdf` + `${(this.props.location.search)}`, {
+      method: 'POST'
+    }).then(
+      response => {
+        return response.json();
+      }
+    ).then(
+      basicFormatReportJson => {
+        if (basicFormatReportJson.status) {
+          throw new Error("Ocurrió algún error.");
+        } else {
+          this.setState({ basicFormatReport: basicFormatReportJson });
+        }
+      }
+    ).catch(
+      error => {
+        this.setState({ error: true });
+      }
+    );
 
-    var highlightsJson = await (await fetch(`/api/hightlight/errors/${encodeURI(this.props.match.params.name)}.pdf` + `${(this.props.location.search)}`)).json();
-    this.setState({ highlights: highlightsJson });
+    //var highlightsJson = await (await fetch(`/api/hightlight/errors/${encodeURI(this.props.match.params.name)}.pdf` + `${(this.props.location.search)}`)).json();
+    //this.setState({ highlights: highlightsJson });
 
+    await fetch(`/api/hightlight/errors/${encodeURI(this.props.match.params.name)}.pdf` + `${(this.props.location.search)}`, {
+      method: 'POST'
+    }).then(
+      response => {
+        return response.json();
+      }
+    ).then(
+      highlightsJson => {
+        if (highlightsJson.status) {
+          throw new Error("Ocurrió algún error.");
+        } else {
+          this.setState({ highlights: highlightsJson });
+        }
+      }
+    ).catch(
+      error => {
+        this.setState({ error: true });
+      }
+    );
     this.setState({ isLoading: false });
     window.addEventListener(
       "hashchange",
@@ -145,6 +187,23 @@ class App extends Component<Props, State> {
               <div className="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
               <h5> Cargando...</h5>
             </center>
+          </div>
+        </div>);
+    }
+    if (this.state.error) {
+      return (
+        <div>
+          <div className="container main">
+            <div className="row justify-content-md-center">
+              <div className="presentation">
+                <center>
+                  <h5 className="alert alert-danger" role="alert"> Error al cargar el archivo PDF</h5>
+                  <Link to="/">
+                    <button type="button" className="btn btn-outline-primary btn-lg"> Intenta de nuevo <FontAwesomeIcon icon={faRedo} /></button>
+                  </Link>
+                </center>
+              </div>
+            </div>
           </div>
         </div>);
     }

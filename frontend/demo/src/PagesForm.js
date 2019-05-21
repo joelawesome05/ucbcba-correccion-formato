@@ -8,6 +8,8 @@ import StepBiography from "./wizards/StepBiography"
 import StepAnnexed from "./wizards/StepAnnexed"
 import { Link } from 'react-router-dom';
 import ucbImage from './images/ucbcba.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRedo } from '@fortawesome/free-solid-svg-icons'
 import "./style/PagesForm.css";
 
 var url = " ";
@@ -17,17 +19,17 @@ class PagesForm extends Component {
         super(props);
         this.state = {
             currentStep: 1,
-            coverPage: '',
-            generalIndexPageStart: '',
-            generalIndexPageEnd: '',
-            figureIndexPageStart: '',
-            figureIndexPageEnd: '',
-            tableIndexPageStart: '',
-            tableIndexPageEnd: '',
-            biographyPageStart: '',
-            biographyPageEnd: '',
-            annexedPageStart: '',
-            annexedPageEnd: '',
+            coverPage: 0,
+            generalIndexStartPage: 0,
+            generalIndexEndPage: 0,
+            figureIndexStartPage: 0,
+            figureIndexEndPage: 0,
+            tableIndexStartPage: 0,
+            tableIndexEndPage: 0,
+            bibliographyStartPage: 0,
+            bibliographyEndPage: 0,
+            annexesStartPage: 0,
+            annexesEndPage: 0,
             noCoverPage: false,
             noGeneralIndex: false,
             noFigureIndex: false,
@@ -35,18 +37,14 @@ class PagesForm extends Component {
             noBiography: false,
             noAnnexes: false,
             isLoading: true,
+            error: false,
+            validInputs: true
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.nextStep = this.nextStep.bind(this)
         this.previousStep = this.previousStep.bind(this);
-        this.getNumbebuttons = this.getNumbebuttons.bind(this);
-        this.goStep1 = this.goStep1.bind(this);
-        this.goStep2 = this.goStep2.bind(this);
-        this.goStep3 = this.goStep3.bind(this);
-        this.goStep4 = this.goStep4.bind(this);
-        this.goStep5 = this.goStep5.bind(this);
-        this.goStep6 = this.goStep6.bind(this);
+        this.getNumberbuttons = this.getNumberbuttons.bind(this);
         this.handleCoverPage = this.handleCoverPage.bind(this);
         this.handleGeneralIndex = this.handleGeneralIndex.bind(this);
         this.handleFigureIndex = this.handleFigureIndex.bind(this);
@@ -59,69 +57,90 @@ class PagesForm extends Component {
     async componentDidMount() {
         document.body.style = 'background: none;';
         document.body.style = 'background-image: ./images/pattern_news.png;';
-        var pdfDocument = await (await fetch(`/api/getPages/${encodeURI(this.props.match.params.name)}.pdf`)).json();
-        if (pdfDocument.coverPage === 0) {
-            this.setState({
-                noCoverPage: true
-            });
-        } else {
-            this.setState({
-                coverPage: pdfDocument.coverPage
-            });
-        }
+        //var pdfDocument = await (await fetch(`/api/getPages/${encodeURI(this.props.match.params.name)}.pdf`)).json();
+        //var pdfDocument;
+        await fetch(`/api/getPages/${encodeURI(this.props.match.params.name)}.pdf`, {
+            method: 'POST'
+        }).then(
+            response => {
+                return response.json();
+            }
+        ).then(
+            pdfDocument => {
+                if (pdfDocument.status) {
+                    throw new Error("Ocurrió algún error.");
+                } else {
+                    if (pdfDocument.coverPage === 0) {
+                        this.setState({
+                            noCoverPage: true
+                        });
+                    } else {
+                        this.setState({
+                            coverPage: pdfDocument.coverPage
+                        });
+                    }
 
-        if (pdfDocument.generalIndexStartPage === 0) {
-            this.setState({
-                noGeneralIndex: true
-            });
-        } else {
-            this.setState({
-                generalIndexPageStart: pdfDocument.generalIndexStartPage,
-                generalIndexPageEnd: pdfDocument.generalIndexEndPage
-            });
-        }
+                    if (pdfDocument.generalIndexStartPage === 0) {
+                        this.setState({
+                            noGeneralIndex: true
+                        });
+                    } else {
+                        this.setState({
+                            generalIndexStartPage: pdfDocument.generalIndexStartPage,
+                            generalIndexEndPage: pdfDocument.generalIndexEndPage
+                        });
+                    }
 
-        if (pdfDocument.figureIndexStartPage === 0) {
-            this.setState({
-                noFigureIndex: true
-            });
-        } else {
-            this.setState({
-                figureIndexPageStart: pdfDocument.figureIndexStartPage,
-                figureIndexPageEnd: pdfDocument.figureIndexEndPage
-            });
-        }
-        if (pdfDocument.tableIndexStartPage === 0) {
-            this.setState({
-                noTableIndex: true
-            });
-        } else {
-            this.setState({
-                tableIndexPageStart: pdfDocument.tableIndexStartPage,
-                tableIndexPageEnd: pdfDocument.tableIndexEndPage
-            });
-        }
-        if (pdfDocument.bibliographyStartPage === 0) {
-            this.setState({
-                noBiography: true
-            });
-        } else {
-            this.setState({
-                biographyPageStart: pdfDocument.bibliographyStartPage,
-                biographyPageEnd: pdfDocument.bibliographyEndPage
-            });
-        }
-        if (pdfDocument.annexesStartPage === 0) {
-            this.setState({
-                noAnnexes: true
-            });
-        } else {
-            this.setState({
-                annexedPageStart: pdfDocument.annexesStartPage,
-                annexedPageEnd: pdfDocument.annexesEndPage
-            });
-        }
+                    if (pdfDocument.figureIndexStartPage === 0) {
+                        this.setState({
+                            noFigureIndex: true
+                        });
+                    } else {
+                        this.setState({
+                            figureIndexStartPage: pdfDocument.figureIndexStartPage,
+                            figureIndexEndPage: pdfDocument.figureIndexEndPage
+                        });
+                    }
+                    if (pdfDocument.tableIndexStartPage === 0) {
+                        this.setState({
+                            noTableIndex: true
+                        });
+                    } else {
+                        this.setState({
+                            tableIndexStartPage: pdfDocument.tableIndexStartPage,
+                            tableIndexEndPage: pdfDocument.tableIndexEndPage
+                        });
+                    }
+                    if (pdfDocument.bibliographyStartPage === 0) {
+                        this.setState({
+                            noBiography: true
+                        });
+                    } else {
+                        this.setState({
+                            bibliographyStartPage: pdfDocument.bibliographyStartPage,
+                            bibliographyEndPage: pdfDocument.bibliographyEndPage
+                        });
+                    }
+                    if (pdfDocument.annexesStartPage === 0) {
+                        this.setState({
+                            noAnnexes: true
+                        });
+                    } else {
+                        this.setState({
+                            annexesStartPage: pdfDocument.annexesStartPage,
+                            annexesEndPage: pdfDocument.annexesEndPage
+                        });
+                    }
 
+                }
+
+
+            }
+        ).catch(
+            error => {
+                this.setState({ error: true });
+            }
+        );
         this.setState({ isLoading: false });
     }
 
@@ -135,7 +154,7 @@ class PagesForm extends Component {
             });
         } else {
             this.setState({
-                coverPage: ''
+                coverPage: 0
             });
         }
     }
@@ -146,13 +165,13 @@ class PagesForm extends Component {
         });
         if (this.state.noGeneralIndex) {
             this.setState({
-                generalIndexPageStart: 1,
-                generalIndexPageEnd: 1
+                generalIndexStartPage: 1,
+                generalIndexEndPage: 1
             });
         } else {
             this.setState({
-                generalIndexPageStart: '',
-                generalIndexPageEnd: ''
+                generalIndexStartPage: 0,
+                generalIndexEndPage: 0
             });
         }
     }
@@ -163,13 +182,13 @@ class PagesForm extends Component {
         });
         if (this.state.noFigureIndex) {
             this.setState({
-                figureIndexPageStart: 1,
-                figureIndexPageEnd: 1,
+                figureIndexStartPage: 1,
+                figureIndexEndPage: 1,
             });
         } else {
             this.setState({
-                figureIndexPageStart: '',
-                figureIndexPageEnd: ''
+                figureIndexStartPage: 0,
+                figureIndexEndPage: 0
             });
         }
     }
@@ -180,13 +199,13 @@ class PagesForm extends Component {
         });
         if (this.state.noTableIndex) {
             this.setState({
-                tableIndexPageStart: 1,
-                tableIndexPageEnd: 1
+                tableIndexStartPage: 1,
+                tableIndexEndPage: 1
             });
         } else {
             this.setState({
-                tableIndexPageStart: '',
-                tableIndexPageEnd: ''
+                tableIndexStartPage: 0,
+                tableIndexEndPage: 0
             });
         }
     }
@@ -197,13 +216,13 @@ class PagesForm extends Component {
         });
         if (this.state.noBiography) {
             this.setState({
-                biographyPageStart: 1,
-                biographyPageEnd: 1
+                bibliographyStartPage: 1,
+                bibliographyEndPage: 1
             });
         } else {
             this.setState({
-                biographyPageStart: '',
-                biographyPageEnd: ''
+                bibliographyStartPage: 0,
+                bibliographyEndPage: 0
             });
         }
     }
@@ -214,13 +233,13 @@ class PagesForm extends Component {
         });
         if (this.state.noAnnexes) {
             this.setState({
-                annexedPageStart: 1,
-                annexedPageEnd: 1
+                annexesStartPage: 1,
+                annexesEndPage: 1
             });
         } else {
             this.setState({
-                annexedPageStart: '',
-                annexedPageEnd: ''
+                annexesStartPage: 0,
+                annexesEndPage: 0
             });
         }
     }
@@ -233,344 +252,118 @@ class PagesForm extends Component {
         event.preventDefault();
         const searchParams = new URLSearchParams();
         searchParams.set("coverPage", this.state.coverPage);
-        searchParams.set("generalIndexStartPage", this.state.generalIndexPageStart);
-        searchParams.set("generalIndexEndPage", this.state.generalIndexPageEnd);
-        searchParams.set("figureIndexStartPage", this.state.figureIndexPageStart);
-        searchParams.set("figureIndexEndPage", this.state.figureIndexPageEnd);
-        searchParams.set("tableIndexStartPage", this.state.tableIndexPageStart);
-        searchParams.set("tableIndexEndPage", this.state.tableIndexPageEnd);
-        searchParams.set("bibliographyStartPage", this.state.biographyPageStart);
-        searchParams.set("bibliographyEndPage", this.state.biographyPageEnd);
-        searchParams.set("annexesStartPage", this.state.annexedPageStart);
-        searchParams.set("annexesEndPage", this.state.annexedPageEnd);
+        searchParams.set("generalIndexStartPage", this.state.generalIndexStartPage);
+        searchParams.set("generalIndexEndPage", this.state.generalIndexEndPage);
+        searchParams.set("figureIndexStartPage", this.state.figureIndexStartPage);
+        searchParams.set("figureIndexEndPage", this.state.figureIndexEndPage);
+        searchParams.set("tableIndexStartPage", this.state.tableIndexStartPage);
+        searchParams.set("tableIndexEndPage", this.state.tableIndexEndPage);
+        searchParams.set("bibliographyStartPage", this.state.bibliographyStartPage);
+        searchParams.set("bibliographyEndPage", this.state.bibliographyEndPage);
+        searchParams.set("annexesStartPage", this.state.annexesStartPage);
+        searchParams.set("annexesEndPage", this.state.annexesEndPage);
         const parameters = searchParams.toString();
         this.props.history.push(`/verResultados/${encodeURI(this.props.match.params.name)}` + `?${parameters}`);
     }
 
-    goStep1() {
-        this.setState({
-            currentStep: 1
-        });
+    nextStep(event) {
+        event.preventDefault();
+        const { generalIndexStartPage, generalIndexEndPage, figureIndexStartPage, figureIndexEndPage,
+            tableIndexStartPage, tableIndexEndPage, bibliographyStartPage,
+            bibliographyEndPage, annexesStartPage, annexesEndPage } = this.state;
+        if (generalIndexStartPage <= generalIndexEndPage && figureIndexStartPage <= figureIndexEndPage && tableIndexStartPage <= tableIndexEndPage &&
+            bibliographyStartPage <= bibliographyEndPage && annexesStartPage <= annexesEndPage) {
+            let currentStep = this.state.currentStep
+            currentStep = currentStep >= 5 ? 6 : currentStep + 1
+            this.setState({
+                validInputs: true,
+                currentStep: currentStep
+            });
+        } else {
+            this.setState({
+                validInputs: false
+            });
+        }
     }
 
-    goStep2() {
-        this.setState({
-            currentStep: 2
-        });
+    previousStep(event) {
+        event.preventDefault();
+        const { generalIndexStartPage, generalIndexEndPage, figureIndexStartPage, figureIndexEndPage,
+            tableIndexStartPage, tableIndexEndPage, bibliographyStartPage,
+            bibliographyEndPage, annexesStartPage, annexesEndPage } = this.state;
+        if (generalIndexStartPage <= generalIndexEndPage && figureIndexStartPage <= figureIndexEndPage && tableIndexStartPage <= tableIndexEndPage &&
+            bibliographyStartPage <= bibliographyEndPage && annexesStartPage <= annexesEndPage) {
+            let currentStep = this.state.currentStep
+            currentStep = currentStep <= 1 ? 1 : currentStep - 1
+            this.setState({
+                validInputs: true,
+                currentStep: currentStep
+            });
+        } else {
+            this.setState({
+                validInputs: false
+            });
+        }
     }
 
-    goStep3() {
-        this.setState({
-            currentStep: 3
-        });
-    }
-
-    goStep4() {
-        this.setState({
-            currentStep: 4
-        });
-    }
-
-    goStep5() {
-        this.setState({
-            currentStep: 5
-        });
-    }
-
-    goStep6() {
-        this.setState({
-            currentStep: 6
-        });
-    }
-    nextStep() {
-        let currentStep = this.state.currentStep
-        currentStep = currentStep >= 5 ? 6 : currentStep + 1
-        this.setState({
-            currentStep: currentStep
-        })
-    }
-
-    previousStep() {
-        let currentStep = this.state.currentStep
-        currentStep = currentStep <= 1 ? 1 : currentStep - 1
-        this.setState({
-            currentStep: currentStep
-        })
-    }
-
-    getNumbebuttons() {
-        if (this.state.currentStep == 1) {
-            return (
-                <div className="row">
-                    <div className="col-lg-2">
-                        <center>
+    getNumberbuttons() {
+        return (
+            <div className="row">
+                <div className="col-lg-2">
+                    <center>
+                        {this.state.currentStep >= 1 ? (
                             <button type="button" className="btn-circle-blue" disabled> 1 </button>
-                            <p >Carátula </p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
-                            <p>Índice General</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep3}> 3 </button>
-                            <p>Índice de Figuras</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
-                            <p>Índice de Tablas</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
-                            <p>Bibliografía</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
-                            <p>Anexos</p>
-                        </center>
-                    </div>
+                        ) : (<button type="button" className="btn-circle-white" disabled> 1 </button>)}
+                        <p >Carátula </p>
+                    </center>
                 </div>
-            );
-        }
-        if (this.state.currentStep == 2) {
-            return (
-                <div className="row">
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
-                            <p >Carátula </p>
-                        </center>
-                    </div>
 
-                    <div className="col-lg-2">
-                        <center>
+                <div className="col-lg-2">
+                    <center>
+                        {this.state.currentStep >= 2 ? (
                             <button type="button" className="btn-circle-blue" disabled> 2 </button>
-                            <p>Índice General</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep3}> 3 </button>
-                            <p>Índice de Figuras</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
-                            <p>Índice de Tablas</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
-                            <p>Bibliografía</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
-                            <p>Anexos</p>
-                        </center>
-                    </div>
+                        ) : (<button type="button" className="btn-circle-white" disabled> 2 </button>)}
+                        <p>Índice General</p>
+                    </center>
                 </div>
-            );
-        }
-        if (this.state.currentStep == 3) {
-            return (
-                <div className="row">
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
-                            <p >Carátula </p>
-                        </center>
-                    </div>
 
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
-                            <p>Índice General</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
+                <div className="col-lg-2">
+                    <center>
+                        {this.state.currentStep >= 3 ? (
                             <button type="button" className="btn-circle-blue" disabled> 3 </button>
-                            <p>Índice de Figuras</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
-                            <p>Índice de Tablas</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
-                            <p>Bibliografía</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
-                            <p>Anexos</p>
-                        </center>
-                    </div>
+                        ) : (<button type="button" className="btn-circle-white" disabled> 3 </button>)}
+                        <p>Índice de Figuras</p>
+                    </center>
                 </div>
-            );
-        }
-        if (this.state.currentStep == 4) {
-            return (
-                <div className="row">
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
-                            <p >Carátula </p>
-                        </center>
-                    </div>
 
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
-                            <p>Índice General</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep3}> 3 </button>
-                            <p>Índice de Figuras</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
+                <div className="col-lg-2">
+                    <center>
+                        {this.state.currentStep >= 4 ? (
                             <button type="button" className="btn-circle-blue" disabled> 4 </button>
-                            <p>Índice de Tablas</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
-                            <p>Bibliografía</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
-                            <p>Anexos</p>
-                        </center>
-                    </div>
+                        ) : (<button type="button" className="btn-circle-white" disabled> 4 </button>)}
+                        <p>Índice de Tablas</p>
+                    </center>
                 </div>
-            );
-        }
-        if (this.state.currentStep == 5) {
-            return (
-                <div className="row">
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
-                            <p >Carátula </p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
-                            <p>Índice General</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep3}> 3 </button>
-                            <p>Índice de Figuras</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
-                            <p>Índice de Tablas</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
+                <div className="col-lg-2">
+                    <center>
+                        {this.state.currentStep >= 5 ? (
                             <button type="button" className="btn-circle-blue" disabled> 5 </button>
-                            <p>Bibliografía</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep6}> 6 </button>
-                            <p>Anexos</p>
-                        </center>
-                    </div>
+                        ) : (<button type="button" className="btn-circle-white" disabled> 5 </button>)}
+                        <p>Bibliografía</p>
+                    </center>
                 </div>
-            );
-        }
-        if (this.state.currentStep == 6) {
-            return (
-                <div className="row">
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep1}> 1 </button>
-                            <p >Carátula </p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep2}> 2 </button>
-                            <p>Índice General</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep3} > 3 </button>
-                            <p>Índice de Figuras</p>
-                        </center>
-                    </div>
-
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep4}> 4 </button>
-                            <p>Índice de Tablas</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
-                            <button type="button" className="btn-circle-white" onClick={this.goStep5}> 5 </button>
-                            <p>Bibliografía</p>
-                        </center>
-                    </div>
-                    <div className="col-lg-2">
-                        <center>
+                <div className="col-lg-2">
+                    <center>
+                        {this.state.currentStep >= 6 ? (
                             <button type="button" className="btn-circle-blue" disabled> 6 </button>
-                            <p>Anexos</p>
-                        </center>
-                    </div>
+                        ) : (<button type="button" className="btn-circle-white" disabled> 6 </button>)}
+                        <p>Anexos</p>
+                    </center>
                 </div>
-            );
-        }
-        return null;
+            </div>
+        );
     }
+
 
     render() {
         if (this.state.isLoading) {
@@ -591,13 +384,37 @@ class PagesForm extends Component {
                     </div>
                 </div>);
         }
-        var numberButtons = this.getNumbebuttons();
+        if (this.state.error) {
+            return (
+                <div>
+                    <div className="mynavbar">
+                        <center>
+                            <Link to="/">
+                                <img src={ucbImage} />
+                            </Link>
+                        </center>
+                    </div>
+                    <div className="container main">
+                        <div className="row justify-content-md-center">
+                            <div className="presentation">
+                                <center>
+                                    <h5 className="alert alert-danger" role="alert"> Error al cargar el archivo PDF</h5>
+                                    <Link to="/">
+                                        <button type="button" className="btn btn-outline-primary btn-lg"> Intenta de nuevo <FontAwesomeIcon icon={faRedo} /></button>
+                                    </Link>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>);
+        }
+        var numberButtons = this.getNumberbuttons();
         return (
             <div>
                 <div className="mynavbar">
                     <center>
                         <Link to="/">
-                            <img src={require('./images/ucbcba.png')} />
+                            <img src={ucbImage} />
                         </Link>
                     </center>
                 </div>
@@ -624,61 +441,66 @@ class PagesForm extends Component {
                     <StepGeneralIndex
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
-                        generalIndexPageStart={this.state.generalIndexPageStart}
-                        generalIndexPageEnd={this.state.generalIndexPageEnd}
+                        generalIndexStartPage={this.state.generalIndexStartPage}
+                        generalIndexEndPage={this.state.generalIndexEndPage}
                         url={url}
                         handleGeneralIndex={this.handleGeneralIndex}
                         noGeneralIndex={this.state.noGeneralIndex}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
+                        validInputs={this.state.validInputs}
                     />
 
                     <StepFigureIndex
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
-                        figureIndexPageStart={this.state.figureIndexPageStart}
-                        figureIndexPageEnd={this.state.figureIndexPageEnd}
+                        figureIndexStartPage={this.state.figureIndexStartPage}
+                        figureIndexEndPage={this.state.figureIndexEndPage}
                         url={url}
                         handleFigureIndex={this.handleFigureIndex}
                         noFigureIndex={this.state.noFigureIndex}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
+                        validInputs={this.state.validInputs}
                     />
 
                     <StepTableIndex
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
-                        tableIndexPageStart={this.state.tableIndexPageStart}
-                        tableIndexPageEnd={this.state.tableIndexPageEnd}
+                        tableIndexStartPage={this.state.tableIndexStartPage}
+                        tableIndexEndPage={this.state.tableIndexEndPage}
                         url={url}
                         handleTableIndex={this.handleTableIndex}
                         noTableIndex={this.state.noTableIndex}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
+                        validInputs={this.state.validInputs}
                     />
 
                     <StepBiography
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
-                        biographyPageStart={this.state.biographyPageStart}
-                        biographyPageEnd={this.state.biographyPageEnd}
+                        bibliographyStartPage={this.state.bibliographyStartPage}
+                        bibliographyEndPage={this.state.bibliographyEndPage}
                         url={url}
                         handleBibliography={this.handleBibliography}
                         noBiography={this.state.noBiography}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
+                        validInputs={this.state.validInputs}
                     />
 
                     <StepAnnexed
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
-                        annexedPageStart={this.state.annexedPageStart}
-                        annexedPageEnd={this.state.annexedPageEnd}
+                        annexesStartPage={this.state.annexesStartPage}
+                        annexesEndPage={this.state.annexesEndPage}
                         url={url}
                         handleAnnexes={this.handleAnnexes}
                         noAnnexes={this.state.noAnnexes}
                         previousStep={this.previousStep}
                         handleSubmit={this.handleSubmit}
+                        validInputs={this.state.validInputs}
                     />
 
                 </div>

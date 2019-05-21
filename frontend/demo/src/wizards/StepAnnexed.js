@@ -4,13 +4,6 @@ import PdfPreview from "./PdfPreview";
 class StepAnnexed extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            totalPages: null
-        };
-    }
-
-    onDocumentComplete = (pages) => {
-        this.setState({ totalPages: pages });
     }
 
     render() {
@@ -25,19 +18,15 @@ class StepAnnexed extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página inicial:</label>
                         <input
-                            name="annexedPageStart"
+                            name="annexesStartPage"
                             type="number"
-                            value={this.props.annexedPageStart}
-                            onChange={this.props.handleChange}
                         />
                     </div>
                     <div className="leftForm">
                         <label className="myLabel">Página final:</label>
                         <input
-                            name="annexedPageEnd"
+                            name="annexesEndPage"
                             type="number"
-                            value={this.props.annexedPageEnd}
-                            onChange={this.props.handleChange}
                         />
                     </div>
                 </fieldset>
@@ -48,9 +37,9 @@ class StepAnnexed extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página inicial:</label>
                         <input
-                            name="annexedPageStart"
+                            name="annexesStartPage"
                             type="number"
-                            value={this.props.annexedPageStart}
+                            value={this.props.annexesStartPage}
                             onChange={this.props.handleChange}
                             min="1"
                             required
@@ -59,9 +48,9 @@ class StepAnnexed extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página final:</label>
                         <input
-                            name="annexedPageEnd"
+                            name="annexesEndPage"
                             type="number"
-                            value={this.props.annexedPageEnd}
+                            value={this.props.annexesEndPage}
                             onChange={this.props.handleChange}
                             min="1"
                             required
@@ -70,7 +59,14 @@ class StepAnnexed extends Component {
                 </div>
             );
         };
-
+        var errorMessage = null;
+        if (!this.props.validInputs) {
+            errorMessage = (<div>
+                <center>
+                    <p className="alert alert-danger myAlert" role="alert"> Por favor ingrese un rango de páginas válido </p>
+                </center>
+            </div>);
+        }
 
         return (
             <div>
@@ -80,11 +76,11 @@ class StepAnnexed extends Component {
                         <div className="inputs-buttons">
                             <div className="custom-control custom-checkbox checkBoxForm">
                                 <input type="checkbox" className="custom-control-input" id="customCheck1" onChange={() => { this.props.handleAnnexes() }} checked={this.props.noAnnexes} />
-                                <label className="custom-control-label" for="customCheck1">No tengo esta sección</label>
+                                <label className="custom-control-label" htmlFor="customCheck1">No tengo esta sección</label>
                             </div>
                             <form onSubmit={this.props.handleSubmit}>
                                 {inputs}
-
+                                {errorMessage}
                                 <div className="next-previous-buttons">
                                     <div className="leftForm">
                                         <button
@@ -107,8 +103,8 @@ class StepAnnexed extends Component {
                             <center>
                                 <PdfPreview
                                     url={this.props.url}
-                                    pageStart={this.props.annexedPageStart}
-                                    pageEnd={this.props.annexedPageEnd}
+                                    pageStart={this.props.annexesStartPage}
+                                    pageEnd={this.props.annexesEndPage}
                                     active={this.props.noAnnexes}
                                 />
                             </center>

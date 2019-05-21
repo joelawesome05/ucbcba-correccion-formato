@@ -4,13 +4,6 @@ import PdfPreview from "./PdfPreview";
 class StepFigureIndex extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            totalPages: null
-        };
-    }
-
-    onDocumentComplete = (pages) => {
-        this.setState({ totalPages: pages });
     }
 
     render() {
@@ -25,19 +18,15 @@ class StepFigureIndex extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página inicial:</label>
                         <input
-                            name="figureIndexPageStart"
+                            name="figureIndexStartPage"
                             type="number"
-                            value={this.props.figureIndexPageStart}
-                            onChange={this.props.handleChange}
                         />
                     </div>
                     <div className="leftForm">
                         <label className="myLabel">Página final:</label>
                         <input
-                            name="figureIndexPageEnd"
+                            name="figureIndexEndPage"
                             type="number"
-                            value={this.props.figureIndexPageEnd}
-                            onChange={this.props.handleChange}
                         />
                     </div>
                 </fieldset>
@@ -48,9 +37,9 @@ class StepFigureIndex extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página inicial:</label>
                         <input
-                            name="figureIndexPageStart"
+                            name="figureIndexStartPage"
                             type="number"
-                            value={this.props.figureIndexPageStart}
+                            value={this.props.figureIndexStartPage}
                             onChange={this.props.handleChange}
                             min="1"
                             required
@@ -59,9 +48,9 @@ class StepFigureIndex extends Component {
                     <div className="leftForm">
                         <label className="myLabel">Página final:</label>
                         <input
-                            name="figureIndexPageEnd"
+                            name="figureIndexEndPage"
                             type="number"
-                            value={this.props.figureIndexPageEnd}
+                            value={this.props.figureIndexEndPage}
                             onChange={this.props.handleChange}
                             min="1"
                             required
@@ -70,6 +59,14 @@ class StepFigureIndex extends Component {
                 </div>
             );
         };
+        var errorMessage = null;
+        if (!this.props.validInputs) {
+            errorMessage = (<div>
+                <center>
+                    <p className="alert alert-danger myAlert" role="alert"> Por favor ingrese un rango de páginas válido </p>
+                </center>
+            </div>);
+        }
 
         return (
             <div>
@@ -79,10 +76,11 @@ class StepFigureIndex extends Component {
                         <div className="inputs-buttons">
                             <div className="custom-control custom-checkbox checkBoxForm">
                                 <input type="checkbox" className="custom-control-input" id="customCheck1" onChange={() => { this.props.handleFigureIndex() }} checked={this.props.noFigureIndex} />
-                                <label className="custom-control-label" for="customCheck1">No tengo esta sección</label>
+                                <label className="custom-control-label" htmlFor="customCheck1">No tengo esta sección</label>
                             </div>
                             <form onSubmit={this.props.nextStep}>
                                 {inputs}
+                                {errorMessage}
                                 <div className="next-previous-buttons">
                                     <div className="leftForm">
                                         <button
@@ -105,8 +103,8 @@ class StepFigureIndex extends Component {
                             <center>
                                 <PdfPreview
                                     url={this.props.url}
-                                    pageStart={this.props.figureIndexPageStart}
-                                    pageEnd={this.props.figureIndexPageEnd}
+                                    pageStart={this.props.figureIndexStartPage}
+                                    pageEnd={this.props.figureIndexEndPage}
                                     active={this.props.noFigureIndex}
                                 />
                             </center>

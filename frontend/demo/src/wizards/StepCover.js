@@ -7,13 +7,6 @@ import "../style/PagesForm.css";
 class StepCover extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            totalPages: null
-        };
-    }
-
-    onDocumentComplete = (pages) => {
-        this.setState({ totalPages: pages });
     }
 
     render() {
@@ -30,8 +23,6 @@ class StepCover extends Component {
                         <input
                             name="coverPage"
                             type="number"
-                            value={this.props.coverPage}
-                            onChange={this.props.handleChange}
                         />
                     </div>
                 </fieldset>
