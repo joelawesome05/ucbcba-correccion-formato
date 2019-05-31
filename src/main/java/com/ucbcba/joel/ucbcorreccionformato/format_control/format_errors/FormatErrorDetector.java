@@ -34,22 +34,22 @@ public class FormatErrorDetector {
         return coverPageFormatErrors;
     }
 
-    public List<FormatErrorResponse> getGeneralIndexFormatErrors(Integer generalIndexPageStart, Integer generalIndexPageEnd) throws IOException {
+    public List<FormatErrorResponse> getGeneralIndexFormatErrors(Integer generalIndexStartPage, Integer generalIndexEndPage) throws IOException {
         List<FormatErrorResponse> generaIndexFormatErrors = new ArrayList<>();
-        if(generalIndexPageStart > 0 && generalIndexPageStart <= pdfdocument.getNumberOfPages() && generalIndexPageEnd <= pdfdocument.getNumberOfPages()) {
-            FormatRule generalIndexPageFormat = new GeneralIndexPageFormat(pdfdocument, idHighlights, generalIndexPageStart, generalIndexPageEnd);
-            for (int page = generalIndexPageStart; page <= generalIndexPageEnd; page++) {
+        if(generalIndexStartPage > 0 && generalIndexStartPage <= pdfdocument.getNumberOfPages() && generalIndexEndPage <= pdfdocument.getNumberOfPages()) {
+            FormatRule generalIndexPageFormat = new GeneralIndexPageFormat(pdfdocument, idHighlights, generalIndexStartPage, generalIndexEndPage);
+            for (int page = generalIndexStartPage; page <= generalIndexEndPage; page++) {
                 generaIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
             }
         }
         return generaIndexFormatErrors;
     }
 
-    public List<FormatErrorResponse> getFigureIndexFormatErrors(Integer figureIndexPageStart, Integer figureIndexPageEnd) throws IOException {
+    public List<FormatErrorResponse> getFigureIndexFormatErrors(Integer figureIndexStartPage, Integer figureIndexEndPage) throws IOException {
         List<FormatErrorResponse> figureIndexFormatErrors = new ArrayList<>();
-        if(figureIndexPageStart > 0 && figureIndexPageStart <= pdfdocument.getNumberOfPages() && figureIndexPageEnd <= pdfdocument.getNumberOfPages()) {
-            FormatRule generalIndexPageFormat = new TableFigureIndexFormat(pdfdocument, idHighlights, figureIndexPageStart, "FIGURAS");
-            for (int page = figureIndexPageStart; page <= figureIndexPageEnd; page++) {
+        if(figureIndexStartPage > 0 && figureIndexStartPage <= pdfdocument.getNumberOfPages() && figureIndexEndPage <= pdfdocument.getNumberOfPages()) {
+            FormatRule generalIndexPageFormat = new TableFigureIndexFormat(pdfdocument, idHighlights, figureIndexStartPage, "FIGURAS");
+            for (int page = figureIndexStartPage; page <= figureIndexEndPage; page++) {
                 figureIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
             }
 
@@ -57,17 +57,16 @@ public class FormatErrorDetector {
         return figureIndexFormatErrors;
     }
 
-    public List<FormatErrorResponse> getTableIndexFormatErrors(Integer tableIndexPageStart, Integer tableIndexPageEnd) throws IOException {
+    public List<FormatErrorResponse> getTableIndexFormatErrors(Integer tableIndexStartPage, Integer tableIndexEndPage) throws IOException {
         List<FormatErrorResponse> figureIndexFormatErrors = new ArrayList<>();
-        if(tableIndexPageStart > 0 && tableIndexPageStart <= pdfdocument.getNumberOfPages() && tableIndexPageEnd <= pdfdocument.getNumberOfPages()) {
-            FormatRule generalIndexPageFormat = new TableFigureIndexFormat(pdfdocument, idHighlights, tableIndexPageStart, "TABLAS");
-            for (int page = tableIndexPageStart; page <= tableIndexPageEnd; page++) {
+        if(tableIndexStartPage > 0 && tableIndexStartPage <= pdfdocument.getNumberOfPages() && tableIndexEndPage <= pdfdocument.getNumberOfPages()) {
+            FormatRule generalIndexPageFormat = new TableFigureIndexFormat(pdfdocument, idHighlights, tableIndexStartPage, "TABLAS");
+            for (int page = tableIndexStartPage; page <= tableIndexEndPage; page++) {
                 figureIndexFormatErrors.addAll(generalIndexPageFormat.getFormatErrors(page));
             }
         }
         return figureIndexFormatErrors;
     }
-
 
     public List<FormatErrorResponse> getPageNumerationFormatErrors(Integer indexEndPage, Integer annexesStartPage, Integer annexesEndPage) throws IOException {
         if(annexesStartPage==0){

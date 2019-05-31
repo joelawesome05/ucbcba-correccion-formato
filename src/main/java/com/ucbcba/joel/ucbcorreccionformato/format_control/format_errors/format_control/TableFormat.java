@@ -1,6 +1,7 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control;
 
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 
 import java.util.List;
 
@@ -19,25 +20,37 @@ public class TableFormat extends Format {
         this.tableNumeration = tableNumeration;
     }
 
-    @Override
-    public List<String> getFormatErrorComments(WordsProperties word) {
-        List<String> comments =  super.getFormatErrorComments(word);
-        if (isBold) {
-            if (!word.allCharsHaveFontTypeOf("Bold")) {
-                comments.add("Tenga Negrilla");
-            }
-        }else{
-            if (word.someCharsHaveFontTypeOf("Bold")){
-                comments.add("No tenga negrilla");
-            }
-        }
 
+    @Override
+    public List<String> getFormatErrorComments(WordLine word) {
+        List<String> comments =  super.getFormatErrorComments(word);
+        boldControl(word, comments);
+        aligmentControl(word, comments);
+        tableNumerationControl(word, comments);
+        return comments;
+    }
+
+    private void tableNumerationControl(WordLine word, List<String> comments) {
+        if (!word.toString().contains(Long.toString(tableNumeration))){
+            comments.add("Número de tabla debería ser "+ tableNumeration);
+        }
+    }
+
+    private void aligmentControl(WordLine word, List<String> comments) {
         if(alignment.equals("Centrado") && (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) >= 100)){
             comments.add("Tenga alineación centrada");
         }
-        if (!word.toString().contains("Tabla "+Long.toString(tableNumeration))){
-            comments.add("Número de tabla debería ser "+ tableNumeration);
+    }
+
+    private void boldControl(WordLine word, List<String> comments) {
+        if (isBold) {
+            if (word.isNotBold()) {
+                comments.add("Tenga Negrilla");
+            }
+        }else{
+            if (word.isBold()){
+                comments.add("No tenga negrilla");
+            }
         }
-        return comments;
     }
 }

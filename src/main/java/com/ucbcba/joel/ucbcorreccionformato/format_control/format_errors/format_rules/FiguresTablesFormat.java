@@ -1,5 +1,6 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_rules;
 
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.FigureFormat;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.Format;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.SourceTableFigureFormat;
@@ -7,7 +8,7 @@ import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_error_response.FormatErrorResponse;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.GetterWordLines;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.ReportFormatError;
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
@@ -45,10 +46,9 @@ public class FiguresTablesFormat implements FormatRule {
         Format source = new SourceTableFigureFormat(12, CENTRADO,pageWidth,false);
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
-        WordsProperties wordLine;
+        List<WordLine> wordsLines = getterWordLines.getWordLines(page);
         for(int pos=0; pos<wordsLines.size(); pos++){
-            wordLine = wordsLines.get(pos);
+            WordLine wordLine = wordsLines.get(pos);
             List<String> formatErrorscomments = new ArrayList<>();
             String[] arr = wordLine.toString().split(" ", 2);
             String firstWordLine = arr[0];
@@ -71,6 +71,13 @@ public class FiguresTablesFormat implements FormatRule {
         return formatErrors;
     }
 
+    private void reportFormatErrors(List<String> comments, WordLine words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
+        if (!comments.isEmpty()) {
+            ReportFormatError reporter = new ReportFormatError(idHighlights);
+            formatErrors.add(reporter.reportFormatError(comments, words, pageWidth, pageHeight, page,"tablaFigura"));
+        }
+    }
+
     private boolean isValidTittle(int pos, int currentPage) throws IOException {
         boolean resp = hasTheKeyWords(currentPage,pos);
         if(resp){
@@ -88,8 +95,8 @@ public class FiguresTablesFormat implements FormatRule {
     public boolean hasTheKeyWords(int page,int posStart) throws IOException {
         boolean resp = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
-        WordsProperties wordLine;
+        List<SingleLine> wordsLines = getterWordLines.getSingleLines(page);
+        SingleLine wordLine;
         for(int pos=posStart+1; pos<wordsLines.size(); pos++){
             wordLine = wordsLines.get(pos);
             String[] arr = wordLine.toString().split(" ", 2);
@@ -110,8 +117,8 @@ public class FiguresTablesFormat implements FormatRule {
     public boolean hasTheKeyWords(int page) throws IOException {
         boolean resp = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
-        for(WordsProperties wordLine: wordsLines){
+        List<SingleLine> wordsLines = getterWordLines.getSingleLines(page);
+        for(SingleLine wordLine: wordsLines){
             String[] arr = wordLine.toString().split(" ", 2);
             String firstWordLine = arr[0];
             if (firstWordLine.contains(TABLA)) {
@@ -129,8 +136,8 @@ public class FiguresTablesFormat implements FormatRule {
     private boolean isValidCurrentPage(int page, int posStart) throws IOException {
         boolean resp = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
-        WordsProperties wordLine;
+        List<SingleLine> wordsLines = getterWordLines.getSingleLines(page);
+        SingleLine wordLine;
         for(int pos=posStart+1; pos<wordsLines.size(); pos++){
             wordLine = wordsLines.get(pos);
             String[] arr = wordLine.toString().split(" ", 2);
@@ -151,8 +158,8 @@ public class FiguresTablesFormat implements FormatRule {
     private boolean isValidOtherPage(int page) throws IOException {
         boolean resp = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLines(page);
-        for (WordsProperties wordLine : wordsLines) {
+        List<SingleLine> wordsLines = getterWordLines.getSingleLines(page);
+        for (SingleLine wordLine : wordsLines) {
             String[] arr = wordLine.toString().split(" ", 2);
             String firstWordLine = arr[0];
             if (firstWordLine.contains(TABLA)) {
@@ -166,10 +173,5 @@ public class FiguresTablesFormat implements FormatRule {
             }
         }
         return resp;
-    }
-    private void reportFormatErrors(List<String> comments, WordsProperties word, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
-        if (!comments.isEmpty()) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, word, pageWidth, pageHeight, page,"tablaFigura"));
-        }
     }
 }

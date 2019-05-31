@@ -1,6 +1,6 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control;
 
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 
 import java.util.List;
 
@@ -20,23 +20,38 @@ public class FigureFormat extends Format {
     }
 
     @Override
-    public List<String> getFormatErrorComments(WordsProperties word) {
+    public List<String> getFormatErrorComments(WordLine word) {
         List<String> comments =  super.getFormatErrorComments(word);
+        boldControl(word, comments);
+        aligmentControl(word, comments);
+        figureNumerationControl(word, comments);
+        return comments;
+    }
+
+    private void boldControl(WordLine word, List<String> comments) {
         if (isBold) {
-            if (!word.allCharsHaveFontTypeOf("Bold")) {
+            if (word.isNotBold()) {
                 comments.add("Tenga Negrilla");
             }
         }else{
-            if (word.someCharsHaveFontTypeOf("Bold")){
+            if (word.isBold()){
                 comments.add("No tenga negrilla");
             }
         }
+    }
+
+    private void aligmentControl(WordLine word, List<String> comments) {
         if(alignment.equals("Centrado") && (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) >= 100)){
             comments.add("Tenga alineación centrada");
         }
-        if (!word.toString().contains("Figura "+Long.toString(figureNumeration))){
+    }
+
+    private void figureNumerationControl(WordLine word, List<String> comments) {
+        if (!word.toString().contains(Long.toString(figureNumeration))){
             comments.add("Número de figura debería ser "+ figureNumeration);
         }
-        return comments;
     }
+
+
+
 }

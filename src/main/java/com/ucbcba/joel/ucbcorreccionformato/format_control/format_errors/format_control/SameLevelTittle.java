@@ -1,7 +1,8 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control;
 
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 import com.ucbcba.joel.ucbcorreccionformato.page_calibration.WordsFinder;
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,12 +20,12 @@ public class SameLevelTittle {
         this.wordsFinder = wordsFinder;
     }
 
-    public List<String> getFormatErrorComments(WordsProperties word, String currentNumeration) throws IOException {
+    public List<String> getFormatErrorComments(WordLine word, String currentNumeration) throws IOException {
         List<String> comments =  new ArrayList<>();
         String nextNumeration = removeLastTwoChars(currentNumeration)+"2.";
-        List<WordsProperties> nextNumerationFound = wordsFinder.findWordsFromPages(currentPage,lastIndexPage,nextNumeration);
-        for(WordsProperties numeration : nextNumerationFound){
-            if (numeration.getX() == word.getX()){
+        List<SingleLine> nextNumerationFound = wordsFinder.findWordsFromPages(currentPage,lastIndexPage,nextNumeration);
+        for(SingleLine numeration : nextNumerationFound){
+            if (numeration.getX()-2 <= word.getX() && numeration.getX()+2 >= word.getX()){
                 return comments;
             }
         }

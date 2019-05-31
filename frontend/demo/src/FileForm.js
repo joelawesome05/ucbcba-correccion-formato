@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import "./style/FileForm.css";
 import ucbImage from './images/ucbcba.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
 class FileForm extends Component {
@@ -122,7 +124,7 @@ class FileForm extends Component {
                                 <h5 className="card-title">Carátula</h5>
                                 <p className="card-text cardText">Recuerda agregar sangría negativa a la primera línea de la carátula para que esté entre los márgenes establecidos según la guía.</p>
                             </div>
-                            <img className="card-img-top tipsCard" src={require('./images/caratula.png')} />
+                            <img className="card-img-top tipsCard" src={require('./images/caratula.gif')} />
                             <div className="card-footer">
                                 <small className="text-muted">Consejo</small>
                             </div>
@@ -132,7 +134,7 @@ class FileForm extends Component {
                                 <h5 className="card-title">Bibliografía</h5>
                                 <p className="card-text cardText">Recuerda agregar un espaciado entre párrafos para que el sistema garantice una correcta revisión del formato en la bibliografía.</p>
                             </div>
-                            <img className="card-img-top tipsCard" src={require('./images/bibliografia.png')} />
+                            <img className="card-img-top tipsCard" src={require('./images/bibliografia.gif')} />
                             <div className="card-footer">
                                 <small className="text-muted">Recomendación</small>
                             </div>
@@ -140,7 +142,7 @@ class FileForm extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <h5 className="card-title">Advertencias</h5>
-                                <p className="card-text cardText">Recuerda que las advertencias son sólo posibles errores de incuplimiento en el formato. Usar un citerio adecuado ante las advertencias.</p>
+                                <p className="card-text cardText">Recuerda que las advertencias <i style={{ color: "#ffae42" }}> <FontAwesomeIcon icon={faExclamationTriangle} /> </i> son sólo posibles errores de incuplimiento en el formato. Usar un citerio adecuado ante las advertencias.</p>
                             </div>
                             <img className="card-img-top tipsCard" src={require('./images/advertencias.png')} />
                             <div className="card-footer">

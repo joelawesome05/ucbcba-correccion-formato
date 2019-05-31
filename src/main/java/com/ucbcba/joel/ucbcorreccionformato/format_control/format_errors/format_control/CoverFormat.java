@@ -1,6 +1,6 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control;
 
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class CoverFormat  extends  Format{
     }
 
     @Override
-    public List<String> getFormatErrorComments(WordsProperties word){
+    public List<String> getFormatErrorComments(WordLine word){
         List<String> comments = super.getFormatErrorComments(word);
         boldControl(word, comments);
         italicControl(word, comments);
@@ -34,13 +34,41 @@ public class CoverFormat  extends  Format{
         return comments;
     }
 
-    private void firstLetterUpperCase(WordsProperties word, List<String> comments) {
-        if (isFirstLetterUpperCase && (!isFirstLetterUpperCase(word.toString()))) {
-            comments.add("Las letras iniciales tenga mayúscula");
+    private void boldControl(WordLine word, List<String> comments) {
+        if (isBold) {
+            if (word.isNotBold()) {
+                comments.add("Tenga Negrilla");
+            }
+        }else{
+            if (word.isBold()){
+                comments.add("No tenga negrilla");
+            }
         }
     }
 
-    private void allUpperCaseControl(WordsProperties word, List<String> comments) {
+    private void italicControl(WordLine word, List<String> comments) {
+        if (isItalic) {
+            if (word.isNotItalic()) {
+                comments.add("Tenga Cursiva");
+            }
+        }else{
+            if (word.isItalic()){
+                comments.add("No tenga cursiva");
+            }
+        }
+    }
+
+    private void algimentControl(WordLine word, List<String> comments) {
+        if(alignment.equals("Centrado") && (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) >= 100)){
+            comments.add("Tenga alineación centrada");
+        }
+
+        if(alignment.equals("Derecho") && (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) <= 20 || word.getXPlusWidth() < 500)){
+            comments.add("Tenga alineación al margen derecho");
+        }
+    }
+
+    private void allUpperCaseControl(WordLine word, List<String> comments) {
         if (isAllUpperCase) {
             if (!isAllUpperCase(word.toString())) {
                 comments.add("Todo esté en mayúsculas");
@@ -52,46 +80,18 @@ public class CoverFormat  extends  Format{
         }
     }
 
-    private void algimentControl(WordsProperties word, List<String> comments) {
-        if(alignment.equals("Centrado") && (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) >= 100)){
-            comments.add("Tenga alineación centrada");
-        }
-
-        if(alignment.equals("Derecho") && (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) <= 20 || word.getXPlusWidth() < 500)){
-            comments.add("Tenga alineación al margen derecho");
-        }
-    }
-
-    private void italicControl(WordsProperties word, List<String> comments) {
-        if (isItalic) {
-            if (!word.allCharsHaveFontTypeOf("Italic")) {
-                comments.add("Tenga Cursiva");
-            }
-        }else{
-            if (word.someCharsHaveFontTypeOf("Italic")){
-                comments.add("No tenga cursiva");
-            }
-        }
-    }
-
-    private void boldControl(WordsProperties word, List<String> comments) {
-        if (isBold) {
-            if (!word.allCharsHaveFontTypeOf("Bold")) {
-                comments.add("Tenga Negrilla");
-            }
-        }else{
-            if (word.someCharsHaveFontTypeOf("Bold")){
-                comments.add("No tenga negrilla");
-            }
+    private void firstLetterUpperCase(WordLine word, List<String> comments) {
+        if (isFirstLetterUpperCase && (!isFirstLetterUpperCase(word.toString()))) {
+            comments.add("Las letras iniciales tenga mayúscula");
         }
     }
 
     private boolean isAllUpperCase(String lineWord){
         boolean resp = true;
         String[] words = lineWord.split("\\s+");
-        for (String word1 : words) {
-            String word = word1.replaceAll("[^\\w]", "");
-            if (word.length() > 3 && (!Character.isUpperCase(word.charAt(1)))) {
+        for (String currentWord : words) {
+            String word = currentWord.replaceAll("[^\\w]", "");
+            if (word.length() > 3 && !Character.isUpperCase(word.charAt(1))) {
                 return false;
             }
         }
@@ -101,8 +101,8 @@ public class CoverFormat  extends  Format{
     private boolean isFirstLetterUpperCase(String lineWord){
         boolean resp = true;
         String[] words = lineWord.split("\\s+");
-        for (String word1 : words) {
-            String word = word1.replaceAll("[^\\w]", "");
+        for (String currentWord : words) {
+            String word = currentWord.replaceAll("[^\\w]", "");
             if (word.length() > 3) {
                 if (Character.isUpperCase(word.charAt(0))) {
                     if (Character.isUpperCase(word.charAt(1))) {

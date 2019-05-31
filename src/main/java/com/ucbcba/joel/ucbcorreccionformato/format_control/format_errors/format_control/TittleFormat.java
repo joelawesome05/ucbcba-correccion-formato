@@ -1,6 +1,7 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control;
 
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 
 import java.text.Normalizer;
 import java.util.List;
@@ -19,23 +20,39 @@ public class TittleFormat extends  Format {
         this.correctTittle = correctTittle;
     }
 
+
     @Override
-    public List<String> getFormatErrorComments(WordsProperties word){
+    public List<String> getFormatErrorComments(WordLine word){
         List<String> comments = super.getFormatErrorComments(word);
-        String wordString = Normalizer.normalize(word.toString(), Normalizer.Form.NFD);
-        wordString = wordString.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
-        if (!wordString.contains(correctTittle)) {
+        String wordNormalized = normalizerWord(word.toString());
+        String correctTittleNormalized = normalizerWord(correctTittle);
+
+        tittleNameControl(comments, wordNormalized, correctTittleNormalized);
+        boldControl(word, comments);
+        algimentControl(word, comments);
+        return comments;
+    }
+
+    private void tittleNameControl(List<String> comments, String wordNormalized, String correctTittleNormalized) {
+        if (!wordNormalized.contains(correctTittleNormalized)) {
             comments.add("El título sea: "+correctTittle);
         }
+    }
+
+    private void boldControl(WordLine word, List<String> comments) {
         if (isBold) {
-            if (!word.allCharsHaveFontTypeOf("Bold")) {
+            if (word.isNotBold()) {
                 comments.add("Tenga Negrilla");
             }
         }else{
-            if (word.someCharsHaveFontTypeOf("Bold")){
+            if (word.isBold()){
                 comments.add("No tenga negrilla");
             }
         }
+    }
+
+
+    private void algimentControl(WordLine word, List<String> comments) {
         if(alignment.equals("Centrado") && (Math.abs((pageWidth - word.getXPlusWidth()) - word.getX()) >= 100)){
             comments.add("Tenga alineación centrada");
         }
@@ -43,6 +60,11 @@ public class TittleFormat extends  Format {
         if (alignment.equals("Izquierdo") && (word.getX() < 95 || word.getX() > 105)) {
             comments.add("Alineado al margen izquierdo");
         }
-        return comments;
+    }
+
+    private String normalizerWord(String word){
+        String wordString = Normalizer.normalize(word, Normalizer.Form.NFD);
+        wordString = wordString.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return wordString;
     }
 }

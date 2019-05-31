@@ -1,7 +1,7 @@
 package com.ucbcba.joel.ucbcorreccionformato.page_calibration;
 
 import com.ucbcba.joel.ucbcorreccionformato.format_control.GetterWordLines;
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
@@ -82,7 +82,7 @@ public class PagesFinder {
 
     public boolean isTheFigureTableIndexInThisPage(int page) throws IOException {
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> lineWords = getterWordLines.getWordLinesWithoutAnyNumeration(page);
+        List<SingleLine> lineWords = getterWordLines.getSingleLinesWithoutAnyNumeration(page);
         if(lineWords.size() >= 2){
             String line = lineWords.get(1).toString();
             if(line.contains("Figura") || line.contains("FIGURA") || line.contains("Tabla") || line.contains("TABLA")){
@@ -95,7 +95,7 @@ public class PagesFinder {
 
     public boolean isTheFigureIndexInThisPage(int page) throws IOException {
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> lineWords = getterWordLines.getWordLinesWithoutAnyNumeration(page);
+        List<SingleLine> lineWords = getterWordLines.getSingleLinesWithoutAnyNumeration(page);
         if(lineWords.size() >= 2){
             String line = lineWords.get(1).toString();
             if(line.contains("Figura") || line.contains("FIGURA")){
@@ -108,7 +108,7 @@ public class PagesFinder {
 
     public boolean isTheTableIndexInThisPage(int page) throws IOException {
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> lineWords = getterWordLines.getWordLinesWithoutAnyNumeration(page);
+        List<SingleLine> lineWords = getterWordLines.getSingleLinesWithoutAnyNumeration(page);
         if(lineWords.size() >= 2){
             String line = lineWords.get(1).toString();
             if(line.contains("Tabla") || line.contains("TABLA")){

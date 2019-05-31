@@ -5,7 +5,7 @@ import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.others.
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.others.images_pdf.PdfImage;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.GetterWordLines;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.ReportFormatError;
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSName;
@@ -41,6 +41,7 @@ public class FiguresFormat implements FormatRule {
         float pageHeight = pdfdocument.getPage(pageNum-1).getMediaBox().getHeight();
 
         List<FormatErrorResponse> formatErrors = new ArrayList<>();
+
         final List<PdfImage> pdfImages = getPdfImages(pageNum, pageHeight);
 
         for (PdfImage image : pdfImages) {
@@ -61,10 +62,10 @@ public class FiguresFormat implements FormatRule {
             }
 
             if(!doesTheFigureHasTittle(image, pageNum)){
-                commentsFigureWarnings.add("Su título");
+                commentsFigureWarnings.add("El título «Figura»");
             }
             if (!doesTheFigureHasSource(image, pageNum)) {
-                commentsFigureWarnings.add("Su fuente");
+                commentsFigureWarnings.add("La fuente correspondiente");
             }
             reportFigureWarnings(formatErrors, image, commentsFigureWarnings, pageWidth, pageHeight, pageNum);
             reportFigureErrors(formatErrors, image, commentsFigureError, pageWidth, pageHeight, pageNum);
@@ -117,9 +118,9 @@ public class FiguresFormat implements FormatRule {
     private boolean doesTheFigureHasTittle(PdfImage image, int pageNum) throws IOException {
         boolean resp = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLines(pageNum);
+        List<SingleLine> wordsLines = getterWordLines.getSingleLines(pageNum);
 
-        for(WordsProperties wordLine:wordsLines){
+        for(SingleLine wordLine:wordsLines){
             String[] arr = wordLine.toString().split(" ", 2);
             String firstWordLine = arr[0];
             if (firstWordLine.contains("Figura") && (image.getEndY() > wordLine.getY()) && (image.getY() - 200 < wordLine.getY())){
@@ -132,9 +133,9 @@ public class FiguresFormat implements FormatRule {
     private boolean doesTheFigureHasSource(PdfImage image, int pageNum) throws IOException {
         boolean resp = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLines(pageNum);
+        List<SingleLine> wordsLines = getterWordLines.getSingleLines(pageNum);
 
-        for(WordsProperties wordLine:wordsLines){
+        for(SingleLine wordLine:wordsLines){
             String[] arr = wordLine.toString().split(" ", 2);
             String firstWordLine = arr[0];
             if (firstWordLine.contains("Fuente:") && (image.getY() < wordLine.getY()) && (image.getEndY() + 100 > wordLine.getY())){

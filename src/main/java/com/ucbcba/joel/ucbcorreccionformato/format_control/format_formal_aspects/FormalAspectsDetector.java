@@ -1,8 +1,9 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_formal_aspects;
 
-import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.Format;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.GetterWordLines;
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.Format;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
@@ -17,16 +18,14 @@ public class FormalAspectsDetector {
     }
 
 
-    public List<FormalAspectsResponse> getFormalAspectsResponses(Integer indexPageEnd, Integer annexedPage) throws IOException {
+    public List<FormalAspectsResponse> getFormalAspectsResponses() throws IOException {
         List<FormalAspectsResponse> resp = new ArrayList<>();
-        if(indexPageEnd >= 0 && indexPageEnd<=pdfdocument.getNumberOfPages() && indexPageEnd<annexedPage && annexedPage-1 <= pdfdocument.getNumberOfPages()) {
-            int page = (indexPageEnd + annexedPage) / 2;
-            resp.add(getFormatSheetSize(page));
-            resp.add(getFormatFont(page));
-            resp.add(getFormatLineSpacing(page));
-            resp.add(getFormatMargin(page));
-            resp.add(getFormatNumeration(page));
-        }
+        int page = (pdfdocument.getNumberOfPages()+1)/2;
+        resp.add(getFormatSheetSize(page));
+        resp.add(getFormatFont(page));
+        //resp.add(getFormatLineSpacing(page));
+        resp.add(getFormatMargin(page));
+        resp.add(getFormatNumeration(page));
         return resp;
     }
 
@@ -46,8 +45,8 @@ public class FormalAspectsDetector {
         String formatMargin = "Margen 3cm (derecho, inferior y superior) 3.5cm (izquierdo)";
         boolean isCorrectMargin = true;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
-        for(WordsProperties wordLine:wordsLines){
+        List<SingleLine> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
+        for(SingleLine wordLine:wordsLines){
             if (wordLine.getX() < 95 || wordLine.getYPlusHeight() < 75 || wordLine.getXPlusWidth() > 535 ){
                 isCorrectMargin = false;
             }
@@ -59,14 +58,14 @@ public class FormalAspectsDetector {
         String formatFont = "Tipo de letra: Times New Roman 12";
         boolean isCorrectFont = true;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
-        Format basicFormat = new Format(12);
-        for(WordsProperties wordLine:wordsLines){
-            List<String> comments = basicFormat.getBasicFormatErrorComments(wordLine);
-            if(!comments.isEmpty()){
-                isCorrectFont = false;
-            }
+        List<SingleLine> wordsLines = getterWordLines.getWordLinesWithoutPageNumeration(page);
+        Format formatGeneral = new Format(12);
+        WordLine words = new WordLine(wordsLines);
+        List<String> errorComments = formatGeneral.getFormatErrorComments(words);
+        if(!errorComments.isEmpty()) {
+            isCorrectFont = false;
         }
+
         return new FormalAspectsResponse(formatFont,isCorrectFont);
     }
 
@@ -74,14 +73,14 @@ public class FormalAspectsDetector {
         String formatNumeration = "Numeración parte inferior";
         boolean isCorrectNumeration = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        WordsProperties wordsLine = getterWordLines.getPageNumeration(page);
+        WordLine wordsLine = getterWordLines.getPageNumeration(page);
         if(wordsLine!=null){
             isCorrectNumeration = true;
         }
         return new FormalAspectsResponse(formatNumeration,isCorrectNumeration);
     }
 
-    public FormalAspectsResponse getFormatLineSpacing(int page) throws IOException {
+    /*public FormalAspectsResponse getFormatLineSpacing(int page) throws IOException {
         String formatLineSpacing = "Espaciado entre lineas 1,5";
         boolean isCorrectLineSpacing = false;
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
@@ -90,5 +89,5 @@ public class FormalAspectsDetector {
             isCorrectLineSpacing = true;
         }
         return new FormalAspectsResponse(formatLineSpacing,isCorrectLineSpacing);
-    }
+    }*/
 }

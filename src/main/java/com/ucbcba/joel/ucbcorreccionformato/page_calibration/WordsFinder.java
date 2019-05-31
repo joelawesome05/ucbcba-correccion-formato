@@ -1,6 +1,6 @@
 package com.ucbcba.joel.ucbcorreccionformato.page_calibration;
 
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
@@ -23,7 +23,7 @@ public class WordsFinder {
         PDFTextStripper stripper = new PDFTextStripper() {
             @Override
             protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
-                WordsProperties word = new WordsProperties(textPositions);
+                SingleLine word = new SingleLine(textPositions);
                 String string = word.toString();
                 String newString = Normalizer.normalize(string, Normalizer.Form.NFD);
                 string = newString.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
@@ -48,7 +48,7 @@ public class WordsFinder {
         PDFTextStripper stripper = new PDFTextStripper() {
             @Override
             protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
-                WordsProperties word = new WordsProperties(textPositions);
+                SingleLine word = new SingleLine(textPositions);
                 String string = word.toString();
                 int index = 0;
                 int indexWordFound;
@@ -66,12 +66,12 @@ public class WordsFinder {
         return resp[0];
     }
 
-    public List<WordsProperties> findWordsFromPages(int pageStart, int pageEnd, String searchWord) throws IOException {
-        final List<WordsProperties> listWordPositionSequences = new ArrayList<>();
+    public List<SingleLine> findWordsFromPages(int pageStart, int pageEnd, String searchWord) throws IOException {
+        final List<SingleLine> listWordPositionSequences = new ArrayList<>();
         PDFTextStripper stripper = new PDFTextStripper() {
             @Override
             protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
-                WordsProperties word = new WordsProperties(textPositions);
+                SingleLine word = new SingleLine(textPositions);
                 String string = word.toString();
                 int index = 0;
                 int indexWordFound;

@@ -40,7 +40,7 @@ class Section extends Component {
                             {highlight.comment.text}
                         </p>
                         {highlight.content.text ? (
-                            <blockquote style={{ marginTop: "0.5rem" }}>
+                            <blockquote style={{ marginTop: "0.5rem" }} className="contentText">
                                 {`${highlight.content.text.slice(0, 90).trim()}…`}
                             </blockquote>
                         ) : null}
@@ -57,7 +57,7 @@ class Section extends Component {
                         Página {highlight.position.pageNumber}
                     </div>
                     <div className="resolve">
-                        <button type="button" className="resolve btn btn-info btn-sm" onClick={this.props.removeHighlight.bind(this, highlight.id)}>Resolver</button>
+                        <button type="button" className="resolve btn btn-info btn-sm" onClick={this.props.removeHighlight.bind(this, highlight.id)}>Omitir</button>
                     </div>
                 </li>)
             } else {
@@ -74,7 +74,7 @@ class Section extends Component {
                             {highlight.comment.text}
                         </p>
                         {highlight.content.text ? (
-                            <blockquote style={{ marginTop: "0.5rem" }}>
+                            <blockquote style={{ marginTop: "0.5rem" }} className="contentText">
                                 {`${highlight.content.text.slice(0, 90).trim()}…`}
                             </blockquote>
                         ) : null}
@@ -91,7 +91,7 @@ class Section extends Component {
                         Página {highlight.position.pageNumber}
                     </div>
                     <div className="resolve">
-                        <button type="button" className="resolve btn btn-info btn-sm" onClick={this.props.removeHighlight.bind(this, highlight.id)}>Resolver</button>
+                        <button type="button" className="resolve btn btn-info btn-sm" onClick={this.props.removeHighlight.bind(this, highlight.id)}>Omitir</button>
                     </div>
 
                 </li>)

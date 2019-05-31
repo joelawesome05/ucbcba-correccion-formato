@@ -1,11 +1,12 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_rules;
 
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.Format;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.PageFormat;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_error_response.FormatErrorResponse;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.GetterWordLines;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.ReportFormatError;
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
@@ -27,25 +28,27 @@ public class PageNumerationFormat implements FormatRule {
     @Override
     public List<FormatErrorResponse> getFormatErrors(int page) throws IOException {
         List<FormatErrorResponse> formatErrors = new ArrayList<>();
-
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
 
         Format numerationFormat = new PageFormat(12,"Derecho",pageWidth,correctPageNumeration);
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        WordsProperties pageNumerationPage = getterWordLines.getPageNumeration(page);
+        WordLine pageNumerationPage = getterWordLines.getPageNumeration(page);
 
         if(pageNumerationPage!=null){
             List<String> comments = numerationFormat.getFormatErrorComments(pageNumerationPage);
             reportFormatErrors(comments, pageNumerationPage, formatErrors, pageWidth, pageHeight, page);
         }
+
         return formatErrors;
     }
 
-    private void reportFormatErrors(List<String> comments, WordsProperties pageNumerationPage, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
+    private void reportFormatErrors(List<String> comments, WordLine words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (!comments.isEmpty()) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, pageNumerationPage, pageWidth, pageHeight, page,"numeracion"));
+            ReportFormatError reporter = new ReportFormatError(idHighlights);
+            formatErrors.add(reporter.reportFormatError(comments, words, pageWidth, pageHeight, page,"numeracion"));
         }
     }
+
 }

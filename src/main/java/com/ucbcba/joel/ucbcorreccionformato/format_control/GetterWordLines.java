@@ -6,9 +6,7 @@ import org.apache.pdfbox.text.TextPosition;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GetterWordLines {
     private PDDocument pdfdocument;
@@ -17,29 +15,14 @@ public class GetterWordLines {
         this.pdfdocument = pdfdocument;
     }
 
-    private List<List<TextPosition>> getNormalWordLines(int page) throws IOException {
+    private List<List<TextPosition>> getLines(int page) throws IOException {
         final  List<List<TextPosition>> listWordPositionSequences = new ArrayList<>();
         PDFTextStripper stripper = new PDFTextStripper() {
             @Override
             protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
+                textPositions = removeBeginningSpaces(textPositions);
                 if (!textPositions.isEmpty()) {
-                    if (textPositions.get(0).toString().equals(" ")){
-                        boolean isBlankLine = true;
-                        int contSpaces= 0;
-                        for(TextPosition textPosition:textPositions){
-                            if(!textPosition.toString().equals(" ") || !isBlankLine){
-                                isBlankLine = false;
-                            }else{
-                                contSpaces++;
-                            }
-                        }
-                        if(!isBlankLine){
-                            textPositions = textPositions.subList(contSpaces,textPositions.size());
-                            listWordPositionSequences.add(textPositions);
-                        }
-                    }else{
-                        listWordPositionSequences.add(textPositions);
-                    }
+                    listWordPositionSequences.add(textPositions);
                 }
                 super.writeString(text, textPositions);
             }
@@ -51,34 +34,48 @@ public class GetterWordLines {
         return listWordPositionSequences;
     }
 
-    private List<WordsProperties> cleanWordLines(List<List<TextPosition>> list){
-        List<WordsProperties> resp = new ArrayList<>();
-        List<TextPosition> textPositions = new ArrayList<>();
-        if(!list.isEmpty()){
-            if(!list.get(0).isEmpty()) {
-                float currentY = list.get(0).get(0).getYDirAdj();
-                textPositions = list.get(0);
-                for (int i = 1; i < list.size(); i++) {
-                    if (list.get(i).get(0).getYDirAdj() == currentY) {
-                        TextPosition firstChar = list.get(i).get(0);
-                        TextPosition space = new TextPosition(firstChar.getRotation(),firstChar.getPageWidth(),firstChar.getPageHeight(),firstChar.getTextMatrix(),firstChar.getEndX(),firstChar.getEndY(),firstChar.getHeight(),firstChar.getWidth(),firstChar.getWidthOfSpace()," ",firstChar.getCharacterCodes(), firstChar.getFont(),firstChar.getFontSize(),(int)firstChar.getFontSizeInPt());
-                        list.get(i).add(0,space);
-                        textPositions.addAll(list.get(i));
-                    } else {
-                        textPositions = cleanText(textPositions);
-                        resp.add(new WordsProperties(textPositions));
-                        currentY = list.get(i).get(0).getYDirAdj();
-                        textPositions = list.get(i);
+    public List<TextPosition> removeBeginningSpaces(List<TextPosition> list){
+        int numberSpaces = 0;
+        for (TextPosition aList : list) {
+            if (aList.getUnicode().equals(" ")) {
+                numberSpaces++;
+            } else {
+                break;
+            }
+        }
+        list.subList(0, numberSpaces).clear();
+        return list;
+    }
+
+    private List<SingleLine> cleanToSingleLines(List<List<TextPosition>> list){
+        List<SingleLine> resp = new ArrayList<>();
+        if(!list.isEmpty() && !list.get(0).isEmpty()){
+            float currentY = list.get(0).get(0).getYDirAdj();
+            List<TextPosition> currentTextPositions = list.get(0);
+            for (int i = 1; i < list.size(); i++) {
+                if (list.get(i).get(0).getYDirAdj() == currentY) {
+                    TextPosition firstChar = list.get(i).get(0);
+                    TextPosition spaceChar = new TextPosition(firstChar.getRotation(),firstChar.getPageWidth(),firstChar.getPageHeight(),firstChar.getTextMatrix(),firstChar.getEndX(),firstChar.getEndY(),firstChar.getHeight(),firstChar.getWidth(),firstChar.getWidthOfSpace()," ",firstChar.getCharacterCodes(), firstChar.getFont(),firstChar.getFontSize(),(int)firstChar.getFontSizeInPt());
+                    list.get(i).add(0,spaceChar);
+                    currentTextPositions.addAll(list.get(i));
+                } else {
+                    currentTextPositions = removeEndingSpaces(currentTextPositions);
+                    if (!currentTextPositions.isEmpty()) {
+                        resp.add(new SingleLine(currentTextPositions));
                     }
+                    currentY = list.get(i).get(0).getYDirAdj();
+                    currentTextPositions = list.get(i);
                 }
             }
-            textPositions = cleanText(textPositions);
-            resp.add(new WordsProperties(textPositions));
+            currentTextPositions = removeEndingSpaces(currentTextPositions);
+            if (!currentTextPositions.isEmpty()) {
+                resp.add(new SingleLine(currentTextPositions));
+            }
         }
         return resp;
     }
 
-    public  List<TextPosition> cleanText(List<TextPosition> list){
+    public  List<TextPosition> removeEndingSpaces(List<TextPosition> list){
         for(int pos=list.size()-1; pos>=0 ;pos--){
             if(list.get(pos).getUnicode().equals(" ")){
                 list.remove(pos);
@@ -89,15 +86,25 @@ public class GetterWordLines {
         return list;
     }
 
-
-    public List<WordsProperties> getWordLines(int page) throws IOException {
-        return cleanWordLines(getNormalWordLines(page));
+    public List<SingleLine> getSingleLines(int page) throws IOException {
+        return cleanToSingleLines(getLines(page));
     }
 
-    public List<WordsProperties> getWordLinesWithoutPageNumeration(int page) throws IOException {
-        List<WordsProperties> wordLine = getWordLines(page);
+    public List<WordLine> getWordLines(int page) throws IOException {
+        List<WordLine> resp = new ArrayList<>();
+        List<SingleLine> singleLines = getSingleLines(page);
+        for(SingleLine singleLine:singleLines){
+            List<SingleLine> lineList = new ArrayList<>();
+            lineList.add(singleLine);
+            resp.add(new WordLine(lineList));
+        }
+        return resp;
+    }
+
+    public List<SingleLine> getWordLinesWithoutPageNumeration(int page) throws IOException {
+        List<SingleLine> wordLine = getSingleLines(page);
         if(!wordLine.isEmpty()) {
-            WordsProperties lastLine = wordLine.get(wordLine.size() - 1);
+            SingleLine lastLine = wordLine.get(wordLine.size() - 1);
             if (isPageNumeration(lastLine)) {
                 wordLine.remove(wordLine.size() - 1);
             }
@@ -105,29 +112,7 @@ public class GetterWordLines {
         return wordLine;
     }
 
-    public List<WordsProperties> getWordLinesWithoutAnyNumeration(int page) throws IOException {
-        List<WordsProperties> wordLine = getWordLines(page);
-        if(!wordLine.isEmpty()) {
-            WordsProperties lastLine = wordLine.get(wordLine.size() - 1);
-            if (lastLine.length() < 4) {
-                wordLine.remove(wordLine.size() - 1);
-            }
-        }
-        return wordLine;
-    }
-
-    public WordsProperties getIndexCoverPageNumeration(int page) throws IOException {
-        List<WordsProperties> wordLine = getWordLines(page);
-        if(!wordLine.isEmpty()) {
-            WordsProperties lastLine = wordLine.get(wordLine.size() - 1);
-            if (lastLine.length() < 4) {
-                return lastLine;
-            }
-        }
-        return null;
-    }
-
-    private boolean isPageNumeration(WordsProperties lastLine){
+    private boolean isPageNumeration(SingleLine lastLine){
         boolean resp = true;
         String pageNumeration = lastLine.toString();
         for(int pos=0; pos<pageNumeration.length();pos++){
@@ -137,40 +122,47 @@ public class GetterWordLines {
         }
         return resp;
     }
-    public WordsProperties getPageNumeration(int page) throws IOException {
-        List<WordsProperties> wordLine = getWordLines(page);
+
+    public List<SingleLine> getSingleLinesWithoutAnyNumeration(int page) throws IOException {
+        List<SingleLine> wordLine = getSingleLines(page);
         if(!wordLine.isEmpty()) {
-            WordsProperties lastLine = wordLine.get(wordLine.size() - 1);
-            if (isPageNumeration(lastLine)) {
-                return lastLine;
+            SingleLine lastLine = wordLine.get(wordLine.size() - 1);
+            if (lastLine.length() < 4) {
+                wordLine.remove(wordLine.size() - 1);
+            }
+        }
+        return wordLine;
+    }
+
+    public WordLine getAnyPageNumeration(int page) throws IOException {
+        List<SingleLine> wordLine = getSingleLines(page);
+        if(!wordLine.isEmpty()) {
+            SingleLine lastLine = wordLine.get(wordLine.size() - 1);
+            if (lastLine.length() < 4) {
+                List<SingleLine> lastWordLine = new ArrayList<>();
+                lastWordLine.add(lastLine);
+                return new WordLine(lastWordLine);
             }
         }
         return null;
     }
 
-    public List<List<WordsProperties>> getBibliographyLines(int page, double lineSpacing) throws IOException {
-        List<List<WordsProperties>> bibliographyLines = new ArrayList<>();
-        List<WordsProperties> wordsLines = getWordLinesWithoutPageNumeration(page);
-        WordsProperties currentWordline = wordsLines.get(0);
-        List<WordsProperties> currentBibliography = new ArrayList<>();
-        currentBibliography.add(currentWordline);
-        for (int i=1 ; i < wordsLines.size() ; i++){
-            double currentLineSpacing = Math.round(wordsLines.get(i).getY() - wordsLines.get(i-1).getY());
-            if(currentLineSpacing == lineSpacing){
-                bibliographyLines.add(currentBibliography);
-                currentBibliography = new ArrayList<>();
-                currentBibliography.add(wordsLines.get(i));
-            }else{
-                currentBibliography.add(wordsLines.get(i));
+    public WordLine getPageNumeration(int page) throws IOException {
+        List<SingleLine> wordLine = getSingleLines(page);
+        if(!wordLine.isEmpty()) {
+            SingleLine lastLine = wordLine.get(wordLine.size() - 1);
+            if (isPageNumeration(lastLine)) {
+                List<SingleLine> lastWordLine = new ArrayList<>();
+                lastWordLine.add(lastLine);
+                return new WordLine(lastWordLine);
             }
         }
-        bibliographyLines.add(currentBibliography);
-        return bibliographyLines;
+        return null;
     }
 
     public double getLineSpacingBibliography(int page) throws IOException {
         double lineSpacing = 0;
-        List<WordsProperties> wordsLines = getWordLinesWithoutPageNumeration(page);
+        List<SingleLine> wordsLines = getWordLinesWithoutPageNumeration(page);
         for (int i=1 ; i < wordsLines.size() ; i++){
             double currentLineSpacing = Math.round(wordsLines.get(i).getY() - wordsLines.get(i-1).getY());
             if(lineSpacing < currentLineSpacing){
@@ -180,11 +172,11 @@ public class GetterWordLines {
         return lineSpacing;
     }
 
-    public double getLineSpacing(int page) throws IOException {
+    /*public double getLineSpacing(int page) throws IOException {
         double maxLineSpacing = 0;
         Integer maxCount = -1;
         Map<Double, Integer> lineSpacingCount = new HashMap<>();
-        List<WordsProperties> wordsLines = getWordLinesWithoutPageNumeration(page);
+        List<SingleLine> wordsLines = getWordLinesWithoutPageNumeration(page);
         for (int i=1 ; i < wordsLines.size() ; i++){
             double currentLineSpacing = Math.round(wordsLines.get(i).getY() - wordsLines.get(i-1).getY());
 
@@ -198,6 +190,65 @@ public class GetterWordLines {
         }
 
         return maxLineSpacing;
+    }*/
+
+    public List<WordLine> getCoverPageElements(int page) throws IOException {
+        List<WordLine> resp = new ArrayList<>();
+        List<SingleLine> singleLines = getSingleLinesWithoutAnyNumeration(page);
+        int lineTypeOfWork = getLineTypeOfWork(singleLines,singleLines.size()-4);
+        List<SingleLine> currentWordLine = new ArrayList<>();
+        for(int line=0;line<singleLines.size(); line++){
+            currentWordLine.add(singleLines.get(line));
+            if (!(line > 3 && line < lineTypeOfWork-1) && !(line > lineTypeOfWork && line < singleLines.size()-3)) {
+                resp.add(new WordLine(currentWordLine));
+                currentWordLine = new ArrayList<>();
+            }
+        }
+        return resp;
+    }
+
+    private int getLineTypeOfWork(List<SingleLine> singleLines, int lineTypeOfWork) {
+        for(int line=singleLines.size()-1; line>=0; line--){
+            String currentWordLine = singleLines.get(line).toString();
+            if (currentWordLine.contains("Licenciatura") || currentWordLine.contains("licenciatura") || currentWordLine.contains("LICENCIATURA")){
+                return line;
+            }
+        }
+        return lineTypeOfWork;
+    }
+
+    public List<WordLine> getGeneralIndexTittles(List<SingleLine> singleLines){
+        List<WordLine> resp = new ArrayList<>();
+        List<SingleLine> currentTittle = new ArrayList<>();
+        for(SingleLine line:singleLines){
+            currentTittle.add(line);
+            if((line.length() > 1 && Character.isDigit(line.charAt(line.length() - 1))) || line.getXPlusWidth()<400) {
+                resp.add(new WordLine(currentTittle));
+                currentTittle = new ArrayList<>();
+            }
+        }
+        return resp;
+    }
+
+    public List<WordLine> getBibliographyLines(List<SingleLine> singleLines, double lineSpacing){
+        List<WordLine> resp = new ArrayList<>();
+        if(!singleLines.isEmpty()) {
+            SingleLine currentWordline = singleLines.get(0);
+            List<SingleLine> currentBibliography = new ArrayList<>();
+            currentBibliography.add(currentWordline);
+            for (int i = 1; i < singleLines.size(); i++) {
+                double currentLineSpacing = Math.round(singleLines.get(i).getY() - singleLines.get(i - 1).getY());
+                if (currentLineSpacing == lineSpacing) {
+                    resp.add(new WordLine(currentBibliography));
+                    currentBibliography = new ArrayList<>();
+                    currentBibliography.add(singleLines.get(i));
+                } else {
+                    currentBibliography.add(singleLines.get(i));
+                }
+            }
+            resp.add(new WordLine(currentBibliography));
+        }
+        return resp;
     }
 
 }

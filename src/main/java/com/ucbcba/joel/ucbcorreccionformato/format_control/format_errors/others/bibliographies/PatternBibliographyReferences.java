@@ -6,11 +6,12 @@ import java.util.regex.Pattern;
 public class PatternBibliographyReferences {
     private String name;
     private Pattern pattern;
+    private String patternString;
 
-    public PatternBibliographyReferences(String name, Pattern pattern) {
+    public PatternBibliographyReferences(String name, Pattern pattern,String patternString) {
         this.name = name;
         this.pattern = pattern;
-
+        this.patternString = patternString;
     }
 
     public String getName() {
@@ -33,5 +34,11 @@ public class PatternBibliographyReferences {
         return pattern.matcher(lineWord);
     }
 
+    public String getPatternString() {
+        return patternString;
+    }
 
+    public void setPatternString(String patternString) {
+        this.patternString = patternString;
+    }
 }

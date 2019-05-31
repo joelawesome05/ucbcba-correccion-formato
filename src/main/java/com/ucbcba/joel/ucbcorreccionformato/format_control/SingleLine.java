@@ -4,19 +4,19 @@ import org.apache.pdfbox.text.TextPosition;
 
 import java.util.List;
 
-public class WordsProperties implements CharSequence{
+public class SingleLine implements CharSequence{
 
     private List<TextPosition> textPositions;
     private int start;
     private int end;
 
-    public WordsProperties(List<TextPosition> textPositions) {
+    public SingleLine(List<TextPosition> textPositions) {
         this.textPositions = textPositions;
         this.start = 0;
         this.end = textPositions.size();
     }
 
-    public WordsProperties(List<TextPosition> textPositions, int start, int end) {
+    public SingleLine(List<TextPosition> textPositions, int start, int end) {
         this.textPositions = textPositions;
         this.start = start;
         this.end = end;
@@ -35,8 +35,8 @@ public class WordsProperties implements CharSequence{
     }
 
     @Override
-    public WordsProperties subSequence(int start, int end) {
-        return new WordsProperties(textPositions, this.start + start, this.start + end);
+    public SingleLine subSequence(int start, int end) {
+        return new SingleLine(textPositions, this.start + start, this.start + end);
     }
 
     @Override
@@ -60,7 +60,6 @@ public class WordsProperties implements CharSequence{
         return textPositions.get(end-1).getEndX();
     }
 
-
     public float getY() {
         return textPositions.get(start).getYDirAdj();
     }
@@ -68,7 +67,6 @@ public class WordsProperties implements CharSequence{
     public float getYPlusHeight() {
         return textPositions.get(start).getYDirAdj() - textPositions.get(start).getYScale();
     }
-
 
     public String getFontName(int pos) {
         TextPosition first = textPositions.get(pos);
@@ -80,79 +78,66 @@ public class WordsProperties implements CharSequence{
         return Math.round(first.getYScale());
     }
 
-    private boolean allCharsHaveFontNameOf(String fontName){
+    public boolean isNotFontName(String[] fontName){
         boolean resp = false;
-        if(getFontName(start).contains(fontName) && getFontName((start+end)/2).contains(fontName) ){
-            resp = true;
-        }
-        return resp;
-    }
-
-    public boolean allCharsHaveFontNameOf(String[] fontName){
-        boolean resp = true;
         for (String font : fontName) {
-            if (!allCharsHaveFontNameOf(font)) {
-                resp = false;
+            if (isNotFontName(font)) {
+                resp = true;
             }
         }
         return resp;
     }
 
-    public boolean allCharsHaveFontSizeOf(float fontSize){
+    private boolean isNotFontName(String fontName){
         boolean resp = false;
-        if(getFontSize(start)==fontSize && getFontSize((start+end)/2)==fontSize ){
-            resp = true;
-        }
-        return resp;
-    }
-
-    public boolean hasAFontNameBasicOf(String[] fontName){
-        boolean resp = true;
-        for (String font : fontName) {
-            if (!hasAFontNameBasicOf(font)) {
-                resp = false;
+        for(int pos=start;pos<end;pos++){
+            if(Character.isLetterOrDigit(charAt(pos)) && !getFontName(pos).contains(fontName)){
+                return true;
             }
         }
+        /*if(getFontName(start).contains(fontName)  && getFontName(end-1).contains(fontName)){
+            resp = false;
+        }*/
         return resp;
     }
 
-    private boolean hasAFontNameBasicOf(String fontName){
+    public boolean isNotFontSize(float fontSize){
         boolean resp = false;
-        if(getFontName((start+end)/2).contains(fontName)){
-            resp = true;
+        for(int pos=start;pos<end;pos++){
+            if(Character.isLetterOrDigit(charAt(pos)) && getFontSize(pos)!=fontSize){
+                return true;
+            }
         }
+        /*if(getFontSize(start)==fontSize && getFontSize(end-1)==fontSize){
+            resp = false;
+        }*/
         return resp;
     }
 
-    public boolean hasAFontSizeBasicOf(float fontSize){
+    public boolean isNotStyle(String style){
         boolean resp = false;
-        if(getFontSize((start+end)/2)==fontSize){
-            resp = true;
+        for(int pos=start;pos<end;pos++){
+            if(Character.isLetterOrDigit(charAt(pos)) && !getFontName(pos).contains(style)){
+                return true;
+            }
         }
+        /*boolean resp = true;
+        if(getFontName(start).contains(style) && getFontName((start+end)/2).contains(style) && getFontName(end-1).contains(style)){
+            resp = false;
+        }*/
         return resp;
     }
 
-    public boolean allCharsHaveFontTypeOf(String type){
+    public boolean isStyle(String style){
         boolean resp = false;
-        if(getFontName(start).contains(type) && getFontName((start+end)/2).contains(type) ){
-            resp = true;
+        for(int pos=start;pos<end;pos++){
+            if(Character.isLetterOrDigit(charAt(pos)) && getFontName(pos).contains(style)){
+                return true;
+            }
         }
-        return resp;
-    }
-
-    public boolean someCharsHaveFontTypeOf(String type){
-        boolean resp = false;
-        if(getFontName(start).contains(type) || getFontName((start+end)/2).contains(type) ){
-            resp = true;
-        }
-        return resp;
-    }
-
-    public boolean hasAFontBasicTypeOf(String type){
-        boolean resp = false;
-        if(getFontName((start+end)/2).contains(type)){
-            resp = true;
-        }
+        /*if(getFontName(start).contains(style)  || getFontName(end-1).contains(style)){
+            resp = false;
+        }*/
         return resp;
     }
 }

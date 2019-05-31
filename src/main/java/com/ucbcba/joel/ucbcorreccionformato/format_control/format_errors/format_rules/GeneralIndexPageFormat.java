@@ -1,5 +1,6 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_rules;
 
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.Format;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.GeneralIndexFormat;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.SameLevelTittle;
@@ -8,7 +9,7 @@ import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_
 import com.ucbcba.joel.ucbcorreccionformato.page_calibration.WordsFinder;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.GetterWordLines;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.ReportFormatError;
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.IOException;
@@ -36,93 +37,95 @@ public class GeneralIndexPageFormat implements FormatRule {
     @Override
     public List<FormatErrorResponse> getFormatErrors(int page) throws IOException {
         List<FormatErrorResponse> formatErrors = new ArrayList<>();
-
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
 
-        Format generalIndextitle = new TittleFormat(12,"Centrado",pageWidth,true,"INDICE GENERAL");
         Format titles = new GeneralIndexFormat(12, IZQUIERDO,true,false,true,0);
         Format chapterTitles = new GeneralIndexFormat(12, IZQUIERDO, true, false, true, 0);
         Format chapterSubTitles = new GeneralIndexFormat(12, IZQUIERDO,true, false, false, 1);
         Format sectionTitles = new GeneralIndexFormat(12, IZQUIERDO,true, true, false, 2);
         Format sectionSubTitles = new GeneralIndexFormat(12, IZQUIERDO, false, true, false, 3);
 
-
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
-        List<WordsProperties> wordsLines = getterWordLines.getWordLinesWithoutAnyNumeration(page);
+        List<SingleLine> singleLines = getterWordLines.getSingleLinesWithoutAnyNumeration(page);
+        controlTittle(page, formatErrors, pageWidth, pageHeight, singleLines);
 
-        if (generalIndexPageStart == page && !wordsLines.isEmpty()){
-            List<String> formatErrorscomments = generalIndextitle.getFormatErrorComments(wordsLines.get(0));
-            reportFormatErrors(formatErrorscomments, wordsLines.get(0), formatErrors, pageWidth, pageHeight, page);
-            wordsLines.remove(0);
-        }
-        List<List<WordsProperties>> titlesGeneralIndex = getGeneralIndexTittles(wordsLines);
+        List<WordLine> titlesGeneralIndex = getterWordLines.getGeneralIndexTittles(singleLines);
 
-        for(List<WordsProperties> title: titlesGeneralIndex){
-            if(!title.isEmpty()) {
-                WordsProperties firstLine = title.get(0);
-                List<String> formatErrorscomments = new ArrayList<>();
-                String[] arr = firstLine.toString().split(" ", 2);
-                String currentNumeration = arr[0];
-                int numberOfPoints = countChar(currentNumeration, '.');
-                if (numberOfPoints == 0) {
-                    if (isValidTittle(currentNumeration)) {
-                        formatErrorscomments = titles.getFormatErrorComments(firstLine);
-                    } else {
-                        if (!isAnnex(currentNumeration)) {
-                            formatErrorscomments.add("Sea un título válido según la guía");
-                        }
-                    }
+        for(WordLine currentTitle: titlesGeneralIndex){
+            List<String> formatErrorscomments = new ArrayList<>();
+            String currentNumeration = currentTitle.getNumeration();
+            int numberOfPoints = countPoints(currentNumeration);
+            if (numberOfPoints == 0) {
+                if (isValidTittle(currentNumeration)) {
+                    formatErrorscomments = titles.getFormatErrorComments(currentTitle);
                 } else {
-                    if (!currentNumeration.endsWith(".")) {
-                        formatErrorscomments.add("La numeración termine con un punto y no con un número");
-                        numberOfPoints++;
-                    }
-                    if (currentNumeration.endsWith(".1.")) {
-                        SameLevelTittle sameLevelTittle = new SameLevelTittle(page, generalIndexPageEnd, seeker);
-                        formatErrorscomments.addAll(sameLevelTittle.getFormatErrorComments(firstLine, currentNumeration));
-                    }
-                    if (numberOfPoints == 1) {
-                        formatErrorscomments.addAll(chapterTitles.getFormatErrorComments(firstLine));
-                    }
-                    if (numberOfPoints == 2) {
-                        formatErrorscomments.addAll(chapterSubTitles.getFormatErrorComments(firstLine));
-                    }
-                    if (numberOfPoints == 3) {
-                        formatErrorscomments.addAll(sectionTitles.getFormatErrorComments(firstLine));
-                    }
-                    if (numberOfPoints == 4) {
-                        formatErrorscomments.addAll(sectionSubTitles.getFormatErrorComments(firstLine));
+                    if (!isAnnex(currentNumeration)) {
+                        formatErrorscomments.add("Sea un título válido según la guía");
                     }
                 }
-                reportFormatErrors(formatErrorscomments, title, formatErrors, pageWidth, pageHeight, page);
+            } else {
+                if (!currentNumeration.endsWith(".")) {
+                    formatErrorscomments.add("La numeración termine con un punto y no con un número");
+                    numberOfPoints++;
+                }
+                if (currentNumeration.endsWith(".1.")) {
+                    SameLevelTittle sameLevelTittle = new SameLevelTittle(page, generalIndexPageEnd, seeker);
+                    formatErrorscomments.addAll(sameLevelTittle.getFormatErrorComments(currentTitle, currentNumeration));
+                }
+                if (numberOfPoints == 1) {
+                    formatErrorscomments.addAll(chapterTitles.getFormatErrorComments(currentTitle));
+                }
+                if (numberOfPoints == 2) {
+                    formatErrorscomments.addAll(chapterSubTitles.getFormatErrorComments(currentTitle));
+                }
+                if (numberOfPoints == 3) {
+                    formatErrorscomments.addAll(sectionTitles.getFormatErrorComments(currentTitle));
+                }
+                if (numberOfPoints == 4) {
+                    formatErrorscomments.addAll(sectionSubTitles.getFormatErrorComments(currentTitle));
+                }
             }
+            reportFormatErrors(formatErrorscomments, currentTitle, formatErrors, pageWidth, pageHeight, page);
+
         }
-        WordsProperties numeration = getterWordLines.getIndexCoverPageNumeration(page);
+        WordLine numeration = getterWordLines.getAnyPageNumeration(page);
+        controlPageNumeration(numeration, formatErrors, pageWidth, pageHeight, page);
+        return formatErrors;
+    }
+
+    private void controlTittle(int page, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, List<SingleLine> singleLines) {
+        Format generalIndextitle = new TittleFormat(12,"Centrado",pageWidth,true,"ÍNDICE GENERAL");
+        if (generalIndexPageStart == page && !singleLines.isEmpty()){
+            List<SingleLine> tittleLine = new ArrayList<>();
+            tittleLine.add(singleLines.get(0));
+            WordLine tittle = new WordLine(tittleLine);
+            List<String> formatErrorscomments = generalIndextitle.getFormatErrorComments(tittle);
+            reportFormatErrors(formatErrorscomments,tittle, formatErrors, pageWidth, pageHeight, page);
+            singleLines.remove(0);
+        }
+    }
+
+    private void reportFormatErrors(List<String> comments, WordLine words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
+        if (!comments.isEmpty()) {
+            ReportFormatError reporter = new ReportFormatError(idHighlights);
+            formatErrors.add(reporter.reportFormatError(comments, words, pageWidth, pageHeight, page,"indiceGeneral"));
+        }
+    }
+
+    private void controlPageNumeration(WordLine numeration, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if(numeration!=null){
             List<String> formatErrorscomments = new ArrayList<>();
             formatErrorscomments.add("Esta sección no tenga numeración");
             reportFormatErrors(formatErrorscomments, numeration, formatErrors, pageWidth, pageHeight, page);
         }
-        return formatErrors;
     }
 
-    private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
-        if (!comments.isEmpty()) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page,"indiceGeneral"));
-        }
-    }
 
-    private void reportFormatErrors(List<String> comments, List<WordsProperties> words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
-        if (!comments.isEmpty()) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatError(comments, words, pageWidth, pageHeight, page,"indiceGeneral"));
-        }
-    }
-
-    private int countChar(String str, char c) {
+    private int countPoints(String str) {
         int count = 0;
         for(int i=0; i < str.length(); i++) {
-            if(str.charAt(i) == c)
+            if(str.charAt(i) == '.')
                 count++;
         }
         return count;
@@ -141,20 +144,6 @@ public class GeneralIndexPageFormat implements FormatRule {
         if (tittle.contains("Anexo") || tittle.contains("ANEXO")){
             resp = true;
         }
-        return resp;
-    }
-
-    private List<List<WordsProperties>> getGeneralIndexTittles(List<WordsProperties> wordsLines){
-        List<List<WordsProperties>> resp = new ArrayList<>();
-        List<WordsProperties> currentTittle = new ArrayList<>();
-        for(WordsProperties line:wordsLines){
-            currentTittle.add(line);
-            if(line.length() > 1 && Character.isDigit(line.charAt(line.length() - 1))) {
-                resp.add(currentTittle);
-                currentTittle = new ArrayList<>();
-            }
-        }
-        resp.add(currentTittle);
         return resp;
     }
 }

@@ -1,12 +1,13 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_rules;
 
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.others.dictionaries.Diccionario;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.others.dictionaries.Dictionary;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.EnglishWordFormat;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control.Format;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_error_response.FormatErrorResponse;
 import com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.ReportFormatError;
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.SingleLine;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
@@ -37,10 +38,8 @@ public class EnglishWordsFormat implements FormatRule {
     @Override
     public List<FormatErrorResponse> getFormatErrors(int page) throws IOException {
         List<FormatErrorResponse> formatErrors = new ArrayList<>();
-
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
-
         Format englishWordFormat = new EnglishWordFormat(12,true);
         PDFTextStripper stripper = new PDFTextStripper() {
             @Override
@@ -55,9 +54,12 @@ public class EnglishWordsFormat implements FormatRule {
                                 word.add(text);
                             } else if (!word.isEmpty()) {
                                 if(isEnglishWord(word)){
-                                    WordsProperties englihWord =new WordsProperties(word);
-                                    List<String> formatErrorscomments = englishWordFormat.getFormatErrorComments(englihWord);
-                                    reportFormatErrors(formatErrorscomments, englihWord, formatErrors, pageWidth, pageHeight, page);
+                                    SingleLine englihWord =new SingleLine(word);
+                                    List<SingleLine> singleLines = new ArrayList<>();
+                                    singleLines.add(englihWord);
+                                    WordLine wordLine = new WordLine(singleLines);
+                                    List<String> formatErrorscomments = englishWordFormat.getFormatErrorComments(wordLine);
+                                    reportFormatErrors(formatErrorscomments, wordLine, formatErrors, pageWidth, pageHeight, page);
                                 }
                                 word.clear();
                             }
@@ -66,9 +68,12 @@ public class EnglishWordsFormat implements FormatRule {
                 }
                 if (!word.isEmpty()) {
                     if(isEnglishWord(word)){
-                        WordsProperties englihWord =new WordsProperties(word);
-                        List<String> formatErrorscomments = englishWordFormat.getFormatErrorComments(englihWord);
-                        reportFormatErrors(formatErrorscomments, englihWord, formatErrors, pageWidth, pageHeight, page);
+                        SingleLine englihWord =new SingleLine(word);
+                        List<SingleLine> singleLines = new ArrayList<>();
+                        singleLines.add(englihWord);
+                        WordLine wordLine = new WordLine(singleLines);
+                        List<String> formatErrorscomments = englishWordFormat.getFormatErrorComments(wordLine);
+                        reportFormatErrors(formatErrorscomments, wordLine, formatErrors, pageWidth, pageHeight, page);
                     }
                     word.clear();
                 }
@@ -79,15 +84,16 @@ public class EnglishWordsFormat implements FormatRule {
         stripper.setStartPage(page);
         stripper.setEndPage(page);
         stripper.getText(pdfdocument);
-
         return formatErrors;
     }
 
-    private void reportFormatErrors(List<String> comments, WordsProperties words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
+    private void reportFormatErrors(List<String> comments, WordLine words, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
         if (!comments.isEmpty()) {
-            formatErrors.add(new ReportFormatError(idHighlights).reportFormatWarning(comments, words, pageWidth, pageHeight, page,"extranjerismo"));
+            ReportFormatError reporter = new ReportFormatError(idHighlights);
+            formatErrors.add(reporter.reportFormatWarning(comments, words, pageWidth, pageHeight, page,"extranjerismo"));
         }
     }
+
 
     private boolean isEnglishWord(List<TextPosition> word) {
         boolean resp = false;

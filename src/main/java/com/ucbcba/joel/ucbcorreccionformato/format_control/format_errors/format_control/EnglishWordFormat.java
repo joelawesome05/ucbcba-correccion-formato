@@ -1,6 +1,6 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control.format_errors.format_control;
 
-import com.ucbcba.joel.ucbcorreccionformato.format_control.WordsProperties;
+import com.ucbcba.joel.ucbcorreccionformato.format_control.WordLine;
 
 import java.util.List;
 
@@ -14,20 +14,22 @@ public class EnglishWordFormat extends Format {
     }
 
     @Override
-    public List<String> getFormatErrorComments(WordsProperties word){
+    public List<String> getFormatErrorComments(WordLine word){
         List<String> comments = super.getFormatErrorComments(word);
+        italicControl(word, comments);
+        return comments;
+    }
 
+    private void italicControl(WordLine word, List<String> comments) {
         if (isItalic) {
-            if (!word.hasAFontBasicTypeOf("Italic")) {
-                comments.add("Tenga Cursiva");
+            if (word.isNotItalic()) {
+                comments.add("Tener Cursiva");
             }
         }else{
-            if (word.hasAFontBasicTypeOf("Italic")){
+            if (word.isItalic()){
                 comments.add("No tenga cursiva");
             }
         }
-
-        return comments;
     }
 
 }
