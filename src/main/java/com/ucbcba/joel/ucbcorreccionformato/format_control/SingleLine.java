@@ -20,6 +20,7 @@ public class SingleLine implements CharSequence{
         this.textPositions = textPositions;
         this.start = start;
         this.end = end;
+
     }
 
     @Override
