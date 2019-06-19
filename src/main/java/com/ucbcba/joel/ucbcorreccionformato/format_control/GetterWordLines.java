@@ -101,7 +101,7 @@ public class GetterWordLines {
         return resp;
     }
 
-    public List<SingleLine> getWordLinesWithoutPageNumeration(int page) throws IOException {
+    public List<SingleLine> getSingleLinesWithoutPageNumeration(int page) throws IOException {
         List<SingleLine> wordLine = getSingleLines(page);
         if(!wordLine.isEmpty()) {
             SingleLine lastLine = wordLine.get(wordLine.size() - 1);
@@ -162,7 +162,7 @@ public class GetterWordLines {
 
     public double getLineSpacingBibliography(int page) throws IOException {
         double lineSpacing = 0;
-        List<SingleLine> wordsLines = getWordLinesWithoutPageNumeration(page);
+        List<SingleLine> wordsLines = getSingleLinesWithoutPageNumeration(page);
         for (int i=1 ; i < wordsLines.size() ; i++){
             double currentLineSpacing = Math.round(wordsLines.get(i).getY() - wordsLines.get(i-1).getY());
             if(lineSpacing < currentLineSpacing){
@@ -171,26 +171,6 @@ public class GetterWordLines {
         }
         return lineSpacing;
     }
-
-    /*public double getLineSpacing(int page) throws IOException {
-        double maxLineSpacing = 0;
-        Integer maxCount = -1;
-        Map<Double, Integer> lineSpacingCount = new HashMap<>();
-        List<SingleLine> wordsLines = getWordLinesWithoutPageNumeration(page);
-        for (int i=1 ; i < wordsLines.size() ; i++){
-            double currentLineSpacing = Math.round(wordsLines.get(i).getY() - wordsLines.get(i-1).getY());
-
-            if (!lineSpacingCount.containsKey(currentLineSpacing)) { lineSpacingCount.put(currentLineSpacing, 0); }
-            int count = lineSpacingCount.get(currentLineSpacing) + 1;
-            if (count > maxCount) {
-                maxLineSpacing = currentLineSpacing;
-                maxCount = count;
-            }
-            lineSpacingCount.put(currentLineSpacing, count);
-        }
-
-        return maxLineSpacing;
-    }*/
 
     public List<WordLine> getCoverPageElements(int page) throws IOException {
         List<WordLine> resp = new ArrayList<>();
@@ -210,11 +190,19 @@ public class GetterWordLines {
     private int getLineTypeOfWork(List<SingleLine> singleLines, int lineTypeOfWork) {
         for(int line=singleLines.size()-1; line>=0; line--){
             String currentWordLine = singleLines.get(line).toString();
-            if (currentWordLine.contains("Licenciatura") || currentWordLine.contains("licenciatura") || currentWordLine.contains("LICENCIATURA")){
+            if (containsWordLicenciatura(currentWordLine) || containsWordPerfil(currentWordLine)){
                 return line;
             }
         }
         return lineTypeOfWork;
+    }
+
+    private boolean containsWordLicenciatura(String currentWordLine) {
+        return currentWordLine.contains("Licenciatura") || currentWordLine.contains("licenciatura") || currentWordLine.contains("LICENCIATURA");
+    }
+
+    private boolean containsWordPerfil(String currentWordLine) {
+        return currentWordLine.contains("Perfil") || currentWordLine.contains("perfil") || currentWordLine.contains("PERFIL");
     }
 
     public List<WordLine> getGeneralIndexTittles(List<SingleLine> singleLines){

@@ -24,4 +24,5 @@ HELP.md
 /nbdist/
 /.nb-gradle/
 /build/
-uploads
+uploads/*
+!uploads/UCBLogo.png

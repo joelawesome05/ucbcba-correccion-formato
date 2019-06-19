@@ -95,9 +95,6 @@ public class SingleLine implements CharSequence{
                 return true;
             }
         }
-        /*if(getFontName(start).contains(fontName)  && getFontName(end-1).contains(fontName)){
-            resp = false;
-        }*/
         return resp;
     }
 
@@ -108,9 +105,6 @@ public class SingleLine implements CharSequence{
                 return true;
             }
         }
-        /*if(getFontSize(start)==fontSize && getFontSize(end-1)==fontSize){
-            resp = false;
-        }*/
         return resp;
     }
 
@@ -121,10 +115,6 @@ public class SingleLine implements CharSequence{
                 return true;
             }
         }
-        /*boolean resp = true;
-        if(getFontName(start).contains(style) && getFontName((start+end)/2).contains(style) && getFontName(end-1).contains(style)){
-            resp = false;
-        }*/
         return resp;
     }
 
@@ -135,9 +125,6 @@ public class SingleLine implements CharSequence{
                 return true;
             }
         }
-        /*if(getFontName(start).contains(style)  || getFontName(end-1).contains(style)){
-            resp = false;
-        }*/
         return resp;
     }
 }

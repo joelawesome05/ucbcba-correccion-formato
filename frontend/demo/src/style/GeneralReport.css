@@ -1,0 +1,150 @@
+body {
+  margin: 0;
+  background-image: url(../images/pattern_news.png);
+  color: rgb(0, 0, 0);
+}
+
+.grey{
+  color: rgb(119, 119, 119);
+}
+.sidebar {
+  overflow: auto;
+  color: rgb(119, 119, 119);
+  background: linear-gradient(
+    rgb(249, 248, 247),
+    rgb(251, 250, 248) 46px,
+    rgb(251, 251, 249) 120px,
+    rgb(248, 247, 245) 35%,
+    rgb(249, 248, 246)
+  );
+  width: 380px;
+  min-width: 380px;
+  max-width: 380px; 
+  display: inline-block;
+}
+
+.sidebar__highlights {
+  list-style: "none";
+  padding: 0;
+}
+
+.highlight__location {
+  margin-top: 0.5rem;
+  text-align: right;
+  font-size: 10px;
+}
+
+.highlight__image {
+  overflow: auto;
+  max-width: 300px;
+  border: 1px dashed;
+}
+
+.sidebar__highlight {
+  padding: 1rem;
+  cursor: pointer;
+  transition: background 140ms ease-in;
+  border-bottom: 1px solid rgb(119, 119, 119);
+}
+
+.sidebar__highlight:hover {
+  background: rgba(58, 56, 52, 0.08);
+}
+
+a {
+  color: #d35400;
+}
+
+blockquote {
+  padding: 0;
+  margin: 0;
+  quotes: "\201c" "\201d";
+}
+blockquote:before {
+  content: open-quote;
+}
+blockquote:after {
+  content: close-quote;
+}
+
+.tittleSidebar{
+  color: black;
+  margin-bottom: 1rem;
+}
+
+.description{
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 0px;
+}
+
+.backHome{
+  font-size: 0.8rem;
+}
+
+.formalAspects{
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-top: 0px;
+  padding-bottom: 1rem;
+}
+
+.tableFormalAspects{
+  margin-top: 1.5rem;
+}
+
+.tittleSection{
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.buttonSection{
+  cursor: pointer;
+  padding: 20px;
+  border-bottom: 1px solid rgb(39, 37, 37);
+}
+
+.buttonSection:hover {
+  background-color:  rgba(58, 56, 52, 0.08);
+}
+
+.activeGrey{
+  background-color:  rgba(58, 56, 52, 0.08);
+}
+.iconsSeccion{
+  text-align: center;
+}
+
+.errorColor{
+  color: #ff0033;
+}
+
+.warningColor{
+  color: #ffae42;
+}
+.errorsNro{
+  font-size: 15px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.warningsNro{
+  font-size: 15px;
+  display:inline-block;
+}
+
+.checkGreen{
+  color: green;
+}
+
+.resolve{
+  text-align: right;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+.contentText{
+  word-wrap:break-word;
+  margin-top: 0.5rem;
+}

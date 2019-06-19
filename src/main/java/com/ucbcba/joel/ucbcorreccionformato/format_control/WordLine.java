@@ -1,5 +1,6 @@
 package com.ucbcba.joel.ucbcorreccionformato.format_control;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,13 @@ public class WordLine {
 
     public String getNumeration(){
         String[] arr = toString().split(" ", 2);
-        return arr[0];
+        return normalizerWord(arr[0]);
+    }
+
+    private String normalizerWord(String word){
+        String wordString = Normalizer.normalize(word, Normalizer.Form.NFD);
+        wordString = wordString.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return wordString;
     }
 
     public boolean isNotFontName(String[] fontName){
