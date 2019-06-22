@@ -18,7 +18,6 @@ import java.io.IOException;
 public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
-
     @Autowired
     private FileStorageService fileStorageService;
 

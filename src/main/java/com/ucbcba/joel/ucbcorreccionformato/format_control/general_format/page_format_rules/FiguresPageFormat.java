@@ -43,7 +43,7 @@ public class FiguresPageFormat implements PageFormatRule {
             if (!image.isFigureHorizontal()) {
                 commentsFigureError.add("Figura en sentido vertical, por favor verificar que la presente hoja tenga orientación horizontal");
             }
-            if (!isInTheCorrectMargins(image)) {
+            if (!isInTheCorrectMargins(image,pageWidth,pageHeight)) {
                 commentsFigureError.add("Por favor verificar que la figura se encuentre entre los márgenes establecidos según la guía");
             }
             reportFigureErrors(formatErrors, image, commentsFigureError, pageWidth, pageHeight, pageNum);
@@ -60,10 +60,16 @@ public class FiguresPageFormat implements PageFormatRule {
         return formatErrors;
     }
 
-    private boolean isInTheCorrectMargins(PdfImage image) {
+    private boolean isInTheCorrectMargins(PdfImage image,float pageWidth,float pageHeight) {
         boolean resp = true;
-        if(image.getX() < 95 || image.getY() < 75 || image.getEndX() > 535 || image.getEndY() > 705){
-            resp = false;
+        if(pageWidth < pageHeight) {
+            if (image.getX() < 95 || image.getY() < 75 || image.getEndX() > 535 || image.getEndY() > 705) {
+                resp = false;
+            }
+        }else{
+            if (image.getY() < 95 || image.getX() < 75 || image.getEndY() > 535 || image.getEndX() > 710) {
+                resp = false;
+            }
         }
         return resp;
     }

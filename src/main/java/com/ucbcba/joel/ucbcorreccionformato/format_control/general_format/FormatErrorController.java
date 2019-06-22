@@ -43,15 +43,15 @@ public class FormatErrorController {
         try {
             String dirPdfFile = resource.getFile().getAbsolutePath();
             PDDocument pdfdocument = PDDocument.load(new File(dirPdfFile));
-            int indexEndPage = getIndexEndPage(generalIndexEndPage, figureIndexEndPage, tableIndexEndPage);
+            int contentFirstPage = getContentFirstPage(coverPage,generalIndexEndPage, figureIndexEndPage, tableIndexEndPage);
             FormatErrorDetector formatErrorDetector = new FormatErrorDetector(pdfdocument,idHighlights);
             formatErrors.addAll(formatErrorDetector.getCoverPageFormatErrors(coverPage));
             formatErrors.addAll(formatErrorDetector.getGeneralIndexFormatErrors(generalIndexStartPage,generalIndexEndPage));
             formatErrors.addAll(formatErrorDetector.getFigureIndexFormatErrors(figureIndexStartPage,figureIndexEndPage));
             formatErrors.addAll(formatErrorDetector.getTableIndexFormatErrors(tableIndexStartPage,tableIndexEndPage));
-            formatErrors.addAll(formatErrorDetector.getPageNumerationFormatErrors(indexEndPage,annexesStartPage,annexesEndPage));
-            formatErrors.addAll(formatErrorDetector.getFigureTableFormatErrors(indexEndPage,bibliographyStartPage));
-            formatErrors.addAll(formatErrorDetector.getEnglishWordsFormatErrors(indexEndPage,bibliographyStartPage));
+            formatErrors.addAll(formatErrorDetector.getPageNumerationFormatErrors(contentFirstPage,annexesStartPage,annexesEndPage));
+            formatErrors.addAll(formatErrorDetector.getFigureTableFormatErrors(contentFirstPage,bibliographyStartPage));
+            formatErrors.addAll(formatErrorDetector.getEnglishWordsFormatErrors(contentFirstPage,bibliographyStartPage));
             formatErrors.addAll(formatErrorDetector.getBibliographyFormatErrors(bibliographyStartPage,bibliographyEndPage,bibliograhyType));
             pdfdocument.close();
         } catch (IOException e) {
@@ -60,7 +60,7 @@ public class FormatErrorController {
         return formatErrors;
     }
     
-    private int getIndexEndPage(Integer generalIndexPageEnd, Integer figureIndexPageEnd, Integer tableIndexPageEnd) {
+    private int getContentFirstPage(Integer coverPage,Integer generalIndexPageEnd, Integer figureIndexPageEnd, Integer tableIndexPageEnd) {
         int indexPageEnd;
         if (generalIndexPageEnd > figureIndexPageEnd) {
             if (generalIndexPageEnd > tableIndexPageEnd) {
@@ -73,7 +73,10 @@ public class FormatErrorController {
         } else {
             indexPageEnd = tableIndexPageEnd;
         }
-        return indexPageEnd;
+        if(coverPage > indexPageEnd){
+            return coverPage+1;
+        }
+        return indexPageEnd+1;
     }
 
 

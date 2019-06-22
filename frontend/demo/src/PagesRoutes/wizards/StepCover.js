@@ -42,6 +42,15 @@ class StepCover extends Component {
             );
         };
 
+        var errorMessage = null;
+        if (!this.props.validInputs) {
+            errorMessage = (<div>
+                <center>
+                    <p className="alert alert-danger myAlert" role="alert"> Por favor ingrese un rango de páginas válido </p>
+                </center>
+            </div>);
+        }
+
         return (
             <div>
                 <center><h4 className="tittle-wizard"> Carátula </h4> </center>
@@ -54,6 +63,7 @@ class StepCover extends Component {
                             </div>
                             <form onSubmit={this.props.nextStep}>
                                 {inputs}
+                                {errorMessage}
                                 <div className="next-previous-buttons">
                                     <div className="leftForm">
                                         <Link to="/">

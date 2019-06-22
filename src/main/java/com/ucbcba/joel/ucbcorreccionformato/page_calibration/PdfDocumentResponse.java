@@ -12,8 +12,9 @@ public class PdfDocumentResponse {
         private int bibliographyEndPage;
         private int annexesStartPage;
         private int annexesEndPage;
+        private int totalPages;
 
-    public PdfDocumentResponse(int coverPage, int generalIndexStartPage, int generalIndexEndPage, int figureIndexStartPage, int figureIndexEndPage, int tableIndexStartPage, int tableIndexEndPage, int bibliographyStartPage, int bibliographyEndPage, int annexesStartPage, int annexesEndPage) {
+    public PdfDocumentResponse(int coverPage, int generalIndexStartPage, int generalIndexEndPage, int figureIndexStartPage, int figureIndexEndPage, int tableIndexStartPage, int tableIndexEndPage, int bibliographyStartPage, int bibliographyEndPage, int annexesStartPage, int annexesEndPage,int totalPages) {
         this.coverPage = coverPage;
         this.generalIndexStartPage = generalIndexStartPage;
         this.generalIndexEndPage = generalIndexEndPage;
@@ -25,6 +26,7 @@ public class PdfDocumentResponse {
         this.bibliographyEndPage = bibliographyEndPage;
         this.annexesStartPage = annexesStartPage;
         this.annexesEndPage = annexesEndPage;
+        this.totalPages = totalPages;
     }
 
     public int getCoverPage() {
@@ -113,5 +115,13 @@ public class PdfDocumentResponse {
 
     public void setAnnexesEndPage(int annexesEndPage) {
         this.annexesEndPage = annexesEndPage;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
     }
 }

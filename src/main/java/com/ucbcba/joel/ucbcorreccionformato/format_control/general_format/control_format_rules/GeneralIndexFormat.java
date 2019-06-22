@@ -70,7 +70,7 @@ public class GeneralIndexFormat extends Format {
 
     private void algimentControl(WordLine word, List<String> comments) {
         if (alignment.equals("Izquierdo")) {
-            if (nroBleeding == 0 && word.getX() < 95) {
+            if (nroBleeding == 0 && (word.getX() < 95 || word.getX() > 105)) {
                 comments.add("Alineado al margen izquierdo");
             }
             if (nroBleeding == 1 && word.getX() < 106) {

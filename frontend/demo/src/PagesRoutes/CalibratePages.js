@@ -31,6 +31,7 @@ class CalibratePages extends Component {
             bibliograhyType: "UCB",
             annexesStartPage: 0,
             annexesEndPage: 0,
+            totalPages: 1,
             noCoverPage: false,
             noGeneralIndex: false,
             noFigureIndex: false,
@@ -52,6 +53,7 @@ class CalibratePages extends Component {
         this.handleTableIndex = this.handleTableIndex.bind(this);
         this.handleBibliography = this.handleBibliography.bind(this);
         this.handleAnnexes = this.handleAnnexes.bind(this);
+        this.validatePages = this.validatePages.bind(this);
         url = window["cfgApiBaseUrl"] + "/api/downloadFile/" + `${encodeURI(this.props.match.params.name)}.pdf`;
     }
 
@@ -130,7 +132,9 @@ class CalibratePages extends Component {
                             annexesEndPage: pdfDocument.annexesEndPage
                         });
                     }
-
+                    this.setState({
+                        totalPages: pdfDocument.totalPages
+                    });
                 }
 
 
@@ -251,30 +255,73 @@ class CalibratePages extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const searchParams = new URLSearchParams();
-        searchParams.set("coverPage", this.state.coverPage);
-        searchParams.set("generalIndexStartPage", this.state.generalIndexStartPage);
-        searchParams.set("generalIndexEndPage", this.state.generalIndexEndPage);
-        searchParams.set("figureIndexStartPage", this.state.figureIndexStartPage);
-        searchParams.set("figureIndexEndPage", this.state.figureIndexEndPage);
-        searchParams.set("tableIndexStartPage", this.state.tableIndexStartPage);
-        searchParams.set("tableIndexEndPage", this.state.tableIndexEndPage);
-        searchParams.set("bibliographyStartPage", this.state.bibliographyStartPage);
-        searchParams.set("bibliographyEndPage", this.state.bibliographyEndPage);
-        searchParams.set("bibliograhyType", this.state.bibliograhyType);
-        searchParams.set("annexesStartPage", this.state.annexesStartPage);
-        searchParams.set("annexesEndPage", this.state.annexesEndPage);
-        const parameters = searchParams.toString();
-        this.props.history.push(`/verResultados/${encodeURI(this.props.match.params.name)}` + `?${parameters}`);
+        if (this.validatePages()) {
+            const searchParams = new URLSearchParams();
+            searchParams.set("coverPage", this.state.coverPage);
+            searchParams.set("generalIndexStartPage", this.state.generalIndexStartPage);
+            searchParams.set("generalIndexEndPage", this.state.generalIndexEndPage);
+            searchParams.set("figureIndexStartPage", this.state.figureIndexStartPage);
+            searchParams.set("figureIndexEndPage", this.state.figureIndexEndPage);
+            searchParams.set("tableIndexStartPage", this.state.tableIndexStartPage);
+            searchParams.set("tableIndexEndPage", this.state.tableIndexEndPage);
+            searchParams.set("bibliographyStartPage", this.state.bibliographyStartPage);
+            searchParams.set("bibliographyEndPage", this.state.bibliographyEndPage);
+            searchParams.set("bibliograhyType", this.state.bibliograhyType);
+            searchParams.set("annexesStartPage", this.state.annexesStartPage);
+            searchParams.set("annexesEndPage", this.state.annexesEndPage);
+            const parameters = searchParams.toString();
+            this.props.history.push(`/verResultados/${encodeURI(this.props.match.params.name)}` + `?${parameters}`);
+        } else {
+            this.setState({
+                validInputs: false
+            });
+        }
+    }
+
+    validatePages() {
+        const { coverPage, generalIndexStartPage, generalIndexEndPage, figureIndexStartPage, figureIndexEndPage,
+            tableIndexStartPage, tableIndexEndPage, bibliographyStartPage,
+            bibliographyEndPage, annexesStartPage, annexesEndPage, totalPages } = this.state;
+        if (!this.state.noCoverPage && coverPage < 1 || coverPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noGeneralIndex && generalIndexStartPage < 1 || generalIndexStartPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noGeneralIndex && generalIndexEndPage < 1 || generalIndexEndPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noFigureIndex && figureIndexStartPage < 1 || figureIndexStartPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noFigureIndex && figureIndexEndPage < 1 || figureIndexEndPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noTableIndex && tableIndexStartPage < 1 || tableIndexStartPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noTableIndex && tableIndexEndPage < 1 || tableIndexEndPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noBiography && bibliographyStartPage < 1 || bibliographyStartPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noAnnexes && annexesStartPage < 1 || annexesStartPage > totalPages) {
+            return false;
+        }
+        if (!this.state.noAnnexes && annexesEndPage < 1 || annexesEndPage > totalPages) {
+            return false;
+        }
+        if (generalIndexStartPage > generalIndexEndPage || figureIndexStartPage > figureIndexEndPage || tableIndexStartPage > tableIndexEndPage ||
+            bibliographyStartPage > bibliographyEndPage || annexesStartPage > annexesEndPage) {
+            return false;
+        }
+        return true;
     }
 
     nextStep(event) {
         event.preventDefault();
-        const { generalIndexStartPage, generalIndexEndPage, figureIndexStartPage, figureIndexEndPage,
-            tableIndexStartPage, tableIndexEndPage, bibliographyStartPage,
-            bibliographyEndPage, annexesStartPage, annexesEndPage } = this.state;
-        if (generalIndexStartPage <= generalIndexEndPage && figureIndexStartPage <= figureIndexEndPage && tableIndexStartPage <= tableIndexEndPage &&
-            bibliographyStartPage <= bibliographyEndPage && annexesStartPage <= annexesEndPage) {
+        if (this.validatePages()) {
             let currentStep = this.state.currentStep
             currentStep = currentStep >= 5 ? 6 : currentStep + 1
             this.setState({
@@ -290,11 +337,7 @@ class CalibratePages extends Component {
 
     previousStep(event) {
         event.preventDefault();
-        const { generalIndexStartPage, generalIndexEndPage, figureIndexStartPage, figureIndexEndPage,
-            tableIndexStartPage, tableIndexEndPage, bibliographyStartPage,
-            bibliographyEndPage, annexesStartPage, annexesEndPage } = this.state;
-        if (generalIndexStartPage <= generalIndexEndPage && figureIndexStartPage <= figureIndexEndPage && tableIndexStartPage <= tableIndexEndPage &&
-            bibliographyStartPage <= bibliographyEndPage && annexesStartPage <= annexesEndPage) {
+        if (this.validatePages()) {
             let currentStep = this.state.currentStep
             currentStep = currentStep <= 1 ? 1 : currentStep - 1
             this.setState({
@@ -438,6 +481,7 @@ class CalibratePages extends Component {
                         handleCoverPage={this.handleCoverPage}
                         noCoverPage={this.state.noCoverPage}
                         nextStep={this.nextStep}
+                        validInputs={this.state.validInputs}
                     />
 
                     <StepGeneralIndex

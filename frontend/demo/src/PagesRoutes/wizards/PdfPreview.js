@@ -25,7 +25,6 @@ class PdfPreview extends Component {
         } else {
             if (!this.props.pageStart || !this.props.pageEnd) {
                 return (
-
                     <center>
                         <p> Esperando por un rango de páginas </p>
                     </center>

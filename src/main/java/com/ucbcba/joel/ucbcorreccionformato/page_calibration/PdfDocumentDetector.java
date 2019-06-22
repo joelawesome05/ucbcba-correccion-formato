@@ -26,8 +26,9 @@ public class PdfDocumentDetector {
         int annexesStartPage = pagesFinder.getAnnexesStartPage(bibliographyStartPage);
         int bibliographyEndPage = pagesFinder.getBibliographyEndPage(bibliographyStartPage, annexesStartPage);
         int annexesEndPage = pagesFinder.getAnnexesEndPage(annexesStartPage);
+        int totalPages = pdfdocument.getNumberOfPages();
         return new PdfDocumentResponse(coverPage,generalIndexStartPage,generalIndexEndPage,figureIndexStartPage,figureIndexEndPage,
-                tableIndexStartPage,tableIndexEndPage,bibliographyStartPage,bibliographyEndPage,annexesStartPage,annexesEndPage);
+                tableIndexStartPage,tableIndexEndPage,bibliographyStartPage,bibliographyEndPage,annexesStartPage,annexesEndPage,totalPages);
     }
 
 }
