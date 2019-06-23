@@ -62,7 +62,7 @@ public class ReportFormatError {
 
 
     public FormatErrorResponse reportFigureFormatWarning(List<String> comments, PdfImage image, float pageWidth, float pageHeight, int page,String type){
-        StringBuilder commentStr = new StringBuilder("Por favor comprobar que la figura tenga: ");
+        StringBuilder commentStr = new StringBuilder("Por favor comprobar si la figura debería tener: ");
         for (int i = 0; i < comments.size(); i++) {
             if (i != 0) {
                 commentStr.append(" - ").append(comments.get(i));

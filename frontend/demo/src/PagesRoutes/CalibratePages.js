@@ -36,7 +36,7 @@ class CalibratePages extends Component {
             noGeneralIndex: false,
             noFigureIndex: false,
             noTableIndex: false,
-            noBiography: false,
+            noBibliography: false,
             noAnnexes: false,
             isLoading: true,
             error: false,
@@ -114,7 +114,7 @@ class CalibratePages extends Component {
                     }
                     if (pdfDocument.bibliographyStartPage === 0) {
                         this.setState({
-                            noBiography: true
+                            noBibliography: true
                         });
                     } else {
                         this.setState({
@@ -215,9 +215,9 @@ class CalibratePages extends Component {
 
     handleBibliography() {
         this.setState({
-            noBiography: !this.state.noBiography
+            noBibliography: !this.state.noBibliography
         });
-        if (this.state.noBiography) {
+        if (this.state.noBibliography) {
             this.setState({
                 bibliographyStartPage: 1,
                 bibliographyEndPage: 1,
@@ -303,7 +303,7 @@ class CalibratePages extends Component {
         if (!this.state.noTableIndex && tableIndexEndPage < 1 || tableIndexEndPage > totalPages) {
             return false;
         }
-        if (!this.state.noBiography && bibliographyStartPage < 1 || bibliographyStartPage > totalPages) {
+        if (!this.state.noBibliography && bibliographyStartPage < 1 || bibliographyStartPage > totalPages) {
             return false;
         }
         if (!this.state.noAnnexes && annexesStartPage < 1 || annexesStartPage > totalPages) {
@@ -531,7 +531,7 @@ class CalibratePages extends Component {
                         bibliograhyType={this.state.bibliograhyType}
                         url={url}
                         handleBibliography={this.handleBibliography}
-                        noBiography={this.state.noBiography}
+                        noBibliography={this.state.noBibliography}
                         nextStep={this.nextStep}
                         previousStep={this.previousStep}
                         validInputs={this.state.validInputs}

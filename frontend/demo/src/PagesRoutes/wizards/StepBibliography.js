@@ -12,7 +12,7 @@ class StepBibliography extends Component {
         }
 
         var inputs = null;
-        if (this.props.noBiography) {
+        if (this.props.noBibliography) {
             inputs = (
                 <fieldset disabled>
                     <div className="leftForm">
@@ -89,7 +89,7 @@ class StepBibliography extends Component {
                     <div className="col-lg-4">
                         <div className="inputs-buttons">
                             <div className="custom-control custom-checkbox checkBoxForm">
-                                <input type="checkbox" className="custom-control-input" id="customCheck2" checked={this.props.noBiography} onChange={() => { this.props.handleBibliography() }} />
+                                <input type="checkbox" className="custom-control-input" id="customCheck2" checked={this.props.noBibliography} onChange={() => { this.props.handleBibliography() }} />
                                 <label className="custom-control-label" htmlFor="customCheck2">No tengo esta sección</label>
                             </div>
                             <form onSubmit={this.props.nextStep}>
@@ -119,7 +119,7 @@ class StepBibliography extends Component {
                                     url={this.props.url}
                                     pageStart={this.props.bibliographyStartPage}
                                     pageEnd={this.props.bibliographyEndPage}
-                                    active={this.props.noBiography}
+                                    active={this.props.noBibliography}
                                 />
                             </center>
                         </div>
