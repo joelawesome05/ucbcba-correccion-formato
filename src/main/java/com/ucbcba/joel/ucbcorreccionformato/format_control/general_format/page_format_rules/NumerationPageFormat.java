@@ -30,7 +30,7 @@ public class NumerationPageFormat implements PageFormatRule {
         float pageWidth = pdfdocument.getPage(page-1).getMediaBox().getWidth();
         float pageHeight = pdfdocument.getPage(page-1).getMediaBox().getHeight();
 
-        Format numerationFormat = new PageFormat(12,"Derecho",pageWidth,correctPageNumeration);
+        Format numerationFormat = new PageFormat(12,"Derecho",pageWidth,correctPageNumeration,false,false);
 
         GetterWordLines getterWordLines = new GetterWordLines(pdfdocument);
         WordLine pageNumerationPage = getterWordLines.getPageNumeration(page);

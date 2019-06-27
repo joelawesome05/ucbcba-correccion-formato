@@ -85,6 +85,24 @@ public class UCBBibliography implements Bibliography {
         if (lineWord.contains("@")){
             return email;
         }
+        
+        if (lineWord.contains("En:")){
+            if( lineWord.contains("N°") || lineWord.contains(", Año")){
+                return articleMagazine;
+            }
+            Matcher matcher = chapterBookBibliography.matcher(lineWord);
+            if (matcher.find()){
+                return chapterBook;
+            }
+            matcher = articleNewspaperBibliography.matcher(lineWord);
+            if (matcher.find()){
+                return articleNewspaper;
+            }
+            matcher = conferenceArtworksBibliography.matcher(lineWord);
+            if (matcher.find()){
+                return conferenceArtworks;
+            }
+        }
 
         if (lineWord.contains(":")){
             Matcher matcher = bookBibliography.matcher(lineWord);
@@ -110,24 +128,7 @@ public class UCBBibliography implements Bibliography {
             return thesis;
         }
 
-        if (lineWord.contains("En:")){
-            if( lineWord.contains("N°") || lineWord.contains(", Año")){
-                return articleMagazine;
-            }
-            Matcher matcher = chapterBookBibliography.matcher(lineWord);
-            if (matcher.find()){
-                return chapterBook;
-            }
-            matcher = articleNewspaperBibliography.matcher(lineWord);
-            if (matcher.find()){
-                return articleNewspaper;
-            }
-            matcher = conferenceArtworksBibliography.matcher(lineWord);
-            if (matcher.find()){
-                return conferenceArtworks;
-            }
-            return chapterBook;
-        }
+
         return null;
     }
 }

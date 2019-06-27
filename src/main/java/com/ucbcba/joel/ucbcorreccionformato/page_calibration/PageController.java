@@ -31,7 +31,7 @@ public class PageController {
             resp = document.getPdfPages();
             pdfdocument.close();
         } catch (IOException e) {
-            logger.log(Level.SEVERE,"No se pudo abrir el archivo PDF", e);
+            logger.log(Level.SEVERE,"No se pudo analizar el archivo PDF", e);
         }
         return resp;
     }

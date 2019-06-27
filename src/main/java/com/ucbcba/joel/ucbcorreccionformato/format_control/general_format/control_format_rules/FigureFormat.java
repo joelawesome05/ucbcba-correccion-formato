@@ -36,7 +36,7 @@ public class FigureFormat extends Format {
             }
         }else{
             if (word.isBold()){
-                comments.add("No tenga negrilla");
+                comments.add("No tenga Negrilla");
             }
         }
     }
@@ -55,10 +55,8 @@ public class FigureFormat extends Format {
 
     private void figureTittleControl(WordLine word, List<String> comments) {
         if (!word.toString().contains("Figura")){
-            comments.add("Tenga el título: 'Figura'");
+            comments.add("El título sea: 'Figura'");
         }
     }
-
-
 
 }

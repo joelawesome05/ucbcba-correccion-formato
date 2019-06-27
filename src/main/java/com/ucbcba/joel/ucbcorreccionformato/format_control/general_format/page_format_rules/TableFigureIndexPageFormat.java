@@ -52,7 +52,7 @@ public class TableFigureIndexPageFormat implements PageFormatRule {
     }
 
     private void controlTittle(List<SingleLine> singleLines, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, int page) {
-        Format title = new TittleFormat(12,"Centrado",pageWidth,true,"ÍNDICE DE "+indexName);
+        Format title = new TittleFormat(12,"Centrado",pageWidth,true,false,"ÍNDICE DE "+indexName);
         if (pageStart == page && !singleLines.isEmpty()){
             List<SingleLine> tittleLine = new ArrayList<>();
             tittleLine.add(singleLines.get(0));

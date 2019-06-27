@@ -27,7 +27,7 @@ public class EnglishWordFormat extends Format {
             }
         }else{
             if (word.isItalic()){
-                comments.add("No tenga cursiva");
+                comments.add("No tenga Cursiva");
             }
         }
     }

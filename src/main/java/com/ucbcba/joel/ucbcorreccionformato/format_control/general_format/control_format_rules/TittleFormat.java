@@ -10,12 +10,14 @@ public class TittleFormat extends  Format {
     private String alignment;
     private float pageWidth;
     private boolean isBold;
+    private boolean isItalic;
     private String correctTittle;
-    public TittleFormat(float fontSize, String alignment, float pageWidth, boolean isBold, String correctTittle) {
+    public TittleFormat(float fontSize, String alignment, float pageWidth, boolean isBold, boolean isItalic, String correctTittle) {
         super(fontSize);
         this.alignment = alignment;
         this.pageWidth = pageWidth;
         this.isBold = isBold;
+        this.isItalic = isItalic;
         this.correctTittle = correctTittle;
     }
 
@@ -28,6 +30,7 @@ public class TittleFormat extends  Format {
 
         tittleNameControl(comments, wordNormalized, correctTittleNormalized);
         boldControl(word, comments);
+        italicControl(word, comments);
         algimentControl(word, comments);
         return comments;
     }
@@ -45,7 +48,19 @@ public class TittleFormat extends  Format {
             }
         }else{
             if (word.isBold()){
-                comments.add("No tenga negrilla");
+                comments.add("No tenga Negrilla");
+            }
+        }
+    }
+
+    private void italicControl(WordLine word, List<String> comments) {
+        if (isItalic) {
+            if (word.isNotItalic()) {
+                comments.add("Tenga Cursiva");
+            }
+        }else{
+            if (word.isItalic()){
+                comments.add("No tenga Cursiva");
             }
         }
     }

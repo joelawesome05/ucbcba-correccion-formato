@@ -38,7 +38,7 @@ public class TableFormat extends Format {
 
     private void tableTittleControl(WordLine word, List<String> comments) {
         if (!word.toString().contains("Tabla")){
-            comments.add("Tenga el título: 'Tabla'");
+            comments.add("El título sea: 'Tabla'");
         }
     }
 
@@ -55,7 +55,7 @@ public class TableFormat extends Format {
             }
         }else{
             if (word.isBold()){
-                comments.add("No tenga negrilla");
+                comments.add("No tenga Negrilla");
             }
         }
     }

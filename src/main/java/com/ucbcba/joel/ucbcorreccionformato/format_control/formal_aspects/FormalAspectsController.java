@@ -31,7 +31,7 @@ public class FormalAspectsController {
             formalAspectsResponses = formatErrorDetector.getFormalAspectsResponses();
             pdfdocument.close();
         } catch (IOException e) {
-            logger.log(Level.SEVERE,"No se pudo analziar el archivo PDF", e);
+            logger.log(Level.SEVERE,"No se pudo analizar el archivo PDF", e);
         }
         return formalAspectsResponses;
     }

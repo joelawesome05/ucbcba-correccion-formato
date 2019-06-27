@@ -34,7 +34,7 @@ public class EnglishWordsPageFormat implements PageFormatRule {
             this.dictionary = new Dictionary();
             this.diccionario = new Diccionario();
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,"No se pudo abrir los diccionarios en txt", e);
+            LOGGER.log(Level.SEVERE,"No se pudo abrir los diccionarios de texto", e);
         }
     }
 

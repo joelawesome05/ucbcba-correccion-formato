@@ -154,7 +154,7 @@ class UploadFile extends Component {
                         <div className="card">
                             <div className="card-body">
                                 <h5 className="card-title">Advertencias</h5>
-                                <p className="card-text cardText">Recuerda que las advertencias <i className="warningColor"> <FontAwesomeIcon icon={faExclamationTriangle} /> </i> son sólo posibles errores de incuplimiento en el formato. Usar un citerio adecuado ante las advertencias.</p>
+                                <p className="card-text cardText">Recuerda que las advertencias <i className="warningColor"> <FontAwesomeIcon icon={faExclamationTriangle} /> </i> son sólo posibles errores de incumplimiento en el formato. Usar un criterio adecuado ante las advertencias.</p>
                             </div>
                             <img className="card-img-top tipsCard" src={warningGif} />
                             <div className="card-footer">

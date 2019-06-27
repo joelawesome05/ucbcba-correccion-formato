@@ -9,6 +9,7 @@ public class SourceTableFigureFormat extends Format {
     private String alignment;
     private float pageWidth;
     private boolean isBold;
+
     public SourceTableFigureFormat(float fontSize, String alignment, float pageWidth, boolean isBold) {
         super(fontSize);
         this.alignment = alignment;
@@ -38,9 +39,8 @@ public class SourceTableFigureFormat extends Format {
             }
         }else{
             if (word.isBold()){
-                comments.add("No tenga negrilla");
+                comments.add("No tenga Negrilla");
             }
         }
     }
-
 }

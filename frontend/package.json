@@ -3,7 +3,6 @@
   "version": "2.1.2",
   "description": "Set of React components for PDF annotation",
   "main": "lib/index.js",
-  "proxy": "http://localhost:8080",
   "scripts": {
     "build": "nwb build-react-component",
     "copy-flow": "flow-copy-source src lib",

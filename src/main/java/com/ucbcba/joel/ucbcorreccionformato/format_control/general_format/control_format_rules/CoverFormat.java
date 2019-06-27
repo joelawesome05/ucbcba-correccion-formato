@@ -41,7 +41,7 @@ public class CoverFormat  extends  Format{
             }
         }else{
             if (word.isBold()){
-                comments.add("No tenga negrilla");
+                comments.add("No tenga Negrilla");
             }
         }
     }
@@ -53,7 +53,7 @@ public class CoverFormat  extends  Format{
             }
         }else{
             if (word.isItalic()){
-                comments.add("No tenga cursiva");
+                comments.add("No tenga Cursiva");
             }
         }
     }

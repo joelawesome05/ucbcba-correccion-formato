@@ -53,7 +53,7 @@ public class BibliographyPageFormat implements PageFormatRule {
     }
 
     private void controlTittle(int page, List<FormatErrorResponse> formatErrors, float pageWidth, float pageHeight, List<SingleLine> singleLines) {
-        Format biographyTitle = new TittleFormat(12,"Izquierdo",pageWidth,true,"BIBLIOGRAFÍA");
+        Format biographyTitle = new TittleFormat(12,"Izquierdo",pageWidth,true,false,"BIBLIOGRAFÍA");
         if (biographyPageStart == page && !singleLines.isEmpty()){
             List<SingleLine> tittleLine = new ArrayList<>();
             tittleLine.add(singleLines.get(0));
