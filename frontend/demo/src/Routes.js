@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as HashRouter, Route, Switch } from 'react-router-dom';
 import UploadFile from './PagesRoutes/UploadFile';
 import CalibratePages from './PagesRoutes/CalibratePages';
 import GeneralReport from './PagesRoutes/GeneralReport';
@@ -13,14 +13,14 @@ library.add(faIgloo)
 class Routes extends Component {
     render() {
         return (
-            <Router>
+            <HashRouter>
                 <Switch>
                     <Route path='/' exact={true} component={UploadFile} />
                     <Route path='/calibrarPaginas/:name' exact={true} component={CalibratePages} />
                     <Route path='/verResultados/:name' exact={true} component={GeneralReport} />
                     <Route component={NotFound} />
                 </Switch>
-            </Router>
+            </HashRouter>
         );
     }
 }
