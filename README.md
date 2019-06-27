@@ -14,8 +14,7 @@ El desarrollo del frontend tiene como código base: <br> https://github.com/agen
 Para correr el programa backend localmente ejecutar el comando:<br> `mvn spring-boot:run` <br>
 <br><br>
 Para correr el programa fronted localmente ejecutar el comando en la caperta ./frontend:<br> `npm install && npm start` <br>
-<br><br>
 Acceder a la URL: http://localhost:3000
-<br><br><br><br>
+<br>
 Para más información, consultar la documentación del software en el que se especifica la arquitectura y diagramas de clases del sistema. Asimismo, el documento contiene las configuraciones para la puesta en producción del sistema.
 Solicitar el documento en la Universidad.
